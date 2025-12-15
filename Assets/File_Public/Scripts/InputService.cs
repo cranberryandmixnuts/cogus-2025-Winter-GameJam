@@ -259,8 +259,7 @@ public sealed class InputService : MonoBehaviour
         if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
             return;
 
-        if (currentRebind != null)
-            currentRebind.Cancel();
+        currentRebind?.Cancel();
 
         action.Disable();
 

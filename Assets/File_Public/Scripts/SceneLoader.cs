@@ -3,24 +3,23 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 
+// 씬 목록 Enum 정의
 public enum SceneType
 {
     None = 0,
     TitleScene,
     Stage1Scene,
     Stage2Scene,
-    Stage3Scene,
+    Stage3Scene
 }
 
 public class SceneLoader : MonoBehaviour
 {
-    // 씬 로더를 위한 싱글톤 인스턴스
     public static SceneLoader Instance { get; private set; }
 
-    // CanvasGroup과 Image는 이 오브젝트의 자식에 있으므로,
-    // 스크립트가 직접 찾아서 사용하도록 필드를 private으로 변경합니다.
-    private CanvasGroup fadeCanvasGroup;
-    private Image blackScreenImage;
+    [Header("페이드 UI 연결")]
+    [SerializeField]
+    private Image fadeImage;
 
     [Header("페이드 설정")]
     [SerializeField]
@@ -28,9 +27,15 @@ public class SceneLoader : MonoBehaviour
 
     private bool isFading = false;
 
+    // 외부에서 씬 로딩 상태를 확인하기 위한 프로퍼티 (오류 해결)
+    public bool IsFading
+    {
+        get { return isFading; }
+    }
+
     private void Awake()
     {
-        // 1. 싱글톤 패턴 적용
+        // 싱글톤 및 DontDestroyOnLoad 적용
         if (Instance == null)
         {
             Instance = this;
@@ -42,69 +47,73 @@ public class SceneLoader : MonoBehaviour
             return;
         }
 
-        // 2. 필요한 컴포넌트 자동 탐색 및 초기화 (통합 형태의 핵심)
-        fadeCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
-        blackScreenImage = GetComponentInChildren<Image>(true);
-
-        // 컴포넌트가 제대로 연결되었는지 확인
-        if (fadeCanvasGroup == null || blackScreenImage == null)
+        if (fadeImage == null)
         {
-            Debug.LogError("SceneLoader에 CanvasGroup 또는 Image 컴포넌트가 부족합니다. 자식에 UI 설정이 완료되었는지 확인하세요.");
+            Debug.LogError("SceneLoader: fadeImage가 Inspector에 연결되지 않았습니다.");
             return;
         }
 
-        // 3. 초기 상태 설정 (화면은 투명하고 상호작용 불가)
-        fadeCanvasGroup.alpha = 0f;
-        fadeCanvasGroup.blocksRaycasts = false;
+        // 초기 상태: 투명하게 설정
+        Color imageColor = fadeImage.color;
+        imageColor.a = 0f;
+        fadeImage.color = imageColor;
     }
 
-    // --- 외부 호출 함수 (이하 변경 없음) ---
+    // 외부 호출 함수: 씬 로드 시작
     public void LoadScene(SceneType scene)
     {
         if (isFading) return;
 
         string sceneName = scene.ToString();
+        if (string.IsNullOrEmpty(sceneName) || sceneName == "None")
+        {
+            Debug.LogError("SceneLoader: 유효하지 않은 씬 타입입니다.");
+            return;
+        }
+
         StartCoroutine(LoadSceneSequence(sceneName));
     }
 
-    // --- 씬 로딩 코루틴 (변경 없음) ---
     private IEnumerator LoadSceneSequence(string sceneName)
     {
         isFading = true;
 
-        // 1. 페이드 아웃 (화면이 검게 변함)
+        // 페이드 아웃 (화면이 검게 변함)
         yield return StartCoroutine(Fade(1f));
 
-        // 2. 씬 로딩
+        // 씬 로딩
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
         while (!asyncLoad.isDone)
         {
             yield return null;
         }
 
-        // 3. 페이드 인 (검은 화면이 사라짐)
+        // 페이드 인 (검은 화면이 사라짐)
         yield return StartCoroutine(Fade(0f));
 
         isFading = false;
     }
 
-    // --- 페이드 코루틴 (변경 없음) ---
     private IEnumerator Fade(float targetAlpha)
     {
-        float startAlpha = fadeCanvasGroup.alpha;
+        Color startColor = fadeImage.color;
+        Color endColor = startColor;
+        endColor.a = targetAlpha;
+
         float time = 0;
 
-        // 상호작용 차단/허용 설정
-        fadeCanvasGroup.blocksRaycasts = (targetAlpha == 1f);
+        // 페이드 중에는 이미지가 Raycast를 막아 상호작용을 차단
+        fadeImage.raycastTarget = (targetAlpha == 1f);
 
         while (time < fadeDuration)
         {
             time += Time.deltaTime;
-            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, time / fadeDuration);
-            fadeCanvasGroup.alpha = newAlpha;
+            Color currentColor = Color.Lerp(startColor, endColor, time / fadeDuration);
+            fadeImage.color = currentColor;
             yield return null;
         }
 
-        fadeCanvasGroup.alpha = targetAlpha;
+        // 정확한 목표 알파 값으로 설정
+        fadeImage.color = endColor;
     }
 }
