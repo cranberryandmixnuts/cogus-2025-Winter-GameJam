@@ -1,7 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using UnityEngine.UI; // Image 컴포넌트 접근을 위해 추가
+using UnityEngine.UI;
+
+public enum SceneType
+{
+    None = 0,
+    TitleScene,
+    Stage1Scene,
+    Stage2Scene,
+    Stage3Scene,
+}
 
 public class SceneLoader : MonoBehaviour
 {

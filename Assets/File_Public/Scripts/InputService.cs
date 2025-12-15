@@ -12,6 +12,7 @@ public sealed class InputService : MonoBehaviour
     [SerializeField]
     private string playerMapName = "Player";
 
+    [Header("Player Actions")]
     [SerializeField]
     private string moveActionName = "Move";
 
@@ -19,23 +20,37 @@ public sealed class InputService : MonoBehaviour
     private string jumpActionName = "Jump";
 
     [SerializeField]
-    private string dashActionName = "Dash";
+    private string specialAbilitiesActionName = "SpecialAbilities";
 
     [SerializeField]
-    private string parryActionName = "Parry";
+    private string skinChangeLeftActionName = "SkinChangeLeft";
 
     [SerializeField]
-    private string healActionName = "Heal";
+    private string skinChangeRightActionName = "SkinChangeRight";
+
+    [SerializeField]
+    private string healingBananaThrowActionName = "HealingBananaThrow";
+
+    [SerializeField]
+    private string pauseActionName = "Pause";
 
     private InputAction moveAction;
     private InputAction jumpAction;
-    private InputAction dashAction;
-    private InputAction parryAction;
-    private InputAction healAction;
+    private InputAction specialAbilitiesAction;
+    private InputAction skinChangeLeftAction;
+    private InputAction skinChangeRightAction;
+    private InputAction healingBananaThrowAction;
+    private InputAction pauseAction;
 
     private InputActionRebindingExtensions.RebindingOperation currentRebind;
 
     private const string RebindsKey = "InputService_Rebinds";
+
+    public Vector2 Move
+    {
+        get;
+        private set;
+    }
 
     public float MoveAxis
     {
@@ -61,25 +76,43 @@ public sealed class InputService : MonoBehaviour
         private set;
     }
 
-    public bool DashDown
+    public bool SpecialAbilitiesDown
     {
         get;
         private set;
     }
 
-    public bool ParryDown
+    public bool SpecialAbilitiesUp
     {
         get;
         private set;
     }
 
-    public bool ParryHeld
+    public bool SpecialAbilitiesHeld
     {
         get;
         private set;
     }
 
-    public bool HealHeld
+    public bool SkinChangeLeftDown
+    {
+        get;
+        private set;
+    }
+
+    public bool SkinChangeRightDown
+    {
+        get;
+        private set;
+    }
+
+    public bool HealingBananaThrowDown
+    {
+        get;
+        private set;
+    }
+
+    public bool PauseDown
     {
         get;
         private set;
@@ -120,44 +153,82 @@ public sealed class InputService : MonoBehaviour
 
     private void Update()
     {
-        Vector2 move = moveAction.ReadValue<Vector2>();
-        MoveAxis = Mathf.Clamp(move.x, -1f, 1f);
+        Move = ReadVector2(moveAction);
+        MoveAxis = Mathf.Clamp(Move.x, -1f, 1f);
 
-        JumpDown = jumpAction.WasPressedThisFrame();
-        JumpUp = jumpAction.WasReleasedThisFrame();
-        JumpHeld = jumpAction.IsPressed();
+        JumpDown = WasPressed(jumpAction);
+        JumpUp = WasReleased(jumpAction);
+        JumpHeld = IsPressed(jumpAction);
 
-        DashDown = dashAction.WasPressedThisFrame();
+        SpecialAbilitiesDown = WasPressed(specialAbilitiesAction);
+        SpecialAbilitiesUp = WasReleased(specialAbilitiesAction);
+        SpecialAbilitiesHeld = IsPressed(specialAbilitiesAction);
 
-        ParryDown = parryAction.WasPressedThisFrame();
-        ParryHeld = parryAction.IsPressed();
+        SkinChangeLeftDown = WasPressed(skinChangeLeftAction);
+        SkinChangeRightDown = WasPressed(skinChangeRightAction);
 
-        HealHeld = healAction.IsPressed();
+        HealingBananaThrowDown = WasPressed(healingBananaThrowAction);
+
+        PauseDown = WasPressed(pauseAction);
     }
 
     private void InitializeActions()
     {
         moveAction = FindAction(playerMapName, moveActionName);
         jumpAction = FindAction(playerMapName, jumpActionName);
-        dashAction = FindAction(playerMapName, dashActionName);
-        parryAction = FindAction(playerMapName, parryActionName);
-        healAction = FindAction(playerMapName, healActionName);
+        specialAbilitiesAction = FindAction(playerMapName, specialAbilitiesActionName);
+        skinChangeLeftAction = FindAction(playerMapName, skinChangeLeftActionName);
+        skinChangeRightAction = FindAction(playerMapName, skinChangeRightActionName);
+        healingBananaThrowAction = FindAction(playerMapName, healingBananaThrowActionName);
+        pauseAction = FindAction(playerMapName, pauseActionName);
     }
 
     private InputAction FindAction(string mapName, string actionName)
     {
+        if (actions == null) return null;
+        if (string.IsNullOrEmpty(mapName)) return null;
+        if (string.IsNullOrEmpty(actionName)) return null;
+
         string path = mapName + "/" + actionName;
         return actions.FindAction(path, false);
     }
 
     private void EnableActions(bool enable)
     {
+        if (actions == null) return;
+
         if (enable) actions.Enable();
         else actions.Disable();
     }
 
+    private Vector2 ReadVector2(InputAction action)
+    {
+        if (action == null) return Vector2.zero;
+        return action.ReadValue<Vector2>();
+    }
+
+    private bool WasPressed(InputAction action)
+    {
+        if (action == null) return false;
+        return action.WasPressedThisFrame();
+    }
+
+    private bool WasReleased(InputAction action)
+    {
+        if (action == null) return false;
+        return action.WasReleasedThisFrame();
+    }
+
+    private bool IsPressed(InputAction action)
+    {
+        if (action == null) return false;
+        return action.IsPressed();
+    }
+
     public void SaveBindingOverrides()
     {
+        if (actions == null) return;
+
         string json = actions.SaveBindingOverridesAsJson();
         PlayerPrefs.SetString(RebindsKey, json);
         PlayerPrefs.Save();
@@ -165,8 +236,8 @@ public sealed class InputService : MonoBehaviour
 
     public void LoadBindingOverrides()
     {
-        if (!PlayerPrefs.HasKey(RebindsKey))
-            return;
+        if (actions == null) return;
+        if (!PlayerPrefs.HasKey(RebindsKey)) return;
 
         string json = PlayerPrefs.GetString(RebindsKey);
         actions.LoadBindingOverridesFromJson(json);
@@ -174,6 +245,8 @@ public sealed class InputService : MonoBehaviour
 
     public void ClearBindingOverrides()
     {
+        if (actions == null) return;
+
         actions.RemoveAllBindingOverrides();
         PlayerPrefs.DeleteKey(RebindsKey);
     }
@@ -181,20 +254,20 @@ public sealed class InputService : MonoBehaviour
     public void StartRebind(string mapName, string actionName, int bindingIndex, bool excludeMouse)
     {
         InputAction action = FindAction(mapName, actionName);
+        if (action == null) return;
 
         if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
             return;
 
-        currentRebind.Cancel();
+        if (currentRebind != null)
+            currentRebind.Cancel();
 
         action.Disable();
 
-        var operation = action.PerformInteractiveRebinding(bindingIndex);
+        InputActionRebindingExtensions.RebindingOperation operation = action.PerformInteractiveRebinding(bindingIndex);
 
         if (excludeMouse)
-        {
             operation.WithControlsExcluding("Mouse");
-        }
 
         OnRebindStarted?.Invoke();
 
@@ -209,6 +282,7 @@ public sealed class InputService : MonoBehaviour
     private void FinishRebind(InputAction action)
     {
         action.Enable();
+
         currentRebind?.Dispose();
         currentRebind = null;
 
@@ -219,6 +293,7 @@ public sealed class InputService : MonoBehaviour
     private void CancelRebind(InputAction action)
     {
         action.Enable();
+
         currentRebind?.Dispose();
         currentRebind = null;
 

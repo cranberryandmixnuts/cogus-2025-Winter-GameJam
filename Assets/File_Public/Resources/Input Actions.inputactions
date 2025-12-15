@@ -25,15 +25,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "NormalAttack",
-                    "type": "Button",
-                    "id": "a898f271-9075-400b-a18c-7e57a6a543b3",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
                     "name": "SpecialAbilities",
                     "type": "Button",
                     "id": "4ea0eed6-c439-4095-b1d1-1a9ee922a1e5",
@@ -43,7 +34,16 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MoveSkinLeft",
+                    "name": "HealingBananaThrow",
+                    "type": "Button",
+                    "id": "22ffced5-209a-4d31-8949-d30671946977",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SkinChangeLeft",
                     "type": "Button",
                     "id": "2d5ba884-be14-4768-9549-1fa702afc19d",
                     "expectedControlType": "",
@@ -52,16 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MoveSkinRight",
-                    "type": "Button",
-                    "id": "0fc55973-cb30-4400-822e-b2debc155413",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SelectSkin",
+                    "name": "SkinChangeRight",
                     "type": "Button",
                     "id": "87150e4c-07a6-4e21-92a0-e261ba2085bd",
                     "expectedControlType": "",
@@ -148,19 +139,8 @@
                 },
                 {
                     "name": "",
-                    "id": "5d6b6f14-96a4-4e34-b1da-c089e425635a",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";KeyBoard&Mouse",
-                    "action": "NormalAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5151e1a8-dc19-4bc0-af15-47870c22883a",
-                    "path": "<Keyboard>/x",
+                    "path": "<Keyboard>/z",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -175,29 +155,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MoveSkinLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e2ab9394-f696-4f9c-9c13-f392b0511257",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MoveSkinRight",
+                    "action": "SkinChangeLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "2c79e72e-22d3-437c-a8b2-8cc29d0a096a",
-                    "path": "<Keyboard>/enter",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SelectSkin",
+                    "action": "SkinChangeRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -209,6 +178,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6fe2ecde-ed8e-422a-bfae-81d0422ff007",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HealingBananaThrow",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
