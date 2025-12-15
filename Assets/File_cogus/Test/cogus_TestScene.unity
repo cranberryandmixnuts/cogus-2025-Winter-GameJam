@@ -207,7 +207,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1177979320}
-  - component: {fileID: 1177979319}
   m_Layer: 0
   m_Name: EffectManager
   m_TagString: Untagged
@@ -215,18 +214,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1177979319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1177979318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e23802c5c6feb984d9e53589d401bb8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerEffects
 --- !u!4 &1177979320
 Transform:
   m_ObjectHideFlags: 0
@@ -255,8 +242,8 @@ GameObject:
   - component: {fileID: 1280498423}
   - component: {fileID: 1280498427}
   - component: {fileID: 1280498426}
-  - component: {fileID: 1280498425}
-  - component: {fileID: 1280498424}
+  - component: {fileID: 1280498429}
+  - component: {fileID: 1280498428}
   m_Layer: 3
   m_Name: Payer
   m_TagString: Player
@@ -359,76 +346,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1280498424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280498420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1eacd4a9dce687549bbf57f20ad22861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerVitals
-  settings: {fileID: 11400000, guid: 1a9f266a06c78cd4f93469c0b1202bc7, type: 2}
-  eggHealth: 0
-  bananaHealth: 0
-  snailHealth: 0
-  playerEnergy: 0
-  manualInvincible: 0
-  invincibleTimer: 0
-  player: {fileID: 0}
---- !u!114 &1280498425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280498420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 342793099c1fdc940a5c55ef4f0d65ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  <Anim>k__BackingField: {fileID: 0}
-  <MoveInput>k__BackingField: 0
-  <JumpHeld>k__BackingField: 0
-  <NormalAttackDown>k__BackingField: 0
-  <SpecialDown>k__BackingField: 0
-  <SpecialUp>k__BackingField: 0
-  <SpecialHeld>k__BackingField: 0
-  <SkinSelectChangeDown>k__BackingField: 0
-  <SelectSkinDown>k__BackingField: 0
-  <PauseDown>k__BackingField: 0
-  vitals: {fileID: 1280498424}
-  settings: {fileID: 11400000, guid: 1a9f266a06c78cd4f93469c0b1202bc7, type: 2}
-  effects: {fileID: 0}
-  startEquippedSkin: 0
-  startSelectedSkin: 1
-  groundLayer:
-    m_Bits: 0
-  groundCheckBox: {fileID: 0}
-  enemyHitMask:
-    m_Bits: 0
-  specialSpawn: {fileID: 0}
-  eggProjectilePrefab: {fileID: 0}
-  bananaPeelPrefab: {fileID: 0}
-  rb: {fileID: 0}
-  boxCol: {fileID: 0}
-  isGround: 0
-  facingDirection: 1
-  isJumping: 0
-  jumpTimeCounter: 0
-  jumpBufferTimer: 0
-  coyoteTimer: 0
-  currentSpeedAbs: 0
-  lastMoveSign: 0
-  equippedSkin: 0
-  selectedSkin: 0
-  isSnailHidden: 0
-  normalAttackActive: 0
-  normalAttackTimer: 0
 --- !u!61 &1280498426
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -502,6 +419,45 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1280498428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280498420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d81e3b275122dd4eb2e0d6d0856b01e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerVitals
+  settings: {fileID: 0}
+  currentHealth: 
+--- !u!114 &1280498429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280498420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5e83f7f5dc41742a1a6ea9ebafd502, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  vitals: {fileID: 0}
+  settings: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  groundCheckBox: {fileID: 0}
+  startSkin: 0
+  eggProjectilePrefab: {fileID: 0}
+  bananaPeelPrefab: {fileID: 0}
+  healingBananaPrefab: {fileID: 0}
+  eggFirePoint: {fileID: 0}
+  bananaThrowPoint: {fileID: 0}
+  healingBananaDropPoint: {fileID: 0}
 --- !u!1 &1465763361
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,85 +729,11 @@ MonoBehaviour:
   playerMapName: Player
   moveActionName: Move
   jumpActionName: Jump
-  normalAttackActionName: NormalAttack
   specialAbilitiesActionName: SpecialAbilities
-  skinSelectChangeActionName: SkinSelectChange
-  selectSkinActionName: SelectSkin
+  skinChangeLeftActionName: SkinChangeLeft
+  skinChangeRightActionName: SkinChangeRight
+  healingBananaThrowActionName: HealingBananaThrow
   pauseActionName: Pause
-  moveAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: dab11c51-811b-4335-a86c-e8497be4ea36
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  jumpAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 03b432c0-037f-4d70-a8bb-e0f6918b2ffe
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  normalAttackAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 4e977abb-50ee-4cf2-a422-7f8b0b3306de
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  specialAbilitiesAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 50c1c58b-ac6b-4b6b-bf4f-2e79443f8a16
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  skinSelectChangeAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 97a011b4-bef6-464a-ac51-9eae22c973fa
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  selectSkinAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 61985888-f27d-4772-a35e-6bde2acf0d52
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  pauseAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 3884a0c9-b603-47df-b6f1-e68d9334a7d2
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  <MoveAxis>k__BackingField: 0
-  <JumpDown>k__BackingField: 0
-  <JumpUp>k__BackingField: 0
-  <JumpHeld>k__BackingField: 0
-  <NormalAttackDown>k__BackingField: 0
-  <SpecialDown>k__BackingField: 0
-  <SpecialUp>k__BackingField: 0
-  <SpecialHeld>k__BackingField: 0
-  <SkinSelectChangeDown>k__BackingField: 0
-  <SelectSkinDown>k__BackingField: 0
-  <PauseDown>k__BackingField: 0
 --- !u!4 &1633734886
 Transform:
   m_ObjectHideFlags: 0
