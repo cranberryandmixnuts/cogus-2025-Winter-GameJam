@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6f9db5ee4948cbf49af31590e20db0a4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 270859
+  packageName: Minimalistic Landscapes Vol.1
+  packageVersion: 1.0
+  assetPath: Assets/Minimalistic Landscapes Vol.1/Pipelines/UniversalRenderPipelineGlobalSettings.asset
+  uploadId: 640702
