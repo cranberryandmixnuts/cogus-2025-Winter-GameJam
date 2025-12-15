@@ -1,29 +1,37 @@
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
     // SettingWindow (이 스크립트가 부착된 오브젝트)의 자식 컴포넌트에 접근
-    [Header("자식 UI 연결 (Settings Panel과 Sound Panel)")]
+    [Header("UI 연결")]
     public GameObject settingsPanel;
     public GameObject soundPanel;
+    public AudioMixer mainMixer; // 볼륨 조절을 위한 Audio Mixer
 
     // 이 스크립트가 부착된 GameObject (SettingWindow) 자체를 제어하기 위한 캐시
-    private GameObject settingWindowObject;
+    // private GameObject settingWindowObject; // 이제 사용하지 않음
     private bool isGamePaused = false;
 
     private void Awake()
     {
-        // 스크립트가 부착된 SettingWindow GameObject 자체를 캐시
-        settingWindowObject = gameObject;
-
-        // 초기 상태: 비활성화
-        settingWindowObject.SetActive(false);
+        // settingWindowObject = gameObject; // SettingWindow 비활성화 로직 제거
         isGamePaused = false;
 
-        // Settings Panel과 Sound Panel의 연결 확인
         if (settingsPanel == null || soundPanel == null)
         {
             Debug.LogError("PauseMenuController: Settings Panel 또는 Sound Panel이 Inspector에 연결되지 않았습니다.");
+        }
+
+        // 초기 상태: SettingWindow는 활성화 상태를 유지하고, Settings Panel만 비활성화합니다.
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+        if (soundPanel != null)
+        {
+            soundPanel.SetActive(false);
         }
     }
 
@@ -32,8 +40,11 @@ public class PauseMenuController : MonoBehaviour
     {
         if (InputService.Instance != null && InputService.Instance.PauseDown)
         {
-            // 현재 상태를 반전시켜 일시정지/재개 요청
-            TogglePause(!isGamePaused);
+            // ESC는 무조건 열기만 합니다 (isGamePaused가 false일 때만 작동)
+            if (!isGamePaused)
+            {
+                TogglePause(true);
+            }
         }
     }
 
@@ -43,40 +54,60 @@ public class PauseMenuController : MonoBehaviour
         if (isGamePaused == shouldPause) return;
         isGamePaused = shouldPause;
 
-        // 시간 제어: 일시정지 목표
+        // 시간 제어
         Time.timeScale = shouldPause ? 0f : 1f;
 
-        // SettingWindow 전체 활성화/비활성화
-        settingWindowObject.SetActive(shouldPause);
+        // SettingWindow 전체 활성화/비활성화 로직 제거
+        // settingWindowObject.SetActive(shouldPause); 
 
-        // SettingWindow가 켜지면, 기본적으로 Settings Panel만 켜고 Sound Panel은 끕니다.
-        if (shouldPause)
+        if (settingsPanel != null)
         {
-            if (settingsPanel != null) settingsPanel.SetActive(true);
-            if (soundPanel != null) soundPanel.SetActive(false);
+            settingsPanel.SetActive(shouldPause);
         }
 
-        // 마우스 커서 제어
-        // 일시정지 상태에서는 커서를 보이게 하고 잠금을 해제합니다.
+        // 일시정지 해제 시 Sound Panel도 닫음 (TogglePause(false)가 호출될 때)
+        if (!shouldPause && soundPanel != null)
+        {
+            soundPanel.SetActive(false);
+        }
+
         Cursor.visible = shouldPause;
         Cursor.lockState = shouldPause ? CursorLockMode.None : CursorLockMode.Locked;
 
-        // *참고: 게임 재개 후에도 커서를 보이게 하려면 Cursor.visible = true; Cursor.lockState = CursorLockMode.None; 으로 수정하세요.*
+        // *참고: 만약 '게임 재개' 버튼을 누른 후에도 커서를 보이게 유지해야 한다면, 
+        //  shouldPause가 false일 때 Cursor.lockState = CursorLockMode.None; 으로 설정해야 합니다.*
     }
 
-    // 버튼 이벤트 1: '설정' 버튼 클릭 또는 ESC
+    // --- 버튼 상호작용 기능 ---
+    // 1. '설정' 버튼 클릭 (열기 전용)
     public void OnSettingsButtonClicked()
     {
-        TogglePause(!isGamePaused);
+        if (!isGamePaused)
+        {
+            TogglePause(true);
+        }
     }
 
-    // 버튼 이벤트 2: '게임 재개' 버튼 클릭
+    // 2. '게임 재개' 버튼 클릭 (닫기 전용)
     public void OnResumeButtonClicked()
     {
-        TogglePause(false); // 무조건 재개
+        TogglePause(false); // 무조건 재개 (닫기)
     }
 
-    // 버튼 이벤트 3: Sound Panel 닫기 버튼이 설정창(Settings Panel)으로 돌아가도록 처리
+    // 3. '음향' 버튼에 연결: Sound Panel을 열고 Settings Panel을 닫음
+    public void OnSoundButtonClicked()
+    {
+        if (soundPanel != null)
+        {
+            soundPanel.SetActive(true);
+        }
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+    }
+
+    // 4. Sound Panel 닫기 버튼: 설정창(Settings Panel)으로 복귀
     public void ReturnToSettings()
     {
         if (settingsPanel != null)
@@ -87,5 +118,31 @@ public class PauseMenuController : MonoBehaviour
         {
             soundPanel.SetActive(false);
         }
+    }
+
+    // 5. 게임 종료 기능 (Quit Button에 연결)
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        Application.Quit();
+        Debug.Log("Game Quit Requested");
+    }
+
+    // 6. BGM 슬라이더에 연결
+    public void SetBGMVolume(float sliderValue)
+    {
+        if (mainMixer == null) return;
+        float volume = (sliderValue <= 0.0001f) ? -80f : Mathf.Log10(sliderValue) * 20f;
+        mainMixer.SetFloat("BGM_Volume", volume);
+    }
+
+    // 7. SFX/VFX 슬라이더에 연결
+    public void SetSFXVolume(float sliderValue)
+    {
+        if (mainMixer == null) return;
+        float volume = (sliderValue <= 0.0001f) ? -80f : Mathf.Log10(sliderValue) * 20f;
+        mainMixer.SetFloat("SFX_Volume", volume);
     }
 }
