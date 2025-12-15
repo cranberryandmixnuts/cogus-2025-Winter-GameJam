@@ -15,7 +15,7 @@ public sealed class EggState : PlayerState
     public override void Update()
     {
         if (player.SpecialAbilitiesDown)
-            player.FireEggProjectile();
+            player.TryFireEggProjectile();
     }
 
     public override void FixedUpdate()

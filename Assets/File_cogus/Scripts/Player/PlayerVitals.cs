@@ -3,8 +3,7 @@ using UnityEngine;
 public sealed class PlayerVitals : MonoBehaviour
 {
     [SerializeField] private PlayerSettings settings;
-
-    [SerializeField] private int[] currentHealth;
+    [SerializeField] private bool initializeCurrentHPOnStart = false;
 
     private bool forcedInvincible;
     private float invincibleTimer;
@@ -20,40 +19,20 @@ public sealed class PlayerVitals : MonoBehaviour
 
     private void Awake()
     {
-        InitializeFromSettings();
+        if (initializeCurrentHPOnStart)
+            settings.ResetAllCurrentHealthToMax();
     }
 
     private void Update()
     {
-        if (invincibleTimer > 0f)
-            invincibleTimer -= Time.deltaTime;
-
-        if (invincibleTimer < 0f)
-            invincibleTimer = 0f;
-    }
-
-    public void InitializeFromSettings()
-    {
-        int count = System.Enum.GetValues(typeof(PlayerSkin)).Length;
-
-        if (currentHealth == null || currentHealth.Length != count)
-            currentHealth = new int[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            PlayerSkin skin = (PlayerSkin)i;
-            currentHealth[i] = settings != null ? settings.GetMaxHealth(skin) : 0;
-        }
+        if (invincibleTimer > 0f) invincibleTimer -= Time.deltaTime;
+        if (invincibleTimer < 0f) invincibleTimer = 0f;
     }
 
     public int GetHealth(PlayerSkin skin)
     {
-        int idx = (int)skin;
-
-        if (currentHealth == null) return 0;
-        if (idx < 0 || idx >= currentHealth.Length) return 0;
-
-        return currentHealth[idx];
+        if (settings == null) return 0;
+        return settings.GetCurrentHealth(skin);
     }
 
     public int GetMaxHealth(PlayerSkin skin)
@@ -64,11 +43,14 @@ public sealed class PlayerVitals : MonoBehaviour
 
     public bool HasAnyAliveSkin()
     {
-        if (currentHealth == null) return false;
+        if (settings == null) return false;
 
-        for (int i = 0; i < currentHealth.Length; i++)
+        int count = System.Enum.GetValues(typeof(PlayerSkin)).Length;
+
+        for (int i = 0; i < count; i++)
         {
-            if (currentHealth[i] > 0)
+            PlayerSkin skin = (PlayerSkin)i;
+            if (settings.GetCurrentHealth(skin) > 0)
                 return true;
         }
 
@@ -91,42 +73,38 @@ public sealed class PlayerVitals : MonoBehaviour
 
     public bool ApplyDamage(PlayerSkin skin, int damage, bool ignoreInvincible)
     {
+        if (settings == null) return false;
         if (!ignoreInvincible && IsInvincible) return false;
         if (damage <= 0) return false;
 
-        int idx = (int)skin;
+        int hp = settings.GetCurrentHealth(skin);
+        if (hp <= 0) return false;
 
-        if (currentHealth == null) return false;
-        if (idx < 0 || idx >= currentHealth.Length) return false;
-        if (currentHealth[idx] <= 0) return false;
+        int next = hp - damage;
+        if (next < 0) next = 0;
 
-        currentHealth[idx] -= damage;
-        if (currentHealth[idx] < 0)
-            currentHealth[idx] = 0;
+        bool changed = settings.SetCurrentHealth(skin, next);
 
-        if (settings != null && settings.hitInvincibleTime > 0f)
+        if (changed && settings.hitInvincibleTime > 0f)
             SetInvincibleTimer(settings.hitInvincibleTime);
 
-        return true;
+        return changed;
     }
 
     public bool ApplyHeal(PlayerSkin skin, int amount)
     {
+        if (settings == null) return false;
         if (amount <= 0) return false;
 
-        int idx = (int)skin;
-
-        if (currentHealth == null) return false;
-        if (idx < 0 || idx >= currentHealth.Length) return false;
-
-        int max = GetMaxHealth(skin);
+        int max = settings.GetMaxHealth(skin);
         if (max <= 0) return false;
-        if (currentHealth[idx] >= max) return false;
 
-        currentHealth[idx] += amount;
-        if (currentHealth[idx] > max)
-            currentHealth[idx] = max;
+        int hp = settings.GetCurrentHealth(skin);
+        if (hp >= max) return false;
 
-        return true;
+        int next = hp + amount;
+        if (next > max) next = max;
+
+        return settings.SetCurrentHealth(skin, next);
     }
 }

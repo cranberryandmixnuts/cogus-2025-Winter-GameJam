@@ -56,6 +56,18 @@ public sealed class PlayerController : MonoBehaviour
         private set;
     }
 
+    public bool UpHeld
+    {
+        get;
+        private set;
+    }
+
+    public bool DownHeld
+    {
+        get;
+        private set;
+    }
+
     public bool JumpHeld
     {
         get;
@@ -119,11 +131,26 @@ public sealed class PlayerController : MonoBehaviour
         get { return coyoteTimer > 0f; }
     }
 
-    private float currentSpeedAbs;
-    private int lastMoveSign;
+    public bool IsMovementLocked
+    {
+        get { return eggShootLockTimer > 0f; }
+    }
+
+    public bool CanThrowBananaPeel
+    {
+        get
+        {
+            return activeBananaPeelCount < settings.maxBananaPeelCount;
+        }
+    }
+
     private float jumpTimeCounter;
     private float jumpBufferTimer;
     private float coyoteTimer;
+    private float eggShootLockTimer;
+    private float bananaPeelCooldownTimer;
+    private float healingBananaCooldownTimer;
+    private int activeBananaPeelCount;
 
     private bool dead;
 
@@ -158,13 +185,26 @@ public sealed class PlayerController : MonoBehaviour
         PollInput();
         UpdateGround();
 
-        if (jumpBufferTimer > 0f)
-            jumpBufferTimer -= Time.deltaTime;
+        TickCooldowns();
 
-        if (coyoteTimer > 0f && !IsGround)
-            coyoteTimer -= Time.deltaTime;
+        if (jumpBufferTimer > 0f) jumpBufferTimer -= Time.deltaTime;
+        if (coyoteTimer > 0f && !IsGround) coyoteTimer -= Time.deltaTime;
 
         stateMachine.Update();
+    }
+
+    private void TickCooldowns()
+    {
+        float dt = Time.deltaTime;
+
+        if (eggShootLockTimer > 0f) eggShootLockTimer -= dt;
+        if (eggShootLockTimer < 0f) eggShootLockTimer = 0f;
+
+        if (bananaPeelCooldownTimer > 0f) bananaPeelCooldownTimer -= dt;
+        if (bananaPeelCooldownTimer < 0f) bananaPeelCooldownTimer = 0f;
+
+        if (healingBananaCooldownTimer > 0f) healingBananaCooldownTimer -= dt;
+        if (healingBananaCooldownTimer < 0f) healingBananaCooldownTimer = 0f;
     }
 
     private void FixedUpdate()
@@ -177,9 +217,11 @@ public sealed class PlayerController : MonoBehaviour
     private void PollInput()
     {
         InputService input = InputService.Instance;
-        if (input == null) return;
 
         MoveInput = input.MoveAxis;
+
+        UpHeld = input.UpHeld;
+        DownHeld = input.DownHeld;
 
         SpecialAbilitiesDown = input.SpecialAbilitiesDown;
         SpecialAbilitiesUp = input.SpecialAbilitiesUp;
@@ -187,34 +229,20 @@ public sealed class PlayerController : MonoBehaviour
 
         HealingBananaThrowDown = input.HealingBananaThrowDown;
 
-        if (input.SkinChangeLeftDown)
-            TrySwitchSkin(-1);
+        if (input.SkinChangeLeftDown) TrySwitchSkin(-1);
+        if (input.SkinChangeRightDown) TrySwitchSkin(1);
 
-        if (input.SkinChangeRightDown)
-            TrySwitchSkin(1);
+        if (input.PauseDown) OnPausePressed?.Invoke();
 
-        if (input.PauseDown)
-            OnPausePressed?.Invoke();
-
-        bool canJump = CurrentSkin == PlayerSkin.Banana && !IsSnailHidden;
-
-        if (canJump)
+        if (CurrentSkin == PlayerSkin.Banana && !IsSnailHidden)
         {
-            if (input.JumpDown && settings != null)
-                jumpBufferTimer = settings.jumpBufferTime;
-
+            if (input.JumpDown) jumpBufferTimer = Settings.jumpBufferTime;
             JumpHeld = input.JumpHeld;
-
-            if (input.JumpUp)
-                StopRising();
+            if (input.JumpUp) StopRising();
         }
         else
         {
             JumpHeld = false;
-            jumpBufferTimer = 0f;
-
-            if (IsJumping)
-                CancelJump();
         }
     }
 
@@ -228,23 +256,17 @@ public sealed class PlayerController : MonoBehaviour
 
     private PlayerState CreateStateForSkin(PlayerSkin skin)
     {
-        switch (skin)
+        return skin switch
         {
-            case PlayerSkin.Egg:
-                return new EggState(this, stateMachine);
-            case PlayerSkin.Banana:
-                return new BananaState(this, stateMachine);
-            case PlayerSkin.Snail:
-                return new SnailState(this, stateMachine);
-        }
-
-        return new EggState(this, stateMachine);
+            PlayerSkin.Egg => new EggState(this, stateMachine),
+            PlayerSkin.Banana => new BananaState(this, stateMachine),
+            PlayerSkin.Snail => new SnailState(this, stateMachine),
+            _ => new EggState(this, stateMachine),
+        };
     }
 
     private bool TrySwitchSkin(int delta)
     {
-        if (vitals == null) return false;
-
         int count = Enum.GetValues(typeof(PlayerSkin)).Length;
         int index = (int)CurrentSkin;
 
@@ -267,17 +289,19 @@ public sealed class PlayerController : MonoBehaviour
 
     private void SwitchSkin(PlayerSkin next)
     {
-        if (next == CurrentSkin) return;
+        PlayerSkin prev = CurrentSkin;
 
         SetSnailHidden(false);
         CancelJump();
-        ConsumeJumpBuffer();
 
         CurrentSkin = next;
+
+        if (CurrentSkin != PlayerSkin.Banana)
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
         stateMachine.ChangeState(CreateStateForSkin(CurrentSkin));
 
-        currentSpeedAbs = 0f;
-        lastMoveSign = 0;
+        Debug.Log("[PlayerSkin] " + prev + " -> " + CurrentSkin);
 
         OnSkinChanged?.Invoke(CurrentSkin);
     }
@@ -302,89 +326,70 @@ public sealed class PlayerController : MonoBehaviour
 
     public void HandleMove(float speed)
     {
+        if (IsMovementLocked)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            return;
+        }
+
+        if (CurrentSkin == PlayerSkin.Banana)
+            HandleBananaMove(speed);
+        else
+            HandleSimpleMove(speed);
+    }
+
+    private void HandleSimpleMove(float speed)
+    {
         int inputSign = 0;
 
-        if (MoveInput > 0.01f)
-            inputSign = 1;
-        else if (MoveInput < -0.01f)
-            inputSign = -1;
-
-        float dt = Time.fixedDeltaTime;
-
-        if (inputSign == 0)
-        {
-            if (IsGround)
-            {
-                currentSpeedAbs = 0f;
-            }
-            else
-            {
-                float baseSpeed = Mathf.Abs(rb.linearVelocity.x);
-
-                if (settings != null && settings.airReleaseDecelTime > 0f)
-                {
-                    float decel = (baseSpeed / settings.airReleaseDecelTime) * dt;
-                    currentSpeedAbs = Mathf.Max(0f, baseSpeed - decel);
-                }
-                else
-                {
-                    currentSpeedAbs = 0f;
-                }
-
-                if (Mathf.Abs(rb.linearVelocity.x) > 0.001f)
-                    lastMoveSign = rb.linearVelocity.x >= 0f ? 1 : -1;
-                else if (currentSpeedAbs <= 0.001f)
-                    lastMoveSign = 0;
-            }
-        }
-        else
-        {
-            bool directionChanged = lastMoveSign != 0 && inputSign != lastMoveSign && currentSpeedAbs > 0.001f;
-
-            float startSpeed = settings != null ? Mathf.Max(0.0001f, settings.startSpeedRatio * speed) : speed;
-            if (directionChanged || currentSpeedAbs <= 0f)
-                currentSpeedAbs = startSpeed;
-
-            float accelTime = settings != null ? (IsGround ? settings.groundAccelTime : settings.airAccelTime) : 0f;
-
-            if (accelTime <= 0f)
-            {
-                currentSpeedAbs = speed;
-            }
-            else
-            {
-                float accel = (speed - currentSpeedAbs) / accelTime * dt;
-                currentSpeedAbs = Mathf.Clamp(currentSpeedAbs + accel, 0f, speed);
-            }
-
-            lastMoveSign = inputSign;
-            FacingDirection = inputSign > 0 ? 1 : -1;
-        }
-
-        float vxDir;
+        if (MoveInput > 0.01f) inputSign = 1;
+        else if (MoveInput < -0.01f) inputSign = -1;
 
         if (inputSign != 0)
-            vxDir = inputSign;
-        else if (currentSpeedAbs > 0.001f)
-            vxDir = lastMoveSign;
+            FacingDirection = inputSign;
+
+        float vx = inputSign * Mathf.Max(0f, speed);
+        Rigidbody.linearVelocity = new Vector2(vx, Rigidbody.linearVelocity.y);
+
+        transform.rotation = Quaternion.Euler(0f, FacingDirection == -1 ? 180f : 0f, 0f);
+    }
+
+    private void HandleBananaMove(float speed)
+    {
+        float dt = Time.fixedDeltaTime;
+        float maxSpeed = Mathf.Max(0f, speed);
+
+        float vx = Rigidbody.linearVelocity.x;
+        float targetVx = Mathf.Clamp(MoveInput, -1f, 1f) * maxSpeed;
+
+        if (Mathf.Abs(MoveInput) > 0.01f)
+        {
+            float accelTime = Mathf.Max(0.0001f, Settings.bananaAccelTime);
+            float accelRate = maxSpeed / accelTime;
+
+            vx = Mathf.MoveTowards(vx, targetVx, accelRate * dt);
+            FacingDirection = MoveInput > 0f ? 1 : -1;
+        }
         else
-            vxDir = 0f;
+        {
+            float decelTime = Mathf.Max(0.0001f, Settings.bananaDecelTime);
+            float decelRate = maxSpeed / decelTime;
 
-        float vx = vxDir * currentSpeedAbs;
-        rb.linearVelocity = new Vector2(vx, rb.linearVelocity.y);
+            vx = Mathf.MoveTowards(vx, 0f, decelRate * dt);
+        }
 
+        Rigidbody.linearVelocity = new Vector2(vx, Rigidbody.linearVelocity.y);
         transform.rotation = Quaternion.Euler(0f, FacingDirection == -1 ? 180f : 0f, 0f);
     }
 
     public void HandleJump()
     {
         if (!IsJumping) return;
-        if (settings == null) return;
 
         jumpTimeCounter += Time.fixedDeltaTime;
 
         float t = settings.maxJumpTime <= 0f ? 1f : jumpTimeCounter / settings.maxJumpTime;
-        float curve = settings.jumpForceCurve != null ? settings.jumpForceCurve.Evaluate(t) : 1f;
+        float curve = settings.jumpForceCurve.Evaluate(t);
         float force = curve * settings.maxJumpForce;
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
@@ -398,16 +403,10 @@ public sealed class PlayerController : MonoBehaviour
         if (rb.linearVelocity.y > 0f)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.3f);
 
-        if (settings != null)
-            jumpTimeCounter = settings.maxJumpTime;
+        jumpTimeCounter = settings.maxJumpTime;
     }
 
-    public void StopAllMotion()
-    {
-        rb.linearVelocity = Vector2.zero;
-        currentSpeedAbs = 0f;
-        lastMoveSign = 0;
-    }
+    public void StopAllMotion() => rb.linearVelocity = Vector2.zero;
 
     public void SetSnailHidden(bool hidden)
     {
@@ -415,50 +414,65 @@ public sealed class PlayerController : MonoBehaviour
 
         IsSnailHidden = hidden;
 
-        if (vitals != null)
-            vitals.SetForcedInvincible(hidden);
+        vitals.SetForcedInvincible(hidden);
 
         if (hidden)
             StopAllMotion();
     }
 
-    public void FireEggProjectile()
+    public bool TryFireEggProjectile()
     {
-        if (eggProjectilePrefab == null) return;
-        if (settings == null) return;
+        if (eggShootLockTimer > 0f) return false;
 
-        Vector3 pos = eggFirePoint != null ? eggFirePoint.position : transform.position;
+        Vector3 pos = eggFirePoint.position;
+
+        Vector2 dir;
+
+        if (UpHeld) dir = Vector2.up;
+        else dir = new Vector2(FacingDirection, 0f);
 
         EggProjectile p = Instantiate(eggProjectilePrefab, pos, Quaternion.identity);
-        p.Initialize(gameObject, FacingDirection, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.GetEggDamage(PlayerSkin.Egg));
+        p.Initialize(gameObject, dir, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.eggProjectileDamage);
+
+        float t = Mathf.Max(0f, settings.eggShootLockTime);
+        eggShootLockTimer = t;
+
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+        return true;
     }
 
-    public void ThrowBananaPeel()
+    public bool TryThrowBananaPeel()
     {
-        if (bananaPeelPrefab == null) return;
-        if (settings == null) return;
+        if (bananaPeelCooldownTimer > 0f) return false;
+        if (!CanThrowBananaPeel) return false;
 
-        Vector3 pos = bananaThrowPoint != null ? bananaThrowPoint.position : transform.position;
+        Vector3 pos = bananaThrowPoint.position;
 
         BananaPeel p = Instantiate(bananaPeelPrefab, pos, Quaternion.identity);
-        p.Initialize(gameObject, FacingDirection, settings.bananaPeelSpeed, settings.bananaPeelLinearDrag, settings.bananaPeelStopSpeed, settings.bananaStunDuration);
+        p.Initialize(gameObject, FacingDirection, settings.bananaPeelSpeed, settings.bananaStunDuration);
+
+        bananaPeelCooldownTimer = Mathf.Max(0f, settings.bananaPeelCooldown);
+        activeBananaPeelCount++;
+
+        return true;
     }
 
-    public void DropHealingBanana()
+    public bool TryDropHealingBanana()
     {
-        if (healingBananaPrefab == null) return;
-        if (settings == null) return;
+        if (healingBananaCooldownTimer > 0f) return false;
 
-        Vector3 pos = healingBananaDropPoint != null ? healingBananaDropPoint.position : transform.position;
+        Vector3 pos = healingBananaDropPoint.position;
 
         HealingBanana b = Instantiate(healingBananaPrefab, pos, Quaternion.identity);
         b.Initialize(settings.healingBananaActivateDelay, settings.healingBananaHealAmount);
+
+        healingBananaCooldownTimer = Mathf.Max(0f, settings.healingBananaCooldown);
+        return true;
     }
 
     public bool TryHit(int damage, Vector2 attackPos)
     {
-        if (vitals == null) return false;
-
         if (!vitals.ApplyDamage(CurrentSkin, damage, false))
             return false;
 
@@ -485,6 +499,13 @@ public sealed class PlayerController : MonoBehaviour
         boxCol.enabled = false;
 
         OnDied?.Invoke();
+    }
+
+    public void NotifyBananaPeelDestroyed()
+    {
+        activeBananaPeelCount--;
+        if (activeBananaPeelCount < 0)
+            activeBananaPeelCount = 0;
     }
 
     public Rigidbody2D Rigidbody => rb;

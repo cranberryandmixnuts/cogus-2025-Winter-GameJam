@@ -6,117 +6,54 @@ public sealed class InputService : MonoBehaviour
 {
     public static InputService Instance { get; private set; }
 
-    [SerializeField]
-    private InputActionAsset actions;
+    [SerializeField] private InputActionAsset actions;
+    [SerializeField] private string playerMapName = "Player";
 
-    [SerializeField]
-    private string playerMapName = "Player";
-
-    [Header("Player Actions")]
-    [SerializeField]
-    private string moveActionName = "Move";
-
-    [SerializeField]
-    private string jumpActionName = "Jump";
-
-    [SerializeField]
-    private string specialAbilitiesActionName = "SpecialAbilities";
-
-    [SerializeField]
-    private string skinChangeLeftActionName = "SkinChangeLeft";
-
-    [SerializeField]
-    private string skinChangeRightActionName = "SkinChangeRight";
-
-    [SerializeField]
-    private string healingBananaThrowActionName = "HealingBananaThrow";
-
-    [SerializeField]
-    private string pauseActionName = "Pause";
+    [Header("Action Names")]
+    [SerializeField] private string moveActionName = "Move";
+    [SerializeField] private string upActionName = "Up";
+    [SerializeField] private string downActionName = "Down";
+    [SerializeField] private string jumpActionName = "Jump";
+    [SerializeField] private string specialAbilitiesActionName = "SpecialAbilities";
+    [SerializeField] private string healingBananaThrowActionName = "HealingBananaThrow";
+    [SerializeField] private string skinChangeLeftActionName = "SkinChangeLeft";
+    [SerializeField] private string skinChangeRightActionName = "SkinChangeRight";
+    [SerializeField] private string pauseActionName = "Pause";
 
     private InputAction moveAction;
+    private InputAction upAction;
+    private InputAction downAction;
     private InputAction jumpAction;
     private InputAction specialAbilitiesAction;
+    private InputAction healingBananaThrowAction;
     private InputAction skinChangeLeftAction;
     private InputAction skinChangeRightAction;
-    private InputAction healingBananaThrowAction;
     private InputAction pauseAction;
 
     private InputActionRebindingExtensions.RebindingOperation currentRebind;
 
     private const string RebindsKey = "InputService_Rebinds";
 
-    public Vector2 Move
-    {
-        get;
-        private set;
-    }
+    public Vector2 Move { get; private set; }
+    public float MoveAxis { get; private set; }
 
-    public float MoveAxis
-    {
-        get;
-        private set;
-    }
+    public bool UpHeld { get; private set; }
+    public bool DownHeld { get; private set; }
 
-    public bool JumpDown
-    {
-        get;
-        private set;
-    }
+    public bool JumpDown { get; private set; }
+    public bool JumpUp { get; private set; }
+    public bool JumpHeld { get; private set; }
 
-    public bool JumpUp
-    {
-        get;
-        private set;
-    }
+    public bool SpecialAbilitiesDown { get; private set; }
+    public bool SpecialAbilitiesUp { get; private set; }
+    public bool SpecialAbilitiesHeld { get; private set; }
 
-    public bool JumpHeld
-    {
-        get;
-        private set;
-    }
+    public bool HealingBananaThrowDown { get; private set; }
 
-    public bool SpecialAbilitiesDown
-    {
-        get;
-        private set;
-    }
+    public bool SkinChangeLeftDown { get; private set; }
+    public bool SkinChangeRightDown { get; private set; }
 
-    public bool SpecialAbilitiesUp
-    {
-        get;
-        private set;
-    }
-
-    public bool SpecialAbilitiesHeld
-    {
-        get;
-        private set;
-    }
-
-    public bool SkinChangeLeftDown
-    {
-        get;
-        private set;
-    }
-
-    public bool SkinChangeRightDown
-    {
-        get;
-        private set;
-    }
-
-    public bool HealingBananaThrowDown
-    {
-        get;
-        private set;
-    }
-
-    public bool PauseDown
-    {
-        get;
-        private set;
-    }
+    public bool PauseDown { get; private set; }
 
     public InputActionAsset Actions
     {
@@ -134,6 +71,7 @@ public sealed class InputService : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
@@ -143,18 +81,21 @@ public sealed class InputService : MonoBehaviour
 
     private void OnEnable()
     {
-        EnableActions(true);
+        if (actions != null) actions.Enable();
     }
 
     private void OnDisable()
     {
-        EnableActions(false);
+        if (actions != null) actions.Disable();
     }
 
     private void Update()
     {
         Move = ReadVector2(moveAction);
         MoveAxis = Mathf.Clamp(Move.x, -1f, 1f);
+
+        UpHeld = IsPressed(upAction);
+        DownHeld = IsPressed(downAction);
 
         JumpDown = WasPressed(jumpAction);
         JumpUp = WasReleased(jumpAction);
@@ -164,10 +105,10 @@ public sealed class InputService : MonoBehaviour
         SpecialAbilitiesUp = WasReleased(specialAbilitiesAction);
         SpecialAbilitiesHeld = IsPressed(specialAbilitiesAction);
 
+        HealingBananaThrowDown = WasPressed(healingBananaThrowAction);
+
         SkinChangeLeftDown = WasPressed(skinChangeLeftAction);
         SkinChangeRightDown = WasPressed(skinChangeRightAction);
-
-        HealingBananaThrowDown = WasPressed(healingBananaThrowAction);
 
         PauseDown = WasPressed(pauseAction);
     }
@@ -175,11 +116,13 @@ public sealed class InputService : MonoBehaviour
     private void InitializeActions()
     {
         moveAction = FindAction(playerMapName, moveActionName);
+        upAction = FindAction(playerMapName, upActionName);
+        downAction = FindAction(playerMapName, downActionName);
         jumpAction = FindAction(playerMapName, jumpActionName);
         specialAbilitiesAction = FindAction(playerMapName, specialAbilitiesActionName);
+        healingBananaThrowAction = FindAction(playerMapName, healingBananaThrowActionName);
         skinChangeLeftAction = FindAction(playerMapName, skinChangeLeftActionName);
         skinChangeRightAction = FindAction(playerMapName, skinChangeRightActionName);
-        healingBananaThrowAction = FindAction(playerMapName, healingBananaThrowActionName);
         pauseAction = FindAction(playerMapName, pauseActionName);
     }
 
@@ -191,14 +134,6 @@ public sealed class InputService : MonoBehaviour
 
         string path = mapName + "/" + actionName;
         return actions.FindAction(path, false);
-    }
-
-    private void EnableActions(bool enable)
-    {
-        if (actions == null) return;
-
-        if (enable) actions.Enable();
-        else actions.Disable();
     }
 
     private Vector2 ReadVector2(InputAction action)
@@ -256,17 +191,15 @@ public sealed class InputService : MonoBehaviour
         InputAction action = FindAction(mapName, actionName);
         if (action == null) return;
 
-        if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
-            return;
+        if (bindingIndex < 0 || bindingIndex >= action.bindings.Count) return;
 
-        currentRebind?.Cancel();
+        if (currentRebind != null) currentRebind.Cancel();
 
         action.Disable();
 
         InputActionRebindingExtensions.RebindingOperation operation = action.PerformInteractiveRebinding(bindingIndex);
 
-        if (excludeMouse)
-            operation.WithControlsExcluding("Mouse");
+        if (excludeMouse) operation.WithControlsExcluding("Mouse");
 
         OnRebindStarted?.Invoke();
 

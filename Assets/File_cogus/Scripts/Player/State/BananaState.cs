@@ -13,10 +13,10 @@ public sealed class BananaState : PlayerState
     public override void Update()
     {
         if (player.SpecialAbilitiesDown)
-            player.ThrowBananaPeel();
+            player.TryThrowBananaPeel();
 
         if (player.HealingBananaThrowDown)
-            player.DropHealingBanana();
+            player.TryDropHealingBanana();
 
         if (player.HasJumpBuffer && (player.IsGround || player.HasCoyote))
             player.StartJump();

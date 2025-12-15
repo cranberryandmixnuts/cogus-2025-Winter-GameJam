@@ -12,11 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3e2fdd0d7f798478df4cc93002e77a, type: 3}
   m_Name: PlayerSettings
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
-  skinStats: []
-  groundAccelTime: 0.25
-  airAccelTime: 0.3
-  airReleaseDecelTime: 0.3
-  startSpeedRatio: 0.15
+  skinStats:
+  - skin: 0
+    maxHealth: 70
+    currentHealth: 70
+    moveSpeed: 5
+  - skin: 1
+    maxHealth: 100
+    currentHealth: 100
+    moveSpeed: 10
+  - skin: 2
+    maxHealth: 200
+    currentHealth: 200
+    moveSpeed: 3
+  bananaAccelTime: 0.35
+  bananaDecelTime: 1.5
   jumpForceCurve:
     serializedVersion: 2
     m_Curve:
@@ -47,9 +57,13 @@ MonoBehaviour:
   jumpBufferTime: 0.1
   eggProjectileSpeed: 18
   eggProjectileMaxDistance: 10
-  bananaPeelSpeed: 12
-  bananaPeelLinearDrag: 6
-  bananaPeelStopSpeed: 0.2
+  eggProjectileDamage: 10
+  eggShootLockTime: 0.3
+  bananaPeelSpeed: 10
   bananaStunDuration: 3
+  bananaPeelCooldown: 1.5
+  maxBananaPeelCount: 15
+  healingBananaCooldown: 10
   healingBananaActivateDelay: 3
+  healingBananaHealAmount: 10
   hitInvincibleTime: 0.25

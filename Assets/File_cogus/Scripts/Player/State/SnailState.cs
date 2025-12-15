@@ -18,7 +18,8 @@ public sealed class SnailState : PlayerState
 
     public override void Update()
     {
-        player.SetSnailHidden(player.SpecialAbilitiesHeld);
+        bool wantHide = player.SpecialAbilitiesHeld && player.IsGround;
+        player.SetSnailHidden(wantHide);
     }
 
     public override void FixedUpdate()

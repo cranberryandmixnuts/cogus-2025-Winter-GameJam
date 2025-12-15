@@ -9,19 +9,16 @@ public sealed class PlayerSettings : ScriptableObject
     {
         public PlayerSkin skin;
         public int maxHealth;
+        public int currentHealth;
         public float moveSpeed;
-
-        public int eggProjectileDamage;
     }
 
     [Header("Skin Stats")]
     public SkinStats[] skinStats;
 
-    [Header("Movement")]
-    public float groundAccelTime = 0.25f;
-    public float airAccelTime = 0.3f;
-    public float airReleaseDecelTime = 0.3f;
-    [Range(0f, 1f)] public float startSpeedRatio = 0.15f;
+    [Header("Banana Movement")]
+    public float bananaAccelTime = 0.35f;
+    public float bananaDecelTime = 1.5f;
 
     [Header("Jump")]
     public AnimationCurve jumpForceCurve;
@@ -33,12 +30,15 @@ public sealed class PlayerSettings : ScriptableObject
     [Header("Egg Ability")]
     public float eggProjectileSpeed = 18f;
     public float eggProjectileMaxDistance = 10f;
+    public int eggProjectileDamage = 10;
+    public float eggShootLockTime = 0.3f;
 
     [Header("Banana Ability")]
-    public float bananaPeelSpeed = 12f;
-    public float bananaPeelLinearDrag = 6f;
-    public float bananaPeelStopSpeed = 0.2f;
+    public float bananaPeelSpeed = 10f;
     public float bananaStunDuration = 3f;
+    public float bananaPeelCooldown = 1.5f;
+    public int maxBananaPeelCount = 15;
+    public float healingBananaCooldown = 10f;
 
     [Header("Healing Banana")]
     public float healingBananaActivateDelay = 3f;
@@ -47,7 +47,7 @@ public sealed class PlayerSettings : ScriptableObject
     [Header("Hit")]
     public float hitInvincibleTime = 0.25f;
 
-    public bool TryGetSkinStats(PlayerSkin skin, out SkinStats stats)
+    public bool TryGetSkinStatsIndex(PlayerSkin skin, out int index)
     {
         if (skinStats != null)
         {
@@ -55,37 +55,83 @@ public sealed class PlayerSettings : ScriptableObject
             {
                 if (skinStats[i].skin == skin)
                 {
-                    stats = skinStats[i];
+                    index = i;
                     return true;
                 }
             }
         }
 
-        stats = default;
+        index = -1;
         return false;
     }
 
     public int GetMaxHealth(PlayerSkin skin)
     {
-        if (TryGetSkinStats(skin, out SkinStats s))
-            return Mathf.Max(0, s.maxHealth);
+        if (!TryGetSkinStatsIndex(skin, out int idx))
+            return 0;
 
-        return 0;
+        return Mathf.Max(0, skinStats[idx].maxHealth);
+    }
+
+    public int GetCurrentHealth(PlayerSkin skin)
+    {
+        if (!TryGetSkinStatsIndex(skin, out int idx))
+            return 0;
+
+        return Mathf.Max(0, skinStats[idx].currentHealth);
+    }
+
+    public bool SetCurrentHealth(PlayerSkin skin, int value)
+    {
+        if (!TryGetSkinStatsIndex(skin, out int idx))
+            return false;
+
+        SkinStats s = skinStats[idx];
+
+        int max = Mathf.Max(0, s.maxHealth);
+        int v = Mathf.Clamp(value, 0, max);
+
+        if (s.currentHealth == v)
+            return false;
+
+        s.currentHealth = v;
+        skinStats[idx] = s;
+        return true;
+    }
+
+    public bool ResetCurrentHealthToMax(PlayerSkin skin)
+    {
+        if (!TryGetSkinStatsIndex(skin, out int idx))
+            return false;
+
+        SkinStats s = skinStats[idx];
+
+        int max = Mathf.Max(0, s.maxHealth);
+        if (s.currentHealth == max)
+            return false;
+
+        s.currentHealth = max;
+        skinStats[idx] = s;
+        return true;
+    }
+
+    public void ResetAllCurrentHealthToMax()
+    {
+        if (skinStats == null) return;
+
+        for (int i = 0; i < skinStats.Length; i++)
+        {
+            SkinStats s = skinStats[i];
+            s.currentHealth = Mathf.Max(0, s.maxHealth);
+            skinStats[i] = s;
+        }
     }
 
     public float GetMoveSpeed(PlayerSkin skin)
     {
-        if (TryGetSkinStats(skin, out SkinStats s))
-            return Mathf.Max(0f, s.moveSpeed);
+        if (!TryGetSkinStatsIndex(skin, out int idx))
+            return 0f;
 
-        return 0f;
-    }
-
-    public int GetEggDamage(PlayerSkin skin)
-    {
-        if (TryGetSkinStats(skin, out SkinStats s))
-            return Mathf.Max(0, s.eggProjectileDamage);
-
-        return 0;
+        return Mathf.Max(0f, skinStats[idx].moveSpeed);
     }
 }
