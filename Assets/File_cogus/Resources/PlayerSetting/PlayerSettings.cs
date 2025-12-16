@@ -32,7 +32,7 @@ public sealed class PlayerSettings : ScriptableObject
     public float eggProjectileMaxDistance = 10f;
     public int baseEggProjectileDamage = 10;
     public int extraEggProjectileDamage = 0;
-    public float eggShootLockTime = 0.3f;
+    public float eggShootCoolTime = 0.3f;
 
     [Header("Banana Ability")]
     public float bananaPeelSpeed = 10f;
@@ -40,13 +40,14 @@ public sealed class PlayerSettings : ScriptableObject
     public float bananaPeelCooldown = 1.5f;
     public int maxBananaPeelCount = 15;
     public float healingBananaCooldown = 10f;
-
-    [Header("Healing Banana")]
     public float healingBananaActivateDelay = 3f;
     public int healingBananaHealAmount = 10;
 
+    [Header("Snail Ability")]
+    public float hideTime = 0.5f;
+
     [Header("Hit")]
-    public float hitInvincibleTime = 0.25f;
+    public float hitInvincibleTime = 0.3f;
 
     public bool TryGetSkinStatsIndex(PlayerSkin skin, out int index)
     {

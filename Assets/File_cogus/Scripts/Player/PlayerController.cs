@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -131,7 +132,7 @@ public sealed class PlayerController : MonoBehaviour
 
     public bool IsMovementLocked
     {
-        get { return eggShootLockTimer > 0f; }
+        get { return eggShootLockTimer > 0f || IsSnailHidden; }
     }
 
     public bool CanThrowBananaPeel
@@ -348,7 +349,7 @@ public sealed class PlayerController : MonoBehaviour
         if (inputSign != 0)
             FacingDirection = inputSign;
 
-        float vx = inputSign * Mathf.Max(0f, speed);
+        float vx = inputSign * speed;
         Rigidbody.linearVelocity = new Vector2(vx, Rigidbody.linearVelocity.y);
 
         transform.rotation = Quaternion.Euler(0f, FacingDirection == -1 ? 180f : 0f, 0f);
@@ -410,8 +411,6 @@ public sealed class PlayerController : MonoBehaviour
 
     public void SetSnailHidden(bool hidden)
     {
-        if (IsSnailHidden == hidden) return;
-
         IsSnailHidden = hidden;
 
         vitals.SetForcedInvincible(hidden);
@@ -420,9 +419,17 @@ public sealed class PlayerController : MonoBehaviour
             StopAllMotion();
     }
 
-    public bool TryFireEggProjectile()
+    public bool TryFireEggProjectile(float time)
     {
-        if (eggShootLockTimer > 0f) return false;
+        if(eggShootLockTimer > 0f) return false;
+        StartCoroutine(FireEggProjectileByTime(time));
+        return true;
+    }
+
+    public IEnumerator FireEggProjectileByTime(float time)
+    {
+        eggShootLockTimer = time;
+        yield return new WaitForSeconds(time);
 
         Vector3 pos = eggFirePoint.position;
 
@@ -434,12 +441,7 @@ public sealed class PlayerController : MonoBehaviour
         EggProjectile p = Instantiate(eggProjectilePrefab, pos, Quaternion.identity);
         p.Initialize(gameObject, dir, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.baseEggProjectileDamage + settings.extraEggProjectileDamage);
 
-        float t = Mathf.Max(0f, settings.eggShootLockTime);
-        eggShootLockTimer = t;
-
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-
-        return true;
     }
 
     public bool TryThrowBananaPeel()
@@ -467,11 +469,11 @@ public sealed class PlayerController : MonoBehaviour
         HealingBanana b = Instantiate(healingBananaPrefab, pos, Quaternion.identity);
         b.Initialize(settings.healingBananaActivateDelay, settings.healingBananaHealAmount);
 
-        healingBananaCooldownTimer = Mathf.Max(0f, settings.healingBananaCooldown);
+        healingBananaCooldownTimer = settings.healingBananaCooldown;
         return true;
     }
 
-    public bool TryHit(int damage, Vector2 attackPos)
+    public bool TryHit(int damage)
     {
         if (!vitals.ApplyDamage(CurrentSkin, damage, false))
             return false;
