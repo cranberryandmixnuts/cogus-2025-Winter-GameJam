@@ -4,6 +4,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Animator))]
 public sealed class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
@@ -183,8 +184,7 @@ public sealed class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         boxCol = GetComponent<BoxCollider2D>();
-
-        if (Anim == null) Anim = GetComponentInChildren<Animator>();
+        Anim = GetComponent<Animator>();
 
         if (Instance != null && Instance != this)
         {

@@ -32,12 +32,10 @@ public sealed class BananaPeel : MonoBehaviour
         if (stunnable == null) return;
 
         stunnable.ApplyStun(stunDuration);
-        Destroy(gameObject);
-    }
 
-    private void OnDestroy()
-    {
         if (owner.TryGetComponent<PlayerController>(out var player))
             player.NotifyBananaPeelDestroyed();
+
+        Destroy(gameObject);
     }
 }
