@@ -3,7 +3,6 @@ using UnityEngine;
 public sealed class PlayerVitals : MonoBehaviour
 {
     [SerializeField] private PlayerSettings settings;
-    [SerializeField] private bool initializeCurrentHPOnStart = false;
 
     private bool forcedInvincible;
     private float invincibleTimer;
@@ -15,12 +14,6 @@ public sealed class PlayerVitals : MonoBehaviour
             if (forcedInvincible) return true;
             return invincibleTimer > 0f;
         }
-    }
-
-    private void Awake()
-    {
-        if (initializeCurrentHPOnStart)
-            settings.ResetAllCurrentHealthToMax();
     }
 
     private void Update()

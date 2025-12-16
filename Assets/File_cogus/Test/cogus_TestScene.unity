@@ -570,7 +570,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVitals
   settings: {fileID: 11400000, guid: 061cdcc728687b34289330f23681cf55, type: 2}
-  initializeCurrentHPOnStart: 1
 --- !u!114 &1280498429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,6 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a5e83f7f5dc41742a1a6ea9ebafd502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  resetAllStatusOnAwake: 1
   vitals: {fileID: 1280498428}
   settings: {fileID: 11400000, guid: 061cdcc728687b34289330f23681cf55, type: 2}
   groundLayer:

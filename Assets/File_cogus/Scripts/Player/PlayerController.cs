@@ -5,15 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public sealed class PlayerController : MonoBehaviour
 {
-    public static PlayerController Instance
-    {
-        get;
-        private set;
-    }
+    public static PlayerController Instance { get; private set; }
 
     public event Action<PlayerSkin> OnSkinChanged;
     public event Action OnPausePressed;
     public event Action OnDied;
+
+    [SerializeField] private bool resetAllStatusOnAwake = false;
 
     [Header("Scene Refs")]
     [SerializeField] private PlayerVitals vitals;
@@ -166,6 +164,8 @@ public sealed class PlayerController : MonoBehaviour
         }
 
         Instance = this;
+
+        if (resetAllStatusOnAwake) settings.ResetAllStatus();
     }
 
     private void Start()
@@ -432,7 +432,7 @@ public sealed class PlayerController : MonoBehaviour
         else dir = new Vector2(FacingDirection, 0f);
 
         EggProjectile p = Instantiate(eggProjectilePrefab, pos, Quaternion.identity);
-        p.Initialize(gameObject, dir, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.eggProjectileDamage);
+        p.Initialize(gameObject, dir, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.baseEggProjectileDamage + settings.extraEggProjectileDamage);
 
         float t = Mathf.Max(0f, settings.eggShootLockTime);
         eggShootLockTimer = t;

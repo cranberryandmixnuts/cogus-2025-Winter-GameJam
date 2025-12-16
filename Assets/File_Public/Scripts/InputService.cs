@@ -34,7 +34,6 @@ public sealed class InputService : MonoBehaviour
 
     private const string RebindsKey = "InputService_Rebinds";
 
-    public Vector2 Move { get; private set; }
     public float MoveAxis { get; private set; }
 
     public bool UpHeld { get; private set; }
@@ -55,10 +54,7 @@ public sealed class InputService : MonoBehaviour
 
     public bool PauseDown { get; private set; }
 
-    public InputActionAsset Actions
-    {
-        get { return actions; }
-    }
+    public InputActionAsset Actions { get { return actions; } }
 
     public event Action OnRebindStarted;
     public event Action OnRebindCompleted;
@@ -79,38 +75,32 @@ public sealed class InputService : MonoBehaviour
         LoadBindingOverrides();
     }
 
-    private void OnEnable()
-    {
-        if (actions != null) actions.Enable();
-    }
+    private void OnEnable() => actions.Enable();
 
-    private void OnDisable()
-    {
-        if (actions != null) actions.Disable();
-    }
+    private void OnDisable() => actions.Disable();
 
     private void Update()
     {
-        Move = ReadVector2(moveAction);
-        MoveAxis = Mathf.Clamp(Move.x, -1f, 1f);
+        Vector2 move = moveAction.ReadValue<Vector2>();
+        MoveAxis = Mathf.Clamp(move.x, -1f, 1f);
 
-        UpHeld = IsPressed(upAction);
-        DownHeld = IsPressed(downAction);
+        UpHeld = upAction.IsPressed();
+        DownHeld = downAction.IsPressed();
 
-        JumpDown = WasPressed(jumpAction);
-        JumpUp = WasReleased(jumpAction);
-        JumpHeld = IsPressed(jumpAction);
+        JumpDown = jumpAction.WasPressedThisFrame();
+        JumpUp = jumpAction.WasReleasedThisFrame();
+        JumpHeld = jumpAction.IsPressed();
 
-        SpecialAbilitiesDown = WasPressed(specialAbilitiesAction);
-        SpecialAbilitiesUp = WasReleased(specialAbilitiesAction);
-        SpecialAbilitiesHeld = IsPressed(specialAbilitiesAction);
+        SpecialAbilitiesDown = specialAbilitiesAction.WasPressedThisFrame();
+        SpecialAbilitiesUp = specialAbilitiesAction.WasReleasedThisFrame();
+        SpecialAbilitiesHeld = specialAbilitiesAction.IsPressed();
 
-        HealingBananaThrowDown = WasPressed(healingBananaThrowAction);
+        HealingBananaThrowDown = healingBananaThrowAction.WasPressedThisFrame();
 
-        SkinChangeLeftDown = WasPressed(skinChangeLeftAction);
-        SkinChangeRightDown = WasPressed(skinChangeRightAction);
+        SkinChangeLeftDown = skinChangeLeftAction.WasPressedThisFrame();
+        SkinChangeRightDown = skinChangeRightAction.WasPressedThisFrame();
 
-        PauseDown = WasPressed(pauseAction);
+        PauseDown = pauseAction.WasPressedThisFrame();
     }
 
     private void InitializeActions()
@@ -126,44 +116,10 @@ public sealed class InputService : MonoBehaviour
         pauseAction = FindAction(playerMapName, pauseActionName);
     }
 
-    private InputAction FindAction(string mapName, string actionName)
-    {
-        if (actions == null) return null;
-        if (string.IsNullOrEmpty(mapName)) return null;
-        if (string.IsNullOrEmpty(actionName)) return null;
-
-        string path = mapName + "/" + actionName;
-        return actions.FindAction(path, false);
-    }
-
-    private Vector2 ReadVector2(InputAction action)
-    {
-        if (action == null) return Vector2.zero;
-        return action.ReadValue<Vector2>();
-    }
-
-    private bool WasPressed(InputAction action)
-    {
-        if (action == null) return false;
-        return action.WasPressedThisFrame();
-    }
-
-    private bool WasReleased(InputAction action)
-    {
-        if (action == null) return false;
-        return action.WasReleasedThisFrame();
-    }
-
-    private bool IsPressed(InputAction action)
-    {
-        if (action == null) return false;
-        return action.IsPressed();
-    }
+    private InputAction FindAction(string mapName, string actionName) => actions.FindAction(mapName + "/" + actionName);
 
     public void SaveBindingOverrides()
     {
-        if (actions == null) return;
-
         string json = actions.SaveBindingOverridesAsJson();
         PlayerPrefs.SetString(RebindsKey, json);
         PlayerPrefs.Save();
@@ -171,7 +127,6 @@ public sealed class InputService : MonoBehaviour
 
     public void LoadBindingOverrides()
     {
-        if (actions == null) return;
         if (!PlayerPrefs.HasKey(RebindsKey)) return;
 
         string json = PlayerPrefs.GetString(RebindsKey);
@@ -180,8 +135,6 @@ public sealed class InputService : MonoBehaviour
 
     public void ClearBindingOverrides()
     {
-        if (actions == null) return;
-
         actions.RemoveAllBindingOverrides();
         PlayerPrefs.DeleteKey(RebindsKey);
     }
@@ -189,11 +142,10 @@ public sealed class InputService : MonoBehaviour
     public void StartRebind(string mapName, string actionName, int bindingIndex, bool excludeMouse)
     {
         InputAction action = FindAction(mapName, actionName);
-        if (action == null) return;
 
         if (bindingIndex < 0 || bindingIndex >= action.bindings.Count) return;
 
-        if (currentRebind != null) currentRebind.Cancel();
+        currentRebind?.Cancel();
 
         action.Disable();
 

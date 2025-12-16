@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6481691790178220146}
   - component: {fileID: 2126681926121863349}
   m_Layer: 7
-  m_Name: BananaPeel
+  m_Name: PlayerBananaPeel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

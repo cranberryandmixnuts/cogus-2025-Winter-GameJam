@@ -30,7 +30,8 @@ public sealed class PlayerSettings : ScriptableObject
     [Header("Egg Ability")]
     public float eggProjectileSpeed = 18f;
     public float eggProjectileMaxDistance = 10f;
-    public int eggProjectileDamage = 10;
+    public int baseEggProjectileDamage = 10;
+    public int extraEggProjectileDamage = 0;
     public float eggShootLockTime = 0.3f;
 
     [Header("Banana Ability")]
@@ -115,16 +116,16 @@ public sealed class PlayerSettings : ScriptableObject
         return true;
     }
 
-    public void ResetAllCurrentHealthToMax()
+    public void ResetAllStatus()
     {
-        if (skinStats == null) return;
-
         for (int i = 0; i < skinStats.Length; i++)
         {
             SkinStats s = skinStats[i];
             s.currentHealth = Mathf.Max(0, s.maxHealth);
             skinStats[i] = s;
         }
+
+        extraEggProjectileDamage = 0;
     }
 
     public float GetMoveSpeed(PlayerSkin skin)
