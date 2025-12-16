@@ -51,5 +51,8 @@ TagManager:
   - name: Near
     uniqueID: 3452344971
     locked: 0
+  - name: Canvas
+    uniqueID: 3218893395
+    locked: 0
   m_RenderingLayers:
   - Default
