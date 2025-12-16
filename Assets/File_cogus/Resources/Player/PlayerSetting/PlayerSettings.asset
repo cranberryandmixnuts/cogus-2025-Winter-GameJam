@@ -15,15 +15,15 @@ MonoBehaviour:
   skinStats:
   - skin: 0
     maxHealth: 70
-    currentHealth: 70
+    currentHealth: 0
     moveSpeed: 5
   - skin: 1
     maxHealth: 100
-    currentHealth: 100
+    currentHealth: 0
     moveSpeed: 10
   - skin: 2
     maxHealth: 200
-    currentHealth: 200
+    currentHealth: 0
     moveSpeed: 3
   bananaAccelTime: 0.35
   bananaDecelTime: 1.5
@@ -57,8 +57,9 @@ MonoBehaviour:
   jumpBufferTime: 0.1
   eggProjectileSpeed: 18
   eggProjectileMaxDistance: 10
-  eggProjectileDamage: 10
-  eggShootLockTime: 0.3
+  baseEggProjectileDamage: 10
+  extraEggProjectileDamage: 0
+  eggShootCoolTime: 0.3
   bananaPeelSpeed: 10
   bananaStunDuration: 3
   bananaPeelCooldown: 1.5
@@ -66,4 +67,5 @@ MonoBehaviour:
   healingBananaCooldown: 10
   healingBananaActivateDelay: 3
   healingBananaHealAmount: 10
-  hitInvincibleTime: 0.25
+  hideTime: 0.5
+  hitInvincibleTime: 1

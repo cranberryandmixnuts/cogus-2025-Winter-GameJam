@@ -132,9 +132,13 @@ public sealed class PlayerController : MonoBehaviour
 
     public bool IsMovementLocked
     {
-        get { return eggShootLockTimer > 0f || IsSnailHidden; }
+        get { return eggShootLockTimer > 0f || movementLockTimer > 0f || IsSnailHidden; }
     }
 
+    public bool IsSkinChangeLocked
+    {
+        get { return skinChangeLockForced || skinChangeLockTimer > 0f; }
+    }
     public bool CanThrowBananaPeel
     {
         get
@@ -147,6 +151,9 @@ public sealed class PlayerController : MonoBehaviour
     private float jumpBufferTimer;
     private float coyoteTimer;
     private float eggShootLockTimer;
+    private float movementLockTimer;
+    private float skinChangeLockTimer;
+    private bool skinChangeLockForced;
     private float bananaPeelCooldownTimer;
     private float healingBananaCooldownTimer;
     private int activeBananaPeelCount;
@@ -201,6 +208,14 @@ public sealed class PlayerController : MonoBehaviour
         if (eggShootLockTimer > 0f) eggShootLockTimer -= dt;
         if (eggShootLockTimer < 0f) eggShootLockTimer = 0f;
 
+
+        if (movementLockTimer > 0f) movementLockTimer -= dt;
+        if (movementLockTimer < 0f) movementLockTimer = 0f;
+
+        if (skinChangeLockTimer > 0f) skinChangeLockTimer -= dt;
+        if (skinChangeLockTimer < 0f) skinChangeLockTimer = 0f;
+
+
         if (bananaPeelCooldownTimer > 0f) bananaPeelCooldownTimer -= dt;
         if (bananaPeelCooldownTimer < 0f) bananaPeelCooldownTimer = 0f;
 
@@ -230,8 +245,12 @@ public sealed class PlayerController : MonoBehaviour
 
         HealingBananaThrowDown = input.HealingBananaThrowDown;
 
-        if (input.SkinChangeLeftDown) TrySwitchSkin(-1);
-        if (input.SkinChangeRightDown) TrySwitchSkin(1);
+        if (!IsSkinChangeLocked)
+        {
+            if (input.SkinChangeLeftDown) TrySwitchSkin(-1);
+            if (input.SkinChangeRightDown) TrySwitchSkin(1);
+        }
+
 
         if (input.PauseDown) OnPausePressed?.Invoke();
 
@@ -409,6 +428,25 @@ public sealed class PlayerController : MonoBehaviour
 
     public void StopAllMotion() => rb.linearVelocity = Vector2.zero;
 
+    public void LockMovement(float time)
+    {
+        if (time <= 0f) return;
+        if (movementLockTimer < time)
+            movementLockTimer = time;
+    }
+
+    public void LockSkinChange(float time)
+    {
+        if (time <= 0f) return;
+        if (skinChangeLockTimer < time)
+            skinChangeLockTimer = time;
+    }
+
+    public void SetForcedSkinChangeLock(bool locked)
+    {
+        skinChangeLockForced = locked;
+    }
+
     public void SetSnailHidden(bool hidden)
     {
         IsSnailHidden = hidden;
@@ -421,7 +459,10 @@ public sealed class PlayerController : MonoBehaviour
 
     public bool TryFireEggProjectile(float time)
     {
-        if(eggShootLockTimer > 0f) return false;
+        if (eggShootLockTimer > 0f) return false;
+
+        LockSkinChange(time);
+
         StartCoroutine(FireEggProjectileByTime(time));
         return true;
     }
@@ -429,6 +470,7 @@ public sealed class PlayerController : MonoBehaviour
     public IEnumerator FireEggProjectileByTime(float time)
     {
         eggShootLockTimer = time;
+        LockSkinChange(time);
         yield return new WaitForSeconds(time);
 
         Vector3 pos = eggFirePoint.position;

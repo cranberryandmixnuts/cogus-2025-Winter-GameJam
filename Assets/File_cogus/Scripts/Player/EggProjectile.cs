@@ -46,9 +46,10 @@ public sealed class EggProjectile : MonoBehaviour
     {
         if (other.transform.root.gameObject == owner) return;
 
-        IDamageable damageable = other.GetComponentInParent<IDamageable>();
-        if (damageable != null && damage > 0) damageable.ApplyDamage(damage);
-
-        Destroy(gameObject);
+        if (other.TryGetComponent<IDamageable>(out var damageable))
+        {
+            damageable.ApplyDamage(damage);
+            Destroy(gameObject);
+        }
     }
 }

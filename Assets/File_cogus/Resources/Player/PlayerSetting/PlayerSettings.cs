@@ -47,7 +47,7 @@ public sealed class PlayerSettings : ScriptableObject
     public float hideTime = 0.5f;
 
     [Header("Hit")]
-    public float hitInvincibleTime = 0.3f;
+    public float hitInvincibleTime = 1f;
 
     public bool TryGetSkinStatsIndex(PlayerSkin skin, out int index)
     {
