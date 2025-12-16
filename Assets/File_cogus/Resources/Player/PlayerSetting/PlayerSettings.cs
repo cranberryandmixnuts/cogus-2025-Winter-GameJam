@@ -29,7 +29,7 @@ public sealed class PlayerSettings : ScriptableObject
 
     [Header("Egg Ability")]
     public float eggProjectileSpeed = 18f;
-    public float eggProjectileMaxDistance = 10f;
+    public float eggProjectileMaxDistance = 9f;
     public int baseEggProjectileDamage = 10;
     public int extraEggProjectileDamage = 0;
     public float eggShootCoolTime = 0.3f;

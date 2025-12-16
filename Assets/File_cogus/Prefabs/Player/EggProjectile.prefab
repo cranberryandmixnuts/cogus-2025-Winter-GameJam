@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2027458521756600419}
   - component: {fileID: 5337395046562024813}
   - component: {fileID: 3151683112033875219}
+  - component: {fileID: 6512259825107823942}
   m_Layer: 7
   m_Name: EggProjectile
   m_TagString: Untagged
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 8637149177036093800, guid: cdfff184f055c3b498a750f52d65c31e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -168,3 +169,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c02128608ee5648a0fb9b56f804572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EggProjectile
+  spinSpeedDegPerSec: 720
+  anim: {fileID: 6512259825107823942}
+  breakLifetime: 0.3
+--- !u!95 &6512259825107823942
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8117458555612545206}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 446b28b0086ec0a4fa4a495abb6eb8aa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

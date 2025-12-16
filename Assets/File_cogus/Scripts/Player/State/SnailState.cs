@@ -16,7 +16,9 @@ public sealed class SnailState : PlayerState
     private float phaseTimer;
 
     public SnailState(PlayerController player, PlayerStateMachine stateMachine)
-        : base(player, stateMachine) { }
+        : base(player, stateMachine)
+    {
+    }
 
     public override void Enter()
     {
@@ -28,6 +30,8 @@ public sealed class SnailState : PlayerState
 
         player.SetSnailHidden(false);
         player.SetForcedSkinChangeLock(false);
+
+        player.Anim.Play(PlayerController.AnimSnailIdle);
     }
 
     public override void Exit()
@@ -37,11 +41,13 @@ public sealed class SnailState : PlayerState
 
         phase = HidePhase.None;
         phaseTimer = 0f;
+
+        player.Anim.Play(PlayerController.AnimSnailIdle);
     }
 
     public override void Update()
     {
-        float hideTime = player.Settings.hideTime;
+        float hideTime = player.Settings != null ? player.Settings.hideTime : 0f;
 
         if (phase == HidePhase.None)
         {
@@ -61,6 +67,7 @@ public sealed class SnailState : PlayerState
             if (!player.IsGround)
             {
                 phase = HidePhase.None;
+                player.Anim.Play(PlayerController.AnimSnailIdle);
                 return;
             }
 
@@ -89,6 +96,12 @@ public sealed class SnailState : PlayerState
 
     public override void FixedUpdate()
     {
+        if (phase != HidePhase.None)
+        {
+            player.StopAllMotion();
+            return;
+        }
+
         if (player.IsSnailHidden)
         {
             player.StopAllMotion();
@@ -97,18 +110,25 @@ public sealed class SnailState : PlayerState
 
         float speed = player.Settings != null ? player.Settings.GetMoveSpeed(PlayerSkin.Snail) : 0f;
         player.HandleMove(speed);
+        player.UpdateMoveAnim(PlayerController.AnimSnailIdle, PlayerController.AnimSnailWalk);
     }
 
     private void BeginStartup(float hideTime)
     {
         phase = HidePhase.Startup;
-        phaseTimer = hideTime;
 
         player.SetSnailHidden(false);
         player.SetForcedSkinChangeLock(false);
 
-        player.LockMovement(hideTime);
-        player.LockSkinChange(hideTime);
+        player.Anim.Play(PlayerController.AnimSnailEnterShell);
+
+        float animTime = player.GetAnimLength(PlayerController.AnimSnailEnterShell);
+        if (animTime > 0f) hideTime = animTime;
+
+        phaseTimer = hideTime;
+
+        player.LockMovement(phaseTimer);
+        player.LockSkinChange(phaseTimer);
 
         player.StopAllMotion();
     }
@@ -132,13 +152,19 @@ public sealed class SnailState : PlayerState
             return;
 
         phase = HidePhase.Recovery;
-        phaseTimer = hideTime;
 
         player.SetSnailHidden(false);
         player.SetForcedSkinChangeLock(false);
 
-        player.LockMovement(hideTime);
-        player.LockSkinChange(hideTime);
+        player.Anim.Play(PlayerController.AnimSnailExitShell);
+
+        float animTime = player.GetAnimLength(PlayerController.AnimSnailExitShell);
+        if (animTime > 0f) hideTime = animTime;
+
+        phaseTimer = hideTime;
+
+        player.LockMovement(phaseTimer);
+        player.LockSkinChange(phaseTimer);
 
         player.StopAllMotion();
     }

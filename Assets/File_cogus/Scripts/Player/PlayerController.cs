@@ -7,10 +7,24 @@ using System.Collections;
 public sealed class PlayerController : MonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
+    public Animator Anim { get; private set; }
 
     public event Action<PlayerSkin> OnSkinChanged;
     public event Action OnPausePressed;
     public event Action OnDied;
+
+    public const string AnimEggIdle = "계란가만히있는모션";
+    public const string AnimEggWalk = "계란걷는거";
+    public const string AnimEggThrow = "계란이계란을던지는";
+
+    public const string AnimBananaIdle = "바나나가만히있는모션";
+    public const string AnimBananaWalk = "바나나걷는거";
+    public const string AnimBananaJump = "바나나점프";
+
+    public const string AnimSnailIdle = "달팽이가만히있는모션";
+    public const string AnimSnailWalk = "달팽이걷는거";
+    public const string AnimSnailEnterShell = "달팽이집들어가기";
+    public const string AnimSnailExitShell = "달팽이집나오기";
 
     [SerializeField] private bool resetAllStatusOnAwake = false;
 
@@ -130,6 +144,11 @@ public sealed class PlayerController : MonoBehaviour
         get { return coyoteTimer > 0f; }
     }
 
+    public bool IsEggShootLocked
+    {
+        get { return eggShootLockTimer > 0f; }
+    }
+
     public bool IsMovementLocked
     {
         get { return eggShootLockTimer > 0f || movementLockTimer > 0f || IsSnailHidden; }
@@ -164,6 +183,8 @@ public sealed class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         boxCol = GetComponent<BoxCollider2D>();
+
+        if (Anim == null) Anim = GetComponentInChildren<Animator>();
 
         if (Instance != null && Instance != this)
         {
@@ -371,7 +392,7 @@ public sealed class PlayerController : MonoBehaviour
         float vx = inputSign * speed;
         Rigidbody.linearVelocity = new Vector2(vx, Rigidbody.linearVelocity.y);
 
-        transform.rotation = Quaternion.Euler(0f, FacingDirection == -1 ? 180f : 0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, FacingDirection == 1 ? 180f : 0f, 0f);
     }
 
     private void HandleBananaMove(float speed)
@@ -461,6 +482,13 @@ public sealed class PlayerController : MonoBehaviour
     {
         if (eggShootLockTimer > 0f) return false;
 
+        Anim.Play(AnimEggThrow, -1, 0f);
+
+        float animTime = GetAnimLength(AnimEggThrow);
+        if (animTime > 0f) time = animTime;
+
+        if (time <= 0f) return false;
+
         LockSkinChange(time);
 
         StartCoroutine(FireEggProjectileByTime(time));
@@ -545,6 +573,60 @@ public sealed class PlayerController : MonoBehaviour
         OnDied?.Invoke();
     }
 
+    public void UpdateMoveAnim(string idleStateName, string walkStateName)
+    {
+        if (Anim == null) return;
+
+        float vx = rb != null ? Mathf.Abs(rb.linearVelocity.x) : 0f;
+        if (vx > 0.05f) Anim.Play(walkStateName);
+        else Anim.Play(idleStateName);
+    }
+
+    public float GetAnimLength(string stateName)
+    {
+        if (Anim == null)
+        {
+            Debug.LogError("PlayerController: Animator is missing.");
+            return 0f;
+        }
+
+        AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        AnimatorStateInfo next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Anim.Update(0f);
+
+        current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Debug.LogError($"PlayerController: Animator state '{stateName}' not found or not playing.");
+        return 0f;
+    }
     public void NotifyBananaPeelDestroyed()
     {
         activeBananaPeelCount--;

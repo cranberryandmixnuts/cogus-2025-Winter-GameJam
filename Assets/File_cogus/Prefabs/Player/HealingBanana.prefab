@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1417304052139221271}
   - component: {fileID: 8647355650517782477}
   - component: {fileID: 5387050965403800665}
+  - component: {fileID: 5428814099806149711}
   m_Layer: 7
   m_Name: HealingBanana
   m_TagString: Untagged
@@ -83,8 +84,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.042979002, a: 1}
+  m_Sprite: {fileID: -4850343670361810450, guid: 1b520657857ecd442bff6f4a7526554a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -169,6 +170,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd7fd6c868f8a6940bfde214fc3feadf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealingBanana
+--- !u!95 &5428814099806149711
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2810513492587925800}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 95a8530321a8ec4419f65f96b66caace, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6883054536316830651
 GameObject:
   m_ObjectHideFlags: 0

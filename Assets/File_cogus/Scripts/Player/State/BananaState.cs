@@ -8,6 +8,7 @@ public sealed class BananaState : PlayerState
     public override void Enter()
     {
         player.SetSnailHidden(false);
+        player.Anim.Play(PlayerController.AnimBananaIdle);
     }
 
     public override void Update()
@@ -30,5 +31,10 @@ public sealed class BananaState : PlayerState
         float speed = player.Settings != null ? player.Settings.GetMoveSpeed(PlayerSkin.Banana) : 0f;
         player.HandleMove(speed);
         player.HandleJump();
+
+        if (!player.IsGround)
+            player.Anim.Play(PlayerController.AnimBananaJump);
+        else
+            player.UpdateMoveAnim(PlayerController.AnimBananaIdle, PlayerController.AnimBananaWalk);
     }
 }
