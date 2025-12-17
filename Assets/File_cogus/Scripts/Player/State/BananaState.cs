@@ -28,13 +28,13 @@ public sealed class BananaState : PlayerState
 
     public override void FixedUpdate()
     {
-        float speed = player.Setting != null ? player.Setting.GetMoveSpeed(PlayerSkin.Banana) : 0f;
+        float speed = player.Setting.GetMoveSpeed(PlayerSkin.Banana);
         player.HandleMove(speed);
         player.HandleJump();
 
-        if (!player.IsGround)
-            player.Anim.Play(PlayerController.AnimBananaJump);
-        else
+        if (player.IsGround)
             player.UpdateMoveAnim(PlayerController.AnimBananaIdle, PlayerController.AnimBananaWalk);
+        else
+            player.Anim.Play(PlayerController.AnimBananaJump);
     }
 }

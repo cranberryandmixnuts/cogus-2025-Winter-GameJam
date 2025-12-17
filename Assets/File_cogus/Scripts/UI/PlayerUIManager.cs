@@ -14,13 +14,7 @@ public sealed class PlayerUIManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateUI();
-    }
-
-    public void UpdateUI()
-    {
         PlayerController player = PlayerController.Instance;
-
         PlayerSetting setting = player.Setting;
         PlayerVitals vitals = player.Vitals;
 

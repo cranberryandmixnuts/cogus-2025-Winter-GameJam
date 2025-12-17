@@ -166,6 +166,10 @@ public sealed class PlayerController : MonoBehaviour
         }
     }
 
+    public float CurrentHealingBananaCooldown => healingBananaCooldownTimer;
+    public float CurrentBananaPeelCooldown => bananaPeelCooldownTimer;
+    public int ActiveBananaPeelCount => activeBananaPeelCount;
+
     private float jumpTimeCounter;
     private float jumpBufferTimer;
     private float coyoteTimer;
@@ -176,7 +180,6 @@ public sealed class PlayerController : MonoBehaviour
     private float bananaPeelCooldownTimer;
     private float healingBananaCooldownTimer;
     private int activeBananaPeelCount;
-
     private bool dead;
 
     private void Awake()
@@ -516,7 +519,7 @@ public sealed class PlayerController : MonoBehaviour
         BananaPeel p = Instantiate(bananaPeelPrefab, pos, Quaternion.identity);
         p.Initialize(gameObject, FacingDirection, setting.bananaPeelSpeed, setting.bananaStunDuration);
 
-        bananaPeelCooldownTimer = Mathf.Max(0f, setting.bananaPeelCooldown);
+        bananaPeelCooldownTimer = setting.bananaPeelCooldown;
         activeBananaPeelCount++;
 
         return true;
