@@ -12,11 +12,15 @@ public sealed class PlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject attackRoot;
     [SerializeField] private TMP_Text attackTextTMP;
 
+    private PlayerController player;
+    private PlayerSetting setting;
+    private PlayerVitals vitals;
+
     private void Update()
     {
-        PlayerController player = PlayerController.Instance;
-        PlayerSetting setting = player.Setting;
-        PlayerVitals vitals = player.Vitals;
+        player = PlayerController.Instance;
+        setting = player.Setting;
+        vitals = player.Vitals;
 
         PlayerSkin skin = player.CurrentSkin;
 
