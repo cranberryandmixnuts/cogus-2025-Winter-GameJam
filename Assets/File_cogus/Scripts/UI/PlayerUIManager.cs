@@ -12,6 +12,12 @@ public sealed class PlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject attackRoot;
     [SerializeField] private TMP_Text attackTextTMP;
 
+    [Header("Banana UI")]
+    [SerializeField] private GameObject bananaRoot;
+    [SerializeField] private Image bananaAttackCoolImage;
+    [SerializeField] private Image bananaHealCoolImage;
+    [SerializeField] private TMP_Text bananaCountTMP;
+
     private PlayerController player;
     private PlayerSetting setting;
     private PlayerVitals vitals;
@@ -39,6 +45,33 @@ public sealed class PlayerUIManager : MonoBehaviour
         {
             int atk = setting.baseEggProjectileDamage + setting.extraEggProjectileDamage;
             attackTextTMP.text = atk.ToString();
+        }
+
+        //banana
+
+        bool isBanana = skin == PlayerSkin.Banana;
+
+        if (bananaRoot.activeSelf != isBanana)
+            bananaRoot.SetActive(isBanana);
+
+        if (isBanana)
+        {
+            float peelCooldown = player.CurrentBananaPeelCooldown;
+            float peelMaxCooldown = setting.bananaPeelCooldown;
+
+            float peelFill = Mathf.Clamp01((peelMaxCooldown - peelCooldown) / peelMaxCooldown);
+            bananaAttackCoolImage.fillAmount = peelFill;
+
+            int currentCount = player.ActiveBananaPeelCount;
+            int maxCount = setting.maxBananaPeelCount;
+
+            bananaCountTMP.text = $"{maxCount - currentCount}";
+
+            float healCooldown = player.CurrentHealingBananaCooldown;
+            float healMaxCooldown = setting.healingBananaCooldown;
+
+            float healFill = Mathf.Clamp01((healMaxCooldown - healCooldown) / healMaxCooldown);
+            bananaHealCoolImage.fillAmount = healFill;
         }
     }
 }
