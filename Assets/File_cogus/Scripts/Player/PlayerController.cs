@@ -415,7 +415,7 @@ public sealed class PlayerController : MonoBehaviour
         }
 
         Rigidbody.linearVelocity = new Vector2(vx, Rigidbody.linearVelocity.y);
-        transform.rotation = Quaternion.Euler(0f, FacingDirection == -1 ? 180f : 0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, FacingDirection == 1 ? 180f : 0f, 0f);
     }
 
     public void HandleJump()
