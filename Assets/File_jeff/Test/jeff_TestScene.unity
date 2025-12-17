@@ -407,8 +407,8 @@ Transform:
   m_GameObject: {fileID: 146502211}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.12, y: -5.03, z: 0}
-  m_LocalScale: {x: 7.478, y: 1.7621, z: 1}
+  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalScale: {x: 20, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -951,8 +951,8 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1076073901
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!224 &1630644508
 RectTransform:
