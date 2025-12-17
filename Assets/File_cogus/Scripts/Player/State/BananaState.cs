@@ -28,7 +28,7 @@ public sealed class BananaState : PlayerState
 
     public override void FixedUpdate()
     {
-        float speed = player.Settings != null ? player.Settings.GetMoveSpeed(PlayerSkin.Banana) : 0f;
+        float speed = player.Setting != null ? player.Setting.GetMoveSpeed(PlayerSkin.Banana) : 0f;
         player.HandleMove(speed);
         player.HandleJump();
 

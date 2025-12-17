@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemySetting", menuName = "Scriptable Objects/EnemySetting")]
-public sealed class EnemyStats : ScriptableObject
+public sealed class EnemySetting : ScriptableObject
 {
     public float moveSpeed;
     public int attackDamage;

@@ -47,7 +47,7 @@ public sealed class SnailState : PlayerState
 
     public override void Update()
     {
-        float hideTime = player.Settings != null ? player.Settings.hideTime : 0f;
+        float hideTime = player.Setting != null ? player.Setting.hideTime : 0f;
 
         if (phase == HidePhase.None)
         {
@@ -108,7 +108,7 @@ public sealed class SnailState : PlayerState
             return;
         }
 
-        float speed = player.Settings != null ? player.Settings.GetMoveSpeed(PlayerSkin.Snail) : 0f;
+        float speed = player.Setting != null ? player.Setting.GetMoveSpeed(PlayerSkin.Snail) : 0f;
         player.HandleMove(speed);
         player.UpdateMoveAnim(PlayerController.AnimSnailIdle, PlayerController.AnimSnailWalk);
     }

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerSettings", menuName = "Scriptable Objects/PlayerSettings")]
-public sealed class PlayerSettings : ScriptableObject
+public sealed class PlayerSetting : ScriptableObject
 {
     [Serializable]
     public struct SkinStats

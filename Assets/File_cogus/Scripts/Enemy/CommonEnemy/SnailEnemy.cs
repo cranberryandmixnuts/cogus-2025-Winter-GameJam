@@ -98,7 +98,7 @@ public sealed class SnailEnemy : EnemyBase
 
     private void MoveTowardPlayer()
     {
-        if (Stats == null)
+        if (Setting == null)
         {
             StopHorizontal();
             return;
@@ -115,7 +115,7 @@ public sealed class SnailEnemy : EnemyBase
         int dir = dx >= 0f ? 1 : -1;
 
         Rigidbody2D rb = Rigidbody;
-        rb.linearVelocity = new Vector2(dir * Mathf.Max(0f, Stats.moveSpeed), rb.linearVelocity.y);
+        rb.linearVelocity = new Vector2(dir * Mathf.Max(0f, Setting.moveSpeed), rb.linearVelocity.y);
 
         transform.rotation = Quaternion.Euler(0f, dir == -1 ? 180f : 0f, 0f);
     }
@@ -159,8 +159,8 @@ public sealed class SnailEnemy : EnemyBase
 
     private void TryDealContactDamage()
     {
-        if (Stats == null) return;
-        if (Stats.attackDamage <= 0) return;
+        if (Setting == null) return;
+        if (Setting.attackDamage <= 0) return;
         if (contactCooldownTimer > 0f) return;
 
         if (bodyCollider == null) return;
@@ -181,7 +181,7 @@ public sealed class SnailEnemy : EnemyBase
             PlayerController p = c.GetComponentInParent<PlayerController>();
             if (p == null) continue;
 
-            bool hit = p.TryHit(Stats.attackDamage);
+            bool hit = p.Hit(Setting.attackDamage, false);
             if (hit) contactCooldownTimer = 0.1f;
 
             return;

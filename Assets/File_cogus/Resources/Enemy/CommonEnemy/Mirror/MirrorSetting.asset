@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 302cfa24f298ef94290ffe60bb0623e9, type: 3}
-  m_Name: SnailSetting
+  m_Name: MirrorSetting
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  moveSpeed: 1
-  attackDamage: 10
-  maxHealth: 30
-  eggDamageIncreaseOnKill: 1
+  moveSpeed: 3
+  attackDamage: 2
+  maxHealth: 40
+  eggDamageIncreaseOnKill: 3

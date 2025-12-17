@@ -16,12 +16,12 @@ public sealed class EggState : PlayerState
     public override void Update()
     {
         if (player.SpecialAbilitiesDown)
-            player.TryFireEggProjectile(player.Settings != null ? player.Settings.eggShootCoolTime : 0f);
+            player.TryFireEggProjectile(player.Setting != null ? player.Setting.eggShootCoolTime : 0f);
     }
 
     public override void FixedUpdate()
     {
-        float speed = player.Settings.GetMoveSpeed(PlayerSkin.Egg);
+        float speed = player.Setting.GetMoveSpeed(PlayerSkin.Egg);
         player.HandleMove(speed);
 
         if (!player.IsEggShootLocked)

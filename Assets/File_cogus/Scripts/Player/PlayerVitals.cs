@@ -2,7 +2,7 @@ using UnityEngine;
 
 public sealed class PlayerVitals : MonoBehaviour
 {
-    [SerializeField] private PlayerSettings settings;
+    [SerializeField] private PlayerSetting setting;
 
     private bool forcedInvincible;
     private float invincibleTimer;
@@ -24,26 +24,26 @@ public sealed class PlayerVitals : MonoBehaviour
 
     public int GetHealth(PlayerSkin skin)
     {
-        if (settings == null) return 0;
-        return settings.GetCurrentHealth(skin);
+        if (setting == null) return 0;
+        return setting.GetCurrentHealth(skin);
     }
 
     public int GetMaxHealth(PlayerSkin skin)
     {
-        if (settings == null) return 0;
-        return settings.GetMaxHealth(skin);
+        if (setting == null) return 0;
+        return setting.GetMaxHealth(skin);
     }
 
     public bool HasAnyAliveSkin()
     {
-        if (settings == null) return false;
+        if (setting == null) return false;
 
         int count = System.Enum.GetValues(typeof(PlayerSkin)).Length;
 
         for (int i = 0; i < count; i++)
         {
             PlayerSkin skin = (PlayerSkin)i;
-            if (settings.GetCurrentHealth(skin) > 0)
+            if (setting.GetCurrentHealth(skin) > 0)
                 return true;
         }
 
@@ -66,38 +66,38 @@ public sealed class PlayerVitals : MonoBehaviour
 
     public bool ApplyDamage(PlayerSkin skin, int damage, bool ignoreInvincible)
     {
-        if (settings == null) return false;
+        if (setting == null) return false;
         if (!ignoreInvincible && IsInvincible) return false;
         if (damage <= 0) return false;
 
-        int hp = settings.GetCurrentHealth(skin);
+        int hp = setting.GetCurrentHealth(skin);
         if (hp <= 0) return false;
 
         int next = hp - damage;
         if (next < 0) next = 0;
 
-        bool changed = settings.SetCurrentHealth(skin, next);
+        bool changed = setting.SetCurrentHealth(skin, next);
 
-        if (changed && settings.hitInvincibleTime > 0f)
-            SetInvincibleTimer(settings.hitInvincibleTime);
+        if (changed && setting.hitInvincibleTime > 0f)
+            SetInvincibleTimer(setting.hitInvincibleTime);
 
         return changed;
     }
 
     public bool ApplyHeal(PlayerSkin skin, int amount)
     {
-        if (settings == null) return false;
+        if (setting == null) return false;
         if (amount <= 0) return false;
 
-        int max = settings.GetMaxHealth(skin);
+        int max = setting.GetMaxHealth(skin);
         if (max <= 0) return false;
 
-        int hp = settings.GetCurrentHealth(skin);
+        int hp = setting.GetCurrentHealth(skin);
         if (hp >= max) return false;
 
         int next = hp + amount;
         if (next > max) next = max;
 
-        return settings.SetCurrentHealth(skin, next);
+        return setting.SetCurrentHealth(skin, next);
     }
 }

@@ -31,7 +31,7 @@ public sealed class PlayerController : MonoBehaviour
 
     [Header("Scene Refs")]
     [SerializeField] private PlayerVitals vitals;
-    [SerializeField] private PlayerSettings settings;
+    [SerializeField] private PlayerSetting setting;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
@@ -56,7 +56,7 @@ public sealed class PlayerController : MonoBehaviour
     private PlayerStateMachine stateMachine;
 
     public PlayerVitals Vitals => vitals;
-    public PlayerSettings Settings => settings;
+    public PlayerSetting Setting => setting;
 
     public PlayerSkin CurrentSkin
     {
@@ -163,7 +163,7 @@ public sealed class PlayerController : MonoBehaviour
     {
         get
         {
-            return activeBananaPeelCount < settings.maxBananaPeelCount;
+            return activeBananaPeelCount < setting.maxBananaPeelCount;
         }
     }
 
@@ -194,7 +194,7 @@ public sealed class PlayerController : MonoBehaviour
 
         Instance = this;
 
-        if (resetAllStatusOnAwake) settings.ResetAllStatus();
+        if (resetAllStatusOnAwake) setting.ResetAllStatus();
     }
 
     private void Start()
@@ -277,7 +277,7 @@ public sealed class PlayerController : MonoBehaviour
 
         if (CurrentSkin == PlayerSkin.Banana && !IsSnailHidden)
         {
-            if (input.JumpDown) jumpBufferTimer = Settings.jumpBufferTime;
+            if (input.JumpDown) jumpBufferTimer = Setting.jumpBufferTime;
             JumpHeld = input.JumpHeld;
             if (input.JumpUp) StopRising();
         }
@@ -291,8 +291,8 @@ public sealed class PlayerController : MonoBehaviour
     {
         IsGround = groundCheckBox != null && groundCheckBox.IsTouchingLayers(groundLayer);
 
-        if (IsGround && settings != null)
-            coyoteTimer = settings.coyoteTime;
+        if (IsGround && setting != null)
+            coyoteTimer = setting.coyoteTime;
     }
 
     private PlayerState CreateStateForSkin(PlayerSkin skin)
@@ -405,7 +405,7 @@ public sealed class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(MoveInput) > 0.01f)
         {
-            float accelTime = Mathf.Max(0.0001f, Settings.bananaAccelTime);
+            float accelTime = Mathf.Max(0.0001f, Setting.bananaAccelTime);
             float accelRate = maxSpeed / accelTime;
 
             vx = Mathf.MoveTowards(vx, targetVx, accelRate * dt);
@@ -413,7 +413,7 @@ public sealed class PlayerController : MonoBehaviour
         }
         else
         {
-            float decelTime = Mathf.Max(0.0001f, Settings.bananaDecelTime);
+            float decelTime = Mathf.Max(0.0001f, Setting.bananaDecelTime);
             float decelRate = maxSpeed / decelTime;
 
             vx = Mathf.MoveTowards(vx, 0f, decelRate * dt);
@@ -429,13 +429,13 @@ public sealed class PlayerController : MonoBehaviour
 
         jumpTimeCounter += Time.fixedDeltaTime;
 
-        float t = settings.maxJumpTime <= 0f ? 1f : jumpTimeCounter / settings.maxJumpTime;
-        float curve = settings.jumpForceCurve.Evaluate(t);
-        float force = curve * settings.maxJumpForce;
+        float t = setting.maxJumpTime <= 0f ? 1f : jumpTimeCounter / setting.maxJumpTime;
+        float curve = setting.jumpForceCurve.Evaluate(t);
+        float force = curve * setting.maxJumpForce;
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
 
-        if (jumpTimeCounter >= settings.maxJumpTime)
+        if (jumpTimeCounter >= setting.maxJumpTime)
             IsJumping = false;
     }
 
@@ -444,7 +444,7 @@ public sealed class PlayerController : MonoBehaviour
         if (rb.linearVelocity.y > 0f)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.3f);
 
-        jumpTimeCounter = settings.maxJumpTime;
+        jumpTimeCounter = setting.maxJumpTime;
     }
 
     public void StopAllMotion() => rb.linearVelocity = Vector2.zero;
@@ -509,7 +509,7 @@ public sealed class PlayerController : MonoBehaviour
         else dir = new Vector2(FacingDirection, 0f);
 
         EggProjectile p = Instantiate(eggProjectilePrefab, pos, Quaternion.identity);
-        p.Initialize(gameObject, dir, settings.eggProjectileSpeed, settings.eggProjectileMaxDistance, settings.baseEggProjectileDamage + settings.extraEggProjectileDamage);
+        p.Initialize(gameObject, dir, setting.eggProjectileSpeed, setting.eggProjectileMaxDistance, setting.baseEggProjectileDamage + setting.extraEggProjectileDamage);
 
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
@@ -522,9 +522,9 @@ public sealed class PlayerController : MonoBehaviour
         Vector3 pos = bananaThrowPoint.position;
 
         BananaPeel p = Instantiate(bananaPeelPrefab, pos, Quaternion.identity);
-        p.Initialize(gameObject, FacingDirection, settings.bananaPeelSpeed, settings.bananaStunDuration);
+        p.Initialize(gameObject, FacingDirection, setting.bananaPeelSpeed, setting.bananaStunDuration);
 
-        bananaPeelCooldownTimer = Mathf.Max(0f, settings.bananaPeelCooldown);
+        bananaPeelCooldownTimer = Mathf.Max(0f, setting.bananaPeelCooldown);
         activeBananaPeelCount++;
 
         return true;
@@ -537,15 +537,15 @@ public sealed class PlayerController : MonoBehaviour
         Vector3 pos = healingBananaDropPoint.position;
 
         HealingBanana b = Instantiate(healingBananaPrefab, pos, Quaternion.identity);
-        b.Initialize(settings.healingBananaActivateDelay, settings.healingBananaHealAmount);
+        b.Initialize(setting.healingBananaActivateDelay, setting.healingBananaHealAmount);
 
-        healingBananaCooldownTimer = settings.healingBananaCooldown;
+        healingBananaCooldownTimer = setting.healingBananaCooldown;
         return true;
     }
 
-    public bool TryHit(int damage)
+    public bool Hit(int damage, bool ignoreInvincible)
     {
-        if (!vitals.ApplyDamage(CurrentSkin, damage, false))
+        if (!vitals.ApplyDamage(CurrentSkin, damage, ignoreInvincible))
             return false;
 
         if (vitals.GetHealth(CurrentSkin) > 0)

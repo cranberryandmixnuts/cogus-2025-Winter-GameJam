@@ -4,12 +4,11 @@ using UnityEngine;
 public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
 {
     [Header("Stats")]
-    [SerializeField] private EnemyStats stats;
+    [SerializeField] private EnemySetting setting;
 
     [Header("Death")]
     [SerializeField] private float deathDestroyDelay = 3f;
     [SerializeField] private float deathUpImpulse = 3f;
-    [SerializeField] private bool disableAllCollidersOnDeath = true;
 
     private Rigidbody2D rb;
 
@@ -18,7 +17,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     private bool dead;
     private bool rewardGiven;
 
-    public EnemyStats Stats => stats;
+    public EnemySetting Setting => setting;
     public Rigidbody2D Rigidbody => rb;
 
     public int CurrentHealth => currentHealth;
@@ -48,8 +47,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
 
     public int GetMaxHealth()
     {
-        if (stats == null) return 0;
-        return Mathf.Max(0, stats.maxHealth);
+        if (setting == null) return 0;
+        return Mathf.Max(0, setting.maxHealth);
     }
 
     public virtual void ApplyDamage(int damage)
@@ -102,8 +101,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
 
         StopAllMotion();
 
-        if (disableAllCollidersOnDeath)
-            DisableAllColliders();
+        DisableAllColliders();
 
         AddDeathImpulse();
 
@@ -140,15 +138,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         if (rewardGiven) return;
         rewardGiven = true;
 
-        if (stats == null) return;
-        if (stats.eggDamageIncreaseOnKill <= 0) return;
+        if (this.setting.eggDamageIncreaseOnKill <= 0) return;
 
         PlayerController player = PlayerController.Instance;
-        if (player == null) return;
 
-        PlayerSettings settings = player.Settings;
-        if (settings == null) return;
+        PlayerSetting setting = player.Setting;
 
-        settings.extraEggProjectileDamage += stats.eggDamageIncreaseOnKill;
+        setting.extraEggProjectileDamage += this.setting.eggDamageIncreaseOnKill;
     }
 }
