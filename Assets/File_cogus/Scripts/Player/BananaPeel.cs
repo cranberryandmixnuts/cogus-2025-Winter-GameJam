@@ -28,8 +28,7 @@ public sealed class BananaPeel : MonoBehaviour
     {
         if (other.transform.root.gameObject == owner) return;
 
-        IStunnable stunnable = other.GetComponentInParent<IStunnable>();
-        if (stunnable == null) return;
+        if (!other.TryGetComponent<IStunnable>(out var stunnable)) return;
 
         if(!stunnable.ApplyStun(stunDuration)) return;
 

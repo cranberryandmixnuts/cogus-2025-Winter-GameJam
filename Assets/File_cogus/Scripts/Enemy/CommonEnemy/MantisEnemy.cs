@@ -1,12 +1,13 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public sealed class MantisEnemy : EnemyBase
 {
     private enum MantisState
     {
         Idle,
         Walk,
-        Chase,
         BackWalk,
         Attack,
         Dead
@@ -14,16 +15,11 @@ public sealed class MantisEnemy : EnemyBase
 
     private const string AnimIdle = "Idle";
     private const string AnimWalk = "Walk";
-    private const string AnimChase = "Chase";
     private const string AnimBackWalk = "BackWalk";
     private const string AnimAttack = "Attack";
 
     [Header("Ranges")]
-    [SerializeField] private Collider2D walkRange;
     [SerializeField] private Collider2D backOffRange;
-
-    [Header("Movement")]
-    [SerializeField] private float chaseSpeedMultiplier = 2.6f;
 
     [Header("Attack Geometry")]
     [SerializeField] private Transform attackOrigin;
@@ -37,7 +33,7 @@ public sealed class MantisEnemy : EnemyBase
     [SerializeField, Range(0f, 1f)] private float attackEndPercent = 0.9f;
 
     [Header("Attack Cooldown")]
-    [SerializeField] private Vector2 attackCooldownRange = new(1.5f, 3f);
+    [SerializeField] private Vector2 attackCooldownRange = new Vector2(1.5f, 3f);
 
     [Header("Optional")]
     [SerializeField] private Animator Anim;
@@ -45,7 +41,7 @@ public sealed class MantisEnemy : EnemyBase
 
     private MantisState state;
 
-    private int facingDir = 1;
+    private int facingDir;
     private float attackCooldownTimer;
 
     private int attackPhase;
@@ -64,12 +60,14 @@ public sealed class MantisEnemy : EnemyBase
 
         cachedPlayer = PlayerController.Instance;
 
-        state = MantisState.Chase;
+        facingDir = 1;
         attackCooldownTimer = 0f;
 
         attackPhase = 0;
         attackPhaseTimer = 0f;
         attackResolved = false;
+
+        state = MantisState.Walk;
 
         ClearSwingLine();
         PlayAnimForState(state);
@@ -85,35 +83,16 @@ public sealed class MantisEnemy : EnemyBase
 
         if (state == MantisState.Attack)
         {
-            if (IsStunned())
-            {
-                CancelAttackAndStartCooldown();
-                return;
-            }
+            if (IsStunned()) CancelAttackAndStartCooldown();
+            else TickAttack();
 
-            TickAttack();
             return;
         }
 
         if (IsStunned()) return;
 
         FacePlayer();
-
-        switch (state)
-        {
-            case MantisState.Idle:
-            case MantisState.Walk:
-            case MantisState.Chase:
-                ChooseMovementState();
-                break;
-
-            case MantisState.BackWalk:
-                TickBackWalk();
-                break;
-
-            case MantisState.Dead:
-                break;
-        }
+        ChooseMovementState();
     }
 
     private void FixedUpdate()
@@ -141,74 +120,36 @@ public sealed class MantisEnemy : EnemyBase
             return;
         }
 
-        float baseSpeed = Mathf.Max(0f, s.moveSpeed);
-        float walkSpeed = baseSpeed;
-        float chaseSpeed = baseSpeed * Mathf.Max(0f, chaseSpeedMultiplier);
+        float speed = s.moveSpeed;
+        if (speed < 0f) speed = 0f;
 
-        switch (state)
-        {
-            case MantisState.Walk:
-                MoveTowardsPlayer(p, walkSpeed);
-                break;
-
-            case MantisState.Chase:
-                MoveTowardsPlayer(p, chaseSpeed);
-                break;
-
-            case MantisState.BackWalk:
-                MoveAwayFromPlayer(p, walkSpeed);
-                break;
-
-            default:
-                StopHorizontal();
-                break;
-        }
-    }
-
-    private void TickBackWalk()
-    {
-        if (attackCooldownTimer <= 0f && IsPlayerInSwingCone())
-        {
-            EnterState(MantisState.Attack);
-            return;
-        }
-
-        if (!InBackOffRange() || !IsPlayerInSwingCone()) ChooseMovementState();
+        if (state == MantisState.Walk) MoveTowardsPlayer(p, speed);
+        else if (state == MantisState.BackWalk) MoveAwayFromPlayer(p, speed);
+        else StopHorizontal();
     }
 
     private void ChooseMovementState()
     {
         if (state == MantisState.Dead) return;
 
-        bool inCone = IsPlayerInSwingCone();
-        bool inWalk = InWalkRange();
         bool inBack = InBackOffRange();
+        bool inCone = IsPlayerInSwingCone();
 
-        MantisState nextState;
+        MantisState next;
 
         if (inCone)
         {
-            if (attackCooldownTimer <= 0f)
-            {
-                nextState = MantisState.Attack;
-            }
-            else
-            {
-                if (inBack)
-                    nextState = MantisState.BackWalk;
-                else
-                    nextState = MantisState.Idle;
-            }
+            if (attackCooldownTimer <= 0f) next = MantisState.Attack;
+            else if (inBack) next = MantisState.BackWalk;
+            else next = MantisState.Idle;
         }
         else
         {
-            if (inWalk)
-                nextState = MantisState.Walk;
-            else
-                nextState = MantisState.Chase;
+            if (inBack) next = MantisState.BackWalk;
+            else next = MantisState.Walk;
         }
 
-        EnterState(nextState);
+        EnterState(next);
     }
 
     private void EnterState(MantisState newState)
@@ -243,6 +184,7 @@ public sealed class MantisEnemy : EnemyBase
         attackWindupRuntime = clipLen * attackPrepPercent;
         swingDurationRuntime = clipLen * (attackEndPercent - attackPrepPercent);
         attackRecoverRuntime = clipLen - (attackWindupRuntime + swingDurationRuntime);
+
         if (attackRecoverRuntime < 0.01f) attackRecoverRuntime = 0.01f;
 
         attackPhase = 0;
@@ -266,6 +208,7 @@ public sealed class MantisEnemy : EnemyBase
                 attackPhaseTimer = swingDurationRuntime;
                 attackResolved = false;
             }
+
             return;
         }
 
@@ -282,6 +225,7 @@ public sealed class MantisEnemy : EnemyBase
                 StartAttackCooldown();
                 ClearSwingLine();
             }
+
             return;
         }
 
@@ -289,6 +233,7 @@ public sealed class MantisEnemy : EnemyBase
         {
             ClearSwingLine();
             attackPhaseTimer -= Time.deltaTime;
+
             if (attackPhaseTimer <= 0f) ChooseMovementState();
         }
     }
@@ -296,11 +241,12 @@ public sealed class MantisEnemy : EnemyBase
     private void CancelAttackAndStartCooldown()
     {
         StartAttackCooldown();
+
         attackPhase = 0;
         attackPhaseTimer = 0f;
         attackResolved = true;
-        ClearSwingLine();
 
+        ClearSwingLine();
         EnterState(MantisState.Idle);
     }
 
@@ -336,9 +282,11 @@ public sealed class MantisEnemy : EnemyBase
 
         if (hit.collider != null)
         {
-            int damage = 0;
             EnemySetting s = Setting;
-            if (s != null) damage = Mathf.Max(0, s.attackDamage);
+            int damage = 0;
+
+            if (s != null) damage = s.attackDamage;
+            if (damage < 0) damage = 0;
 
             if (damage > 0 && p.TryHit(damage))
             {
@@ -356,19 +304,12 @@ public sealed class MantisEnemy : EnemyBase
         UpdateSwingLine(originPos, dir, swingLength);
     }
 
-    private bool InWalkRange()
-    {
-        PlayerController p = GetPlayer();
-        if (p == null) return false;
-        if (walkRange == null) return false;
-        return walkRange.OverlapPoint(p.transform.position);
-    }
-
     private bool InBackOffRange()
     {
         PlayerController p = GetPlayer();
         if (p == null) return false;
         if (backOffRange == null) return false;
+
         return backOffRange.OverlapPoint(p.transform.position);
     }
 
@@ -402,7 +343,9 @@ public sealed class MantisEnemy : EnemyBase
             maxAng = Mathf.Max(a, b);
         }
 
-        if (ang < minAng || ang > maxAng) return false;
+        if (ang < minAng) return false;
+        if (ang > maxAng) return false;
+
         return true;
     }
 
@@ -411,6 +354,7 @@ public sealed class MantisEnemy : EnemyBase
         Vector2 forward = Vector2.right * facingDir;
         Quaternion rot = Quaternion.AngleAxis(angleDeg, Vector3.forward);
         Vector2 dir = rot * forward;
+
         return dir.normalized;
     }
 
@@ -471,9 +415,10 @@ public sealed class MantisEnemy : EnemyBase
             if (c == null) continue;
             if (c.name != clipName) continue;
 
-            float speed = Anim.speed;
-            if (speed <= 0f) return Mathf.Infinity;
-            return c.length / speed;
+            float spd = Anim.speed;
+            if (spd <= 0f) return Mathf.Infinity;
+
+            return c.length / spd;
         }
 
         return 0f;
@@ -483,24 +428,10 @@ public sealed class MantisEnemy : EnemyBase
     {
         if (Anim == null) return;
 
-        switch (s)
-        {
-            case MantisState.Idle:
-                Anim.Play(AnimIdle);
-                break;
-            case MantisState.Walk:
-                Anim.Play(AnimWalk);
-                break;
-            case MantisState.Chase:
-                Anim.Play(AnimChase);
-                break;
-            case MantisState.BackWalk:
-                Anim.Play(AnimBackWalk);
-                break;
-            case MantisState.Attack:
-                Anim.Play(AnimAttack);
-                break;
-        }
+        if (s == MantisState.Idle) Anim.Play(AnimIdle);
+        else if (s == MantisState.Walk) Anim.Play(AnimWalk);
+        else if (s == MantisState.BackWalk) Anim.Play(AnimBackWalk);
+        else if (s == MantisState.Attack) Anim.Play(AnimAttack);
     }
 
     private void UpdateSwingLine(Vector2 origin, Vector2 dir, float length)

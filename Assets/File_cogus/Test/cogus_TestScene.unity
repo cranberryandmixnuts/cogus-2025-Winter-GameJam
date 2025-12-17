@@ -422,7 +422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &616153241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -856,6 +856,7 @@ GameObject:
   - component: {fileID: 1136789901}
   - component: {fileID: 1136789900}
   - component: {fileID: 1136789904}
+  - component: {fileID: 1136789906}
   - component: {fileID: 1136789905}
   m_Layer: 6
   m_Name: MantisEnemy
@@ -863,7 +864,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1136789900
 Rigidbody2D:
   serializedVersion: 5
@@ -1027,9 +1028,7 @@ MonoBehaviour:
   deathDestroyDelay: 3
   deathUpImpulse: 3
   currentHealth: 0
-  walkRange: {fileID: 0}
-  backOffRange: {fileID: 0}
-  chaseSpeedMultiplier: 2.6
+  backOffRange: {fileID: 1541606545}
   attackOrigin: {fileID: 1136789903}
   swingStartAngleDeg: 75
   swingEndAngleDeg: -30
@@ -1040,7 +1039,7 @@ MonoBehaviour:
   attackPrepPercent: 0.2
   attackEndPercent: 0.9
   attackCooldownRange: {x: 1.5, y: 3}
-  Anim: {fileID: 0}
+  Anim: {fileID: 1136789906}
   swingLine: {fileID: 1136789905}
 --- !u!120 &1136789905
 LineRenderer:
@@ -1101,7 +1100,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.13145638
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -1152,6 +1151,28 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!95 &1136789906
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136789898}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1177979318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1640,7 +1661,7 @@ GameObject:
   - component: {fileID: 1541606546}
   - component: {fileID: 1541606545}
   m_Layer: 0
-  m_Name: walkDetect
+  m_Name: backOffDetect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

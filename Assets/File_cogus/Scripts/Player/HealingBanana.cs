@@ -39,6 +39,7 @@ public sealed class HealingBanana : MonoBehaviour
         if (!active) return;
 
         if (!other.TryGetComponent<PlayerController>(out var player)) other.GetComponentInParent<PlayerController>();
+        if (player == null) return;
         player.Vitals.ApplyHeal(player.CurrentSkin, healAmount);
 
         Destroy(gameObject);
