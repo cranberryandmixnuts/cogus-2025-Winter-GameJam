@@ -10,6 +10,9 @@ public sealed class PlayerController : MonoBehaviour
     public static PlayerController Instance { get; private set; }
     public Animator Anim { get; private set; }
 
+    public Action OnSkinChangeRight;
+    public Action OnSkinChangeLeft;
+
     public const string AnimEggIdle = "계란가만히있는모션";
     public const string AnimEggWalk = "계란걷는거";
     public const string AnimEggThrow = "계란이계란을던지는";
@@ -262,8 +265,8 @@ public sealed class PlayerController : MonoBehaviour
 
         if (!IsSkinChangeLocked)
         {
-            if (input.SkinChangeLeftDown) TrySwitchSkin(-1);
-            if (input.SkinChangeRightDown) TrySwitchSkin(1);
+            if (input.SkinChangeLeftDown) if (TrySwitchSkin(-1)) OnSkinChangeLeft.Invoke();
+            if (input.SkinChangeRightDown) if (TrySwitchSkin(1)) OnSkinChangeRight.Invoke();
         }
 
         if (CurrentSkin == PlayerSkin.Banana && !IsSnailHidden)
