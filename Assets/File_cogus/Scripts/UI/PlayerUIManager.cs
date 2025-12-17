@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public sealed class PlayerUIManager : MonoBehaviour
 {
     [Header("HP UI")]
     [SerializeField] private TMP_Text hpTextTMP;
+    [SerializeField] private Image hpImage;
 
     [Header("Attack UI")]
     [SerializeField] private GameObject attackRoot;
@@ -27,7 +29,8 @@ public sealed class PlayerUIManager : MonoBehaviour
         int maxHp = setting.GetMaxHealth(skin);
         int curHp = vitals.GetHealth(skin);
 
-        hpTextTMP.text = $"{maxHp} / {curHp}";
+        hpTextTMP.text = $"{curHp} / {maxHp}";
+        hpImage.fillAmount = (float)curHp / maxHp;
 
         bool isEgg = skin == PlayerSkin.Egg;
 
