@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public sealed class MirrorEnemy : EnemyBase
@@ -262,8 +263,6 @@ public sealed class MirrorEnemy : EnemyBase
     {
         player = null;
 
-        if (tooCloseDetectCollider == null) return false;
-
         ContactFilter2D filter = new()
         {
             useLayerMask = true,
@@ -294,6 +293,8 @@ public sealed class MirrorEnemy : EnemyBase
         cachedPlayer = PlayerController.Instance;
         return cachedPlayer;
     }
+
+    public override bool ApplyStun(float duration) => false;
 
     protected override void OnDied()
     {

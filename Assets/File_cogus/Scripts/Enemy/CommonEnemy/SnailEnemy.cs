@@ -181,7 +181,7 @@ public sealed class SnailEnemy : EnemyBase
             PlayerController p = c.GetComponentInParent<PlayerController>();
             if (p == null) continue;
 
-            bool hit = p.Hit(Setting.attackDamage, false);
+            bool hit = p.TryHit(Setting.attackDamage);
             if (hit) contactCooldownTimer = 0.1f;
 
             return;

@@ -68,7 +68,7 @@ public sealed class MirrorProjectile : MonoBehaviour
         if (((1 << otherLayer) & playerLayer.value) != 0)
         {
             PlayerController p = other.GetComponentInParent<PlayerController>();
-            if (p != null) p.Hit(damage, true);
+            if (p != null) p.TryHit(damage);
 
             Destroy(gameObject);
             return;

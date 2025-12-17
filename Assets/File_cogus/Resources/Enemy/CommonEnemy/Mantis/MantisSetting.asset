@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302cfa24f298ef94290ffe60bb0623e9, type: 3}
   m_Name: MantisSetting
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  moveSpeed: 2
-  attackDamage: 10
-  maxHealth: 30
-  eggDamageIncreaseOnKill: 1
+  moveSpeed: 8
+  attackDamage: 20
+  maxHealth: 70
+  eggDamageIncreaseOnKill: 5

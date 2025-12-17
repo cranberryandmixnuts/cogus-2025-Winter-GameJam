@@ -10,10 +10,6 @@ public sealed class PlayerController : MonoBehaviour
     public static PlayerController Instance { get; private set; }
     public Animator Anim { get; private set; }
 
-    public event Action<PlayerSkin> OnSkinChanged;
-    public event Action OnPausePressed;
-    public event Action OnDied;
-
     public const string AnimEggIdle = "계란가만히있는모션";
     public const string AnimEggWalk = "계란걷는거";
     public const string AnimEggThrow = "계란이계란을던지는";
@@ -203,8 +199,6 @@ public sealed class PlayerController : MonoBehaviour
 
         stateMachine = new PlayerStateMachine();
         stateMachine.Initialize(CreateStateForSkin(CurrentSkin));
-
-        OnSkinChanged?.Invoke(CurrentSkin);
     }
 
     private void Update()
@@ -271,9 +265,6 @@ public sealed class PlayerController : MonoBehaviour
             if (input.SkinChangeLeftDown) TrySwitchSkin(-1);
             if (input.SkinChangeRightDown) TrySwitchSkin(1);
         }
-
-
-        if (input.PauseDown) OnPausePressed?.Invoke();
 
         if (CurrentSkin == PlayerSkin.Banana && !IsSnailHidden)
         {
@@ -343,8 +334,6 @@ public sealed class PlayerController : MonoBehaviour
         stateMachine.ChangeState(CreateStateForSkin(CurrentSkin));
 
         Debug.Log("[PlayerSkin] " + prev + " -> " + CurrentSkin);
-
-        OnSkinChanged?.Invoke(CurrentSkin);
     }
 
     public void ConsumeJumpBuffer()
@@ -543,9 +532,9 @@ public sealed class PlayerController : MonoBehaviour
         return true;
     }
 
-    public bool Hit(int damage, bool ignoreInvincible)
+    public bool TryHit(int damage)
     {
-        if (!vitals.ApplyDamage(CurrentSkin, damage, ignoreInvincible))
+        if (!vitals.ApplyDamage(CurrentSkin, damage, false))
             return false;
 
         if (vitals.GetHealth(CurrentSkin) > 0)
@@ -569,8 +558,6 @@ public sealed class PlayerController : MonoBehaviour
         StopAllMotion();
         rb.simulated = false;
         boxCol.enabled = false;
-
-        OnDied?.Invoke();
     }
 
     public void UpdateMoveAnim(string idleStateName, string walkStateName)

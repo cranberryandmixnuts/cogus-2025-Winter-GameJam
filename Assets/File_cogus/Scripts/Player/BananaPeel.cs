@@ -31,7 +31,7 @@ public sealed class BananaPeel : MonoBehaviour
         IStunnable stunnable = other.GetComponentInParent<IStunnable>();
         if (stunnable == null) return;
 
-        stunnable.ApplyStun(stunDuration);
+        if(!stunnable.ApplyStun(stunDuration)) return;
 
         if (owner.TryGetComponent<PlayerController>(out var player))
             player.NotifyBananaPeelDestroyed();

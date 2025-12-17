@@ -5,5 +5,5 @@ public interface IDamageable
 
 public interface IStunnable
 {
-    public void ApplyStun(float duration);
+    public bool ApplyStun(float duration);
 }

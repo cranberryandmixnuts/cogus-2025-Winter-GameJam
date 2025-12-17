@@ -1,0 +1,43 @@
+using UnityEngine;
+using TMPro;
+
+public sealed class PlayerUIManager : MonoBehaviour
+{
+    [Header("HP UI")]
+    [SerializeField] private TMP_Text hpTextTMP;
+
+    [Header("Attack UI")]
+    [SerializeField] private GameObject attackRoot;
+    [SerializeField] private TMP_Text attackTextTMP;
+
+    private void Update()
+    {
+        UpdateUI();
+    }
+
+    public void UpdateUI()
+    {
+        PlayerController player = PlayerController.Instance;
+
+        PlayerSetting setting = player.Setting;
+        PlayerVitals vitals = player.Vitals;
+
+        PlayerSkin skin = player.CurrentSkin;
+
+        int maxHp = setting.GetMaxHealth(skin);
+        int curHp = vitals.GetHealth(skin);
+
+        hpTextTMP.text = $"{maxHp} / {curHp}";
+
+        bool isEgg = skin == PlayerSkin.Egg;
+
+        if (attackRoot.activeSelf != isEgg)
+            attackRoot.SetActive(isEgg);
+
+        if (isEgg)
+        {
+            int atk = setting.baseEggProjectileDamage + setting.extraEggProjectileDamage;
+            attackTextTMP.text = atk.ToString();
+        }
+    }
+}

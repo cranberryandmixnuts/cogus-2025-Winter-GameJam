@@ -65,13 +65,19 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         Die();
     }
 
-    public virtual void ApplyStun(float duration)
+    public virtual bool ApplyStun(float duration)
     {
-        if (dead) return;
-        if (IsInvincible) return;
-        if (duration <= 0f) return;
+        if (dead) return false;
+        if (IsInvincible) return false;
+        if (duration <= 0f) return false;
 
-        if (stunTimer < duration) stunTimer = duration;
+        if (stunTimer < duration)
+        {
+            stunTimer = duration;
+            return true;
+        }
+
+        return false;
     }
 
     protected bool IsStunned()
