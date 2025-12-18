@@ -199,7 +199,7 @@ public sealed class PlayerController : MonoBehaviour
     private float poisonRemaining;
     private float poisonTickTimer;
     private int poisonDamagePerTick;
-    private static readonly Color PoisonTint = new Color(0.6f, 0.2f, 0.8f, 1f);
+    private static readonly Color PoisonTint = new(0.6f, 0.2f, 0.8f, 1f);
 
     private bool webBound;
     private int webBreakPressRequired;
