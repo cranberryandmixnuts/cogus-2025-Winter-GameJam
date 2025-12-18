@@ -63,7 +63,7 @@ public class SceneLoader : MonoBehaviour
         string sceneName = scene.ToString();
         if (string.IsNullOrEmpty(sceneName) || sceneName == "None")
         {
-            Debug.LogError("SceneLoader: 유효하지 않은 씬 타입입니다.");
+            Debug.LogError("SceneLoader: 우웩");
             return;
         }
 
