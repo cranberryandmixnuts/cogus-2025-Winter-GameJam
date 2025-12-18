@@ -13,6 +13,7 @@ public sealed class PlayerController : MonoBehaviour
 
     public Action OnSkinChangeRight;
     public Action OnSkinChangeLeft;
+    public Action OnPlayerDie;
 
     public const string AnimEggIdle = "계란가만히있는모션";
     public const string AnimEggWalk = "계란걷는거";

@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 0d291805e0f54c742aa19b42955fe0ed
+guid: 0a4ffc5b8d3590d40b96166858eeac3e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1433155795218197737
-    second: "monster_BOSS_\uB9E4\uB2EC\uB9B0\uAC70\uBBF8_0"
+      213: -6063964755962497727
+    second: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_0"
+  - first:
+      213: 3885180796053652454
+    second: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_1"
+  - first:
+      213: 2949495585366520557
+    second: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_2"
+  - first:
+      213: 719397210092475919
+    second: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_3"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,12 +55,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 250
+  spritePixelsToUnits: 300
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "monster_BOSS_\uB9E4\uB2EC\uB9B0\uAC70\uBBF8_0"
+      name: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_0"
       rect:
         serializedVersion: 2
-        x: 688
-        y: 644
-        width: 665
-        height: 1404
+        x: 814
+        y: 1459
+        width: 14
+        height: 234
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9ece5c14a9793e310800000000000000
-      internalID: 1433155795218197737
+      spriteID: 145fd56ce2878dba0800000000000000
+      internalID: -6063964755962497727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_1"
+      rect:
+        serializedVersion: 2
+        x: 1282
+        y: 1455
+        width: 14
+        height: 236
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e382f4795feae530800000000000000
+      internalID: 3885180796053652454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_2"
+      rect:
+        serializedVersion: 2
+        x: 1725
+        y: 1460
+        width: 14
+        height: 230
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de2ba589b96bee820800000000000000
+      internalID: 2949495585366520557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_3"
+      rect:
+        serializedVersion: 2
+        x: 2171
+        y: 1459
+        width: 14
+        height: 233
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0618f773ffcbf900800000000000000
+      internalID: 719397210092475919
       vertices: []
       indices: 
       edges: []
@@ -138,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "monster_BOSS_\uB9E4\uB2EC\uB9B0\uAC70\uBBF8_0": 1433155795218197737
+      "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_0": -6063964755962497727
+      "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_1": 3885180796053652454
+      "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_2": 2949495585366520557
+      "\uCCB4\uB825\uBC14\uCE78\uB098\uB204\uAE30\uC774_3": 719397210092475919
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

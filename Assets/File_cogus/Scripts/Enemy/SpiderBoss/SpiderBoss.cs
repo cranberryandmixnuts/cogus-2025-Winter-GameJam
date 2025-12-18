@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public sealed class SpiderBoss : EnemyBase
 {
@@ -13,9 +14,10 @@ public sealed class SpiderBoss : EnemyBase
         RageSweep
     }
 
-    [Header("Pattern Loop")]
+    [Header("Pattern")]
     [SerializeField] private float initialDelay = 0.5f;
     [SerializeField] private float patternInterval = 1f;
+    [SerializeField] private Image HPbar;
 
     [Header("Dive Bite - Common")]
     [SerializeField] private Transform emergeYAnchor;
@@ -143,6 +145,8 @@ public sealed class SpiderBoss : EnemyBase
 
         QueueFixedPatternsIfCrossed(beforePercent, afterPercent);
         UnlockExtraPatternIfNeeded(beforePercent, afterPercent);
+
+        HPbar.fillAmount = (float)CurrentHealth / Setting.maxHealth;
     }
 
     protected override void OnDied()
