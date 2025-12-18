@@ -135,6 +135,7 @@ public sealed class SnailState : PlayerState
 
     private void BeginHidden(float hideTime)
     {
+        SoundStorage.Instance.SnailInOut.Play();
         phase = HidePhase.Hidden;
 
         player.SetSnailHidden(true);
@@ -148,6 +149,7 @@ public sealed class SnailState : PlayerState
 
     private void BeginRecovery(float hideTime)
     {
+        SoundStorage.Instance.SnailInOut.Play();
         if (phase == HidePhase.Recovery)
             return;
 

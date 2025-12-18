@@ -48,7 +48,6 @@ public sealed class MantisEnemy : EnemyBase
 
     [Header("Animation")]
     [SerializeField] private Animator Anim;
-    [SerializeField] private LineRenderer swingLine;
     [SerializeField] private GameObject stunStar;
 
     private const string idleStateName = "monster_mantis_Idle";
@@ -112,7 +111,6 @@ public sealed class MantisEnemy : EnemyBase
         slipTimer = 0f;
         stunEndTime = 0f;
 
-        ClearSwingLine();
         PlayNormalAnimForState(state);
 
         if (stunStar != null) stunStar.SetActive(false);
@@ -373,15 +371,13 @@ public sealed class MantisEnemy : EnemyBase
             return;
         }
 
-        ClearSwingLine();
-
         if (!IsStunned())
             PlayNormalAnimForState(state);
     }
 
     private void BeginAttack()
     {
-        if (Anim == null) return;
+        SoundStorage.Instance.MantisAttack.Play();
 
         Anim.speed = 1f;
         Anim.Play(attackHash, 0, 0f);
@@ -408,14 +404,12 @@ public sealed class MantisEnemy : EnemyBase
         attackResolved = false;
 
         StopHorizontal();
-        ClearSwingLine();
     }
 
     private void TickAttack()
     {
         if (attackPhase == 0)
         {
-            ClearSwingLine();
             attackPhaseTimer -= Time.deltaTime;
 
             if (attackPhaseTimer <= 0f)
@@ -439,7 +433,6 @@ public sealed class MantisEnemy : EnemyBase
                 attackPhaseTimer = attackRecoverRuntime;
 
                 StartAttackCooldown();
-                ClearSwingLine();
             }
 
             return;
@@ -447,7 +440,6 @@ public sealed class MantisEnemy : EnemyBase
 
         if (attackPhase == 2)
         {
-            ClearSwingLine();
             attackPhaseTimer -= Time.deltaTime;
 
             if (attackPhaseTimer <= 0f) ChooseMovementState();
@@ -462,7 +454,6 @@ public sealed class MantisEnemy : EnemyBase
         attackPhaseTimer = 0f;
         attackResolved = true;
 
-        ClearSwingLine();
         EnterState(MantisState.Idle);
     }
 
@@ -506,18 +497,12 @@ public sealed class MantisEnemy : EnemyBase
 
             if (damage > 0 && p.TryHit(damage))
             {
-                UpdateSwingLine(originPos, dir, hit.distance);
                 attackResolved = true;
                 StartAttackCooldown();
-                ClearSwingLine();
                 return;
             }
-
-            UpdateSwingLine(originPos, dir, swingLength);
             return;
         }
-
-        UpdateSwingLine(originPos, dir, swingLength);
     }
 
     private bool InBackOffRange()
@@ -701,21 +686,6 @@ public sealed class MantisEnemy : EnemyBase
         return 0f;
     }
 
-    private void UpdateSwingLine(Vector2 origin, Vector2 dir, float length)
-    {
-        if (swingLine == null) return;
-
-        swingLine.positionCount = 2;
-        swingLine.SetPosition(0, origin);
-        swingLine.SetPosition(1, origin + dir.normalized * length);
-    }
-
-    private void ClearSwingLine()
-    {
-        if (swingLine == null) return;
-        swingLine.positionCount = 0;
-    }
-
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -769,7 +739,6 @@ public sealed class MantisEnemy : EnemyBase
     protected override void OnDied()
     {
         state = MantisState.Dead;
-        ClearSwingLine();
         StopHorizontal();
 
         stunStar.SetActive(false);

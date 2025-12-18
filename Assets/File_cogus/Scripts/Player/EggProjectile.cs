@@ -31,6 +31,7 @@ public sealed class EggProjectile : MonoBehaviour
 
         startPos = transform.position;
         spinSign = Random.value < 0.5f ? -1 : 1;
+        SoundStorage.Instance.EggThrow.Play();
     }
 
     public void Initialize(GameObject owner, Vector2 direction, float speed, float maxDistance, int damage)
@@ -87,6 +88,7 @@ public sealed class EggProjectile : MonoBehaviour
     public void Break()
     {
         isBreaking = true;
+        SoundStorage.Instance.EggBreaking.Play();
 
         Destroy(gameObject, breakLifetime);
         anim.Play(BreakAnimStateName, 0, 0f);

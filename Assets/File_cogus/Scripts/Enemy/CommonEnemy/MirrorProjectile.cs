@@ -40,6 +40,8 @@ public sealed class MirrorProjectile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         Sprite = GetComponent<SpriteRenderer>();
+
+        SoundStorage.Instance.SpidermirrorFragments.Play();
     }
 
     private void FixedUpdate()

@@ -163,6 +163,7 @@ public sealed class SpiderBoss : EnemyBase
         fixedHitWarningImage.gameObject.SetActive(false);
 
         base.OnDied();
+        SceneLoader.Instance.LoadScene(SceneType.EngingScene);
     }
 
     private void PlayAnim(string stateName)
@@ -377,6 +378,8 @@ public sealed class SpiderBoss : EnemyBase
         if (hitTime > 0f)
             yield return new WaitForSeconds(hitTime);
 
+        if (applyPoison) SoundStorage.Instance.SpiderPoison.Play();
+                else SoundStorage.Instance.SpiderBite.Play();
         TryHitscan(hitCollider, damage, applyPoison);
 
         float remain = attackLen - hitTime;
