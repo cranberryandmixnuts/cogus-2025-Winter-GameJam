@@ -2,5 +2,7 @@ using UnityEngine;
 
 public class TitleManager : MonoBehaviour
 {
-    public void GameStart() => SceneLoader.Instance.LoadScene(SceneType.Stage1Scene);
+    public void CutSceneStart() => SceneLoader.Instance.LoadScene(SceneType.CutScene);
+
+    public void Stage1SceneStart() => SceneLoader.Instance.LoadScene(SceneType.Stage1Scene);
 }
