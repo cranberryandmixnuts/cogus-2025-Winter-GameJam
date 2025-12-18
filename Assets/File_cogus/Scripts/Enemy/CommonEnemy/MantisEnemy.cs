@@ -1,5 +1,9 @@
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 public sealed class MantisEnemy : EnemyBase
@@ -36,6 +40,11 @@ public sealed class MantisEnemy : EnemyBase
 
     [Header("Attack Cooldown")]
     [SerializeField] private Vector2 attackCooldownRange = new(1.5f, 3f);
+
+    [Header("Gizmos")]
+    [SerializeField] private bool drawSwingConeGizmo = true;
+    [SerializeField] private Color swingConeFillColor = new(1f, 0.7f, 0.2f, 0.12f);
+    [SerializeField] private Color swingConeWireColor = new(1f, 0.7f, 0.2f, 0.9f);
 
     [Header("Animation")]
     [SerializeField] private Animator Anim;
@@ -378,7 +387,6 @@ public sealed class MantisEnemy : EnemyBase
         Anim.Play(attackHash, 0, 0f);
 
         float clipLen = FindClipLengthByName(attackStateName);
-        if (clipLen <= 0f) clipLen = 1f;
 
         if (attackPrepPercent >= attackEndPercent)
         {
@@ -532,26 +540,27 @@ public sealed class MantisEnemy : EnemyBase
         Vector2 forward = Vector2.right * facingDir;
         float ang = Vector2.SignedAngle(forward, toPlayer);
 
-        float minAng;
-        float maxAng;
-
-        if (facingDir >= 0)
-        {
-            minAng = Mathf.Min(swingStartAngleDeg, swingEndAngleDeg);
-            maxAng = Mathf.Max(swingStartAngleDeg, swingEndAngleDeg);
-        }
-        else
-        {
-            float a = -swingStartAngleDeg;
-            float b = -swingEndAngleDeg;
-            minAng = Mathf.Min(a, b);
-            maxAng = Mathf.Max(a, b);
-        }
+        GetSwingAngleRange(facingDir, out float minAng, out float maxAng);
 
         if (ang < minAng) return false;
         if (ang > maxAng) return false;
 
         return true;
+    }
+
+    private void GetSwingAngleRange(int facing, out float minAng, out float maxAng)
+    {
+        if (facing >= 0)
+        {
+            minAng = Mathf.Min(swingStartAngleDeg, swingEndAngleDeg);
+            maxAng = Mathf.Max(swingStartAngleDeg, swingEndAngleDeg);
+            return;
+        }
+
+        float a = -swingStartAngleDeg;
+        float b = -swingEndAngleDeg;
+        minAng = Mathf.Min(a, b);
+        maxAng = Mathf.Max(a, b);
     }
 
     private Vector2 DirFromAngle(float angleDeg)
@@ -664,14 +673,64 @@ public sealed class MantisEnemy : EnemyBase
         swingLine.positionCount = 0;
     }
 
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawSwingConeGizmo) return;
+
+        float radius = swingLength;
+        if (radius <= 0f) return;
+
+        Vector3 origin = attackOrigin != null ? attackOrigin.position : transform.position;
+
+        int dir = GetPreviewFacingDir();
+        GetSwingAngleRange(dir, out float minAng, out float maxAng);
+
+        float sweep = maxAng - minAng;
+        if (sweep <= 0f) return;
+
+        Vector3 forward = Vector3.right * dir;
+
+        Vector3 from = Quaternion.AngleAxis(minAng, Vector3.forward) * forward;
+
+        Handles.color = swingConeFillColor;
+        Handles.DrawSolidArc(origin, Vector3.forward, from, sweep, radius);
+
+        Handles.color = swingConeWireColor;
+        Handles.DrawWireArc(origin, Vector3.forward, from, sweep, radius);
+
+        Vector3 edgeA = origin + (Quaternion.AngleAxis(minAng, Vector3.forward) * forward).normalized * radius;
+        Vector3 edgeB = origin + (Quaternion.AngleAxis(maxAng, Vector3.forward) * forward).normalized * radius;
+
+        Handles.DrawLine(origin, edgeA);
+        Handles.DrawLine(origin, edgeB);
+
+        float dot = HandleUtility.GetHandleSize(origin) * 0.03f;
+        Handles.DrawSolidDisc(origin, Vector3.forward, dot);
+    }
+
+    private int GetPreviewFacingDir()
+    {
+        if (Application.isPlaying)
+        {
+            if (facingDir == 0) return 1;
+            return facingDir;
+        }
+
+        float y = transform.eulerAngles.y % 360f;
+        if (y > 90f && y < 270f) return 1;
+        return -1;
+    }
+#endif
+
     protected override void OnDied()
     {
         state = MantisState.Dead;
         ClearSwingLine();
         StopHorizontal();
 
-        if (stunStar != null) stunStar.SetActive(false);
+        stunStar.SetActive(false);
 
-        if (Anim != null) Anim.speed = 1f;
+        Anim.speed = 1f;
     }
 }

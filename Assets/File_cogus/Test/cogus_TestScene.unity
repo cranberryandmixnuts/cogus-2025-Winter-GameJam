@@ -470,9 +470,8 @@ MonoBehaviour:
   setting: {fileID: 11400000, guid: 04b7f3ad86bf888448015e43c036cb71, type: 2}
   deathDestroyDelay: 3
   deathUpImpulse: 3
-  spriteRenderer: {fileID: 0}
   enableDamageFlash: 1
-  damageFlashColor: {r: 1, g: 0.65, b: 0.65, a: 1}
+  damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}
   damageFlashStrength: 0.75
   damageFlashInTime: 0.05
   damageFlashOutTime: 0.12
@@ -674,7 +673,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &616153241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -690,9 +689,8 @@ MonoBehaviour:
   setting: {fileID: 11400000, guid: 3c85a22b85c1a2645a1f0e5ebedb6b56, type: 2}
   deathDestroyDelay: 3
   deathUpImpulse: 3
-  spriteRenderer: {fileID: 0}
   enableDamageFlash: 1
-  damageFlashColor: {r: 1, g: 0.65, b: 0.65, a: 1}
+  damageFlashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
   damageFlashStrength: 0.75
   damageFlashInTime: 0.05
   damageFlashOutTime: 0.12
@@ -840,7 +838,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.00000011920929, y: 0.084946275}
+  m_Offset: {x: 0.18677795, y: -0.006744921}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -850,7 +848,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.1969697, y: 1.6332359}
+  m_Size: {x: 1.5721114, y: 1.4498535}
   m_EdgeRadius: 0
 --- !u!95 &616153246
 Animator:
@@ -908,9 +906,8 @@ MonoBehaviour:
   setting: {fileID: 11400000, guid: 3a603ee13c1ff1e4996aa5ae1e28a71f, type: 2}
   deathDestroyDelay: 3
   deathUpImpulse: 3
-  spriteRenderer: {fileID: 0}
   enableDamageFlash: 1
-  damageFlashColor: {r: 1, g: 0.65, b: 0.65, a: 1}
+  damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}
   damageFlashStrength: 0.75
   damageFlashInTime: 0.05
   damageFlashOutTime: 0.12
@@ -1243,7 +1240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!50 &1136789900
 Rigidbody2D:
   serializedVersion: 5
@@ -1389,6 +1386,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1541606546}
+  - {fileID: 1783984258}
   - {fileID: 1555259158}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1407,24 +1405,26 @@ MonoBehaviour:
   setting: {fileID: 11400000, guid: e8eee3b258e03e1468afb65e17abd7e3, type: 2}
   deathDestroyDelay: 3
   deathUpImpulse: 3
-  spriteRenderer: {fileID: 0}
   enableDamageFlash: 1
-  damageFlashColor: {r: 1, g: 0.65, b: 0.65, a: 1}
+  damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}
   damageFlashStrength: 0.75
   damageFlashInTime: 0.05
   damageFlashOutTime: 0.12
   currentHealth: 0
   backOffRange: {fileID: 1541606545}
-  attackOrigin: {fileID: 1136789903}
+  attackOrigin: {fileID: 1783984258}
   swingStartAngleDeg: 75
-  swingEndAngleDeg: -30
-  swingLength: 2
+  swingEndAngleDeg: -60
+  swingLength: 2.44
   playerHitMask:
     serializedVersion: 2
     m_Bits: 8
   attackPrepPercent: 0.2
   attackEndPercent: 0.9
   attackCooldownRange: {x: 1.5, y: 3}
+  drawSwingConeGizmo: 1
+  swingConeFillColor: {r: 1, g: 0.7, b: 0.2, a: 0.12}
+  swingConeWireColor: {r: 1, g: 0.7, b: 0.2, a: 0.9}
   Anim: {fileID: 1136789906}
   swingLine: {fileID: 1136789905}
   stunStar: {fileID: 1555259157}
@@ -1814,7 +1814,7 @@ MonoBehaviour:
   setting: {fileID: 11400000, guid: 061cdcc728687b34289330f23681cf55, type: 2}
   spriteRenderer: {fileID: 1280498421}
   enableDamageFlash: 1
-  damageFlashColor: {r: 1, g: 0.65, b: 0.65, a: 1}
+  damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}
   damageFlashStrength: 0.45
   damageFlashInTime: 0.05
   damageFlashOutTime: 0.12
@@ -2107,7 +2107,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1136789903}
@@ -2619,6 +2619,37 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 2
+--- !u!1 &1783984257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1783984258}
+  m_Layer: 6
+  m_Name: AttackOffset
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1783984258
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1783984257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1136789903}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2012224373
 GameObject:
   m_ObjectHideFlags: 0

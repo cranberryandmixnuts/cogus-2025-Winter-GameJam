@@ -12,14 +12,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     [SerializeField] private float deathUpImpulse = 3f;
 
     [Header("Damage Flash")]
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private bool enableDamageFlash = true;
-    [SerializeField] private Color damageFlashColor = new(1f, 0.65f, 0.65f, 1f);
+    [SerializeField] private Color damageFlashColor = new(1f, 0.35f, 0.35f, 1f);
     [SerializeField, Range(0f, 1f)] private float damageFlashStrength = 0.75f;
     [SerializeField] private float damageFlashInTime = 0.05f;
     [SerializeField] private float damageFlashOutTime = 0.12f;
 
     private Rigidbody2D rb;
+    private SpriteRenderer sprite;
 
     public int currentHealth;
     private float stunTimer;
@@ -48,12 +48,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        if (sprite == null)
+            sprite = GetComponentInChildren<SpriteRenderer>();
 
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
-
-        if (spriteRenderer != null)
-            baseSpriteColor = spriteRenderer.color;
+        if (sprite != null)
+            baseSpriteColor = sprite.color;
     }
 
     protected virtual void Start()
@@ -170,7 +170,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     protected virtual void PlayDamageFlash()
     {
         if (!enableDamageFlash) return;
-        if (spriteRenderer == null) return;
+        if (sprite == null) return;
 
         float strength = Mathf.Clamp01(damageFlashStrength);
         if (strength <= 0f) return;
@@ -183,12 +183,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         damageFlashTween?.Kill();
 
         Sequence seq = DOTween.Sequence();
-        seq.Append(spriteRenderer.DOColor(targetColor, inTime));
-        seq.Append(spriteRenderer.DOColor(baseSpriteColor, outTime));
+        seq.Append(sprite.DOColor(targetColor, inTime));
+        seq.Append(sprite.DOColor(baseSpriteColor, outTime));
         seq.OnComplete(() =>
         {
-            if (spriteRenderer != null)
-                spriteRenderer.color = baseSpriteColor;
+            if (sprite != null)
+                sprite.color = baseSpriteColor;
         });
 
         damageFlashTween = seq;

@@ -36,7 +36,7 @@ public sealed class PlayerController : MonoBehaviour
 
     [Header("Damage Flash")]
     [SerializeField] private bool enableDamageFlash = true;
-    [SerializeField] private Color damageFlashColor = new(1f, 0.65f, 0.65f, 1f);
+    [SerializeField] private Color damageFlashColor = new(1f, 0.35f, 0.35f, 1f);
     [SerializeField, Range(0f, 1f)] private float damageFlashStrength = 0.75f;
     [SerializeField] private float damageFlashInTime = 0.05f;
     [SerializeField] private float damageFlashOutTime = 0.12f;
@@ -614,8 +614,7 @@ public sealed class PlayerController : MonoBehaviour
         if (dead) return;
         dead = true;
 
-        if (damageFlashTween != null)
-            damageFlashTween.Kill();
+        damageFlashTween?.Kill();
 
         StopAllMotion();
         rb.simulated = false;
@@ -743,8 +742,7 @@ public sealed class PlayerController : MonoBehaviour
         Color desiredBase = GetDesiredSpriteColor();
         Color targetColor = Color.Lerp(desiredBase, damageFlashColor, strength);
 
-        if (damageFlashTween != null)
-            damageFlashTween.Kill();
+        damageFlashTween?.Kill();
 
         damageFlashActive = true;
 
