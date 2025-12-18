@@ -14,10 +14,19 @@ public sealed class SpiderBoss : EnemyBase
         RageSweep
     }
 
+    private const string AnimStateIdle = "monster_spider_Idle";
+    private const string AnimStateWalk = "monster_spider_Walk";
+    private const string AnimStateBackWalk = "monster_spider_BackWalk";
+    private const string AnimStateBite = "monster_spider_Bite";
+    private const string AnimStatePoison = "monster_spider_Poison";
+    private const string AnimStateString = "monster_spider_String";
+    private const string AnimStateGrow = "monster_spider_Grow";
+
     [Header("Pattern")]
     [SerializeField] private float initialDelay = 0.5f;
     [SerializeField] private float patternInterval = 1f;
     [SerializeField] private Image HPbar;
+    [SerializeField] private Animator Anim;
 
     [Header("Dive Bite - Common")]
     [SerializeField] private Transform emergeYAnchor;
@@ -165,10 +174,18 @@ public sealed class SpiderBoss : EnemyBase
         base.OnDied();
     }
 
+    private void PlayAnim(string stateName)
+    {
+        Anim.Play(stateName, 0, 0f);
+        Anim.Update(0f);
+    }
+
     private IEnumerator PatternLoop()
     {
         if (initialDelay > 0f)
             yield return new WaitForSeconds(initialDelay);
+
+        PlayAnim(AnimStateIdle);
 
         while (!IsDead)
         {
@@ -242,8 +259,14 @@ public sealed class SpiderBoss : EnemyBase
 
         float targetY = startY - fixedDescendDeltaY;
 
+        PlayAnim(AnimStateIdle);
+
         activeMoveTween = transform.DOMoveY(targetY, fixedDescendDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
+
+        PlayAnim(AnimStateGrow);
+
+        float growLen = GetAnimLength(AnimStateGrow);
 
         if (fixedHitDelay > 0f)
             yield return new WaitForSeconds(fixedHitDelay);
@@ -251,6 +274,12 @@ public sealed class SpiderBoss : EnemyBase
         bool hit = player.TryHit(fixedDamage);
         if (hit)
             player.ApplyPoison(fixedPoisonDuration, fixedPoisonDamagePerSecond);
+
+        float remain = growLen - fixedHitDelay;
+        if (remain > 0f)
+            yield return new WaitForSeconds(remain);
+
+        PlayAnim(AnimStateIdle);
 
         activeMoveTween = transform.DOMoveY(startY, fixedAscendDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
@@ -262,9 +291,9 @@ public sealed class SpiderBoss : EnemyBase
         NormalPatternType pat = normalPatternPool[idx];
 
         if (pat == NormalPatternType.Bite)
-            yield return RunDiveBite(normalBiteWorldY, normalBiteHitCollider, normalBiteDamage, false);
+            yield return RunDiveAttack(normalBiteWorldY, normalBiteHitCollider, normalBiteDamage, false, AnimStateBite);
         else if (pat == NormalPatternType.PoisonBite)
-            yield return RunDiveBite(poisonBiteWorldY, poisonBiteHitCollider, poisonBiteDamage, true);
+            yield return RunDiveAttack(poisonBiteWorldY, poisonBiteHitCollider, poisonBiteDamage, true, AnimStatePoison);
         else if (pat == NormalPatternType.WebShot)
             yield return RunWebShot();
         else if (pat == NormalPatternType.RageSweep)
@@ -286,7 +315,7 @@ public sealed class SpiderBoss : EnemyBase
         return idx;
     }
 
-    private IEnumerator RunDiveBite(float biteWorldY, Collider2D hitCollider, int damage, bool applyPoison)
+    private IEnumerator RunDiveAttack(float biteWorldY, Collider2D hitCollider, int damage, bool applyPoison, string attackAnimStateName)
     {
         activeMoveTween?.Kill();
         transform.rotation = baseRotation;
@@ -301,15 +330,27 @@ public sealed class SpiderBoss : EnemyBase
         Vector3 pos = transform.position;
         transform.position = new Vector3(x, startY, pos.z);
 
-        activeMoveTween = transform.DOMoveY(biteWorldY, descendDuration);
+        PlayAnim(AnimStateIdle);
+
+        activeMoveTween = transform.DOMoveY(biteWorldY, descendDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
+
+        PlayAnim(attackAnimStateName);
+
+        float attackLen = GetAnimLength(attackAnimStateName);
 
         if (biteDelay > 0f)
             yield return new WaitForSeconds(biteDelay);
 
         TryHitscan(hitCollider, damage, applyPoison);
 
-        activeMoveTween = transform.DOMoveY(startY, ascendDuration);
+        float remain = attackLen - biteDelay;
+        if (remain > 0f)
+            yield return new WaitForSeconds(remain);
+
+        PlayAnim(AnimStateIdle);
+
+        activeMoveTween = transform.DOMoveY(startY, ascendDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
     }
 
@@ -330,13 +371,24 @@ public sealed class SpiderBoss : EnemyBase
 
         transform.rotation = castRot;
 
-        Vector3 startPos = castPoint.position;
-        startPos.x += teleportOffset.x;
-        startPos.y += teleportOffset.y;
-        transform.position = new Vector3(startPos.x, startPos.y, transform.position.z);
+        Vector3 backPos = castPoint.position;
+        backPos.x += teleportOffset.x;
+        backPos.y += teleportOffset.y;
+        backPos.z = transform.position.z;
 
-        activeMoveTween = transform.DOMove(castPoint.position, webMoveDuration);
+        transform.position = backPos;
+
+        PlayAnim(AnimStateWalk);
+
+        Vector3 targetPos = castPoint.position;
+        targetPos.z = backPos.z;
+
+        activeMoveTween = transform.DOMove(targetPos, webMoveDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
+
+        PlayAnim(AnimStateString);
+
+        float stringLen = GetAnimLength(AnimStateString);
 
         if (webFireDelay > 0f)
             yield return new WaitForSeconds(webFireDelay);
@@ -350,7 +402,17 @@ public sealed class SpiderBoss : EnemyBase
         if (webAfterFireDelay > 0f)
             yield return new WaitForSeconds(webAfterFireDelay);
 
+        float remain = stringLen - webFireDelay - webAfterFireDelay;
+        if (remain > 0f)
+            yield return new WaitForSeconds(remain);
+
+        PlayAnim(AnimStateBackWalk);
+
+        activeMoveTween = transform.DOMove(backPos, webMoveDuration).SetEase(Ease.Linear);
+        yield return WaitUntilTweenEnds(activeMoveTween);
+
         transform.rotation = baseRotation;
+        PlayAnim(AnimStateIdle);
     }
 
     private IEnumerator RunRageSweep()
@@ -360,6 +422,8 @@ public sealed class SpiderBoss : EnemyBase
 
         if (rageLeftPoint == null || rageRightPoint == null || rageHitCollider == null)
             yield break;
+
+        PlayAnim(AnimStateWalk);
 
         if (rageWarningObject != null)
             rageWarningObject.SetActive(true);
@@ -386,6 +450,9 @@ public sealed class SpiderBoss : EnemyBase
         yield return MoveAndDamage(left, rageSweepDuration);
 
         rageHitCollider.enabled = false;
+
+        transform.rotation = baseRotation;
+        PlayAnim(AnimStateIdle);
     }
 
     private IEnumerator MoveAndDamage(Vector3 target, float duration)
@@ -467,5 +534,45 @@ public sealed class SpiderBoss : EnemyBase
         }
 
         return false;
+    }
+
+    public float GetAnimLength(string stateName)
+    {
+        AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        AnimatorStateInfo next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Anim.Update(0f);
+
+        current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Debug.LogError($"SpiderBoss: Animator state '{stateName}' not found or not playing.");
+        return 0f;
     }
 }

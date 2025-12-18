@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SoundStorage : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class SoundStorage : MonoBehaviour
     public AudioSource MantisAttack;
 
     private AudioSource currentBGM;
+    private SceneType currentSceneType = SceneType.None;
 
     private void Awake()
     {
@@ -32,37 +34,105 @@ public class SoundStorage : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        ConfigureBGMSource(BossBGM);
+        ConfigureBGMSource(EndBGM);
+        ConfigureBGMSource(NomalBGM);
+        ConfigureBGMSource(CutsceneBGM);
+        ConfigureBGMSource(TitleBGM);
+
+        StopAllBGM();
     }
 
-    public void PlayBGM(BGMType type)
+    private void OnEnable()
     {
-        if (currentBGM != null)
+        SceneManager.activeSceneChanged += OnActiveSceneChanged;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+    }
+
+    private void Start()
+    {
+        ApplyBGMForScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+    {
+        ApplyBGMForScene(newScene.name);
+    }
+
+    private void ApplyBGMForScene(string sceneName)
+    {
+        SceneType sceneType;
+        if (!System.Enum.TryParse(sceneName, out sceneType))
+            sceneType = SceneType.None;
+
+        if (sceneType == currentSceneType)
+            return;
+
+        currentSceneType = sceneType;
+
+        AudioSource targetBGM = GetBGMForScene(sceneType);
+        if (targetBGM == currentBGM)
+            return;
+
+        SwitchBGM(targetBGM);
+    }
+
+    private AudioSource GetBGMForScene(SceneType sceneType)
+    {
+        switch (sceneType)
+        {
+            case SceneType.TitleScene:
+                return TitleBGM;
+
+            case SceneType.CutScene:
+                return CutsceneBGM;
+
+            case SceneType.Stage3Scene:
+                return BossBGM;
+
+            case SceneType.EngingScene:
+                return EndBGM;
+
+            case SceneType.Stage1Scene:
+            case SceneType.Stage2Scene:
+                return NomalBGM;
+
+            default:
+                return NomalBGM;
+        }
+    }
+
+    private void SwitchBGM(AudioSource nextBGM)
+    {
+        if (currentBGM != null && currentBGM.isPlaying)
             currentBGM.Stop();
 
-        switch (type)
-        {
-            case BGMType.Title: currentBGM = TitleBGM; break;
-            case BGMType.Cutscene: currentBGM = CutsceneBGM; break;
-            case BGMType.Normal: currentBGM = NomalBGM; break;
-            case BGMType.Boss: currentBGM = BossBGM; break;
-            case BGMType.End: currentBGM = EndBGM; break;
-        }
+        currentBGM = nextBGM;
 
-        if (currentBGM != null)
-        {
-            currentBGM.loop = true;
+        if (!currentBGM.isPlaying)
             currentBGM.Play();
-        }
     }
-}
 
-public enum BGMType
-{
-    Title,
-    Cutscene,
-    Normal,
-    Boss,
-    End
+    private void ConfigureBGMSource(AudioSource source)
+    {
+        source.loop = true;
+        source.playOnAwake = false;
+    }
+
+    private void StopAllBGM()
+    {
+        BossBGM.Stop();
+        EndBGM.Stop();
+        NomalBGM.Stop();
+        CutsceneBGM.Stop();
+        TitleBGM.Stop();
+    }
 }

@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (InputService.Instance != null && InputService.Instance.PauseDown)
+        if (InputService.Instance.PauseDown)
         {
             TogglePause(!isGamePaused);
         }
