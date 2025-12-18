@@ -19,7 +19,7 @@ MonoBehaviour:
     moveSpeed: 5
   - skin: 1
     maxHealth: 100
-    currentHealth: 0
+    currentHealth: 100
     moveSpeed: 10
   - skin: 2
     maxHealth: 200
@@ -58,7 +58,7 @@ MonoBehaviour:
   eggProjectileSpeed: 18
   eggProjectileMaxDistance: 9
   baseEggProjectileDamage: 10
-  extraEggProjectileDamage: 2
+  extraEggProjectileDamage: 0
   eggShootCoolTime: 0.3
   bananaPeelSpeed: 10
   bananaStunDuration: 3
