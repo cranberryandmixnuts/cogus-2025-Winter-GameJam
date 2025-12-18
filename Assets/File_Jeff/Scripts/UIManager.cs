@@ -5,7 +5,6 @@ public class UIManager : MonoBehaviour
 {
     public GameObject settingsPanel;
     public GameObject soundPanel;
-    public AudioMixer mainMixer;
 
     private bool isGamePaused = false;
 
@@ -75,31 +74,5 @@ public class UIManager : MonoBehaviour
 #endif
         Application.Quit();
         Debug.Log("Game Quit Requested");
-    }
-
-    public void SetBGMVolume(float sliderValue)
-    {
-        if (mainMixer == null) return;
-        if (sliderValue <= 0.0001f)
-        {
-            mainMixer.SetFloat("BGM_Volume", -80f);
-        }
-        else
-        {
-            mainMixer.SetFloat("BGM_Volume", Mathf.Log10(sliderValue) * 20f);
-        }
-    }
-
-    public void SetSFXVolume(float sliderValue)
-    {
-        if (mainMixer == null) return;
-        if (sliderValue <= 0.0001f)
-        {
-            mainMixer.SetFloat("SFX_Volume", -80f);
-        }
-        else
-        {
-            mainMixer.SetFloat("SFX_Volume", Mathf.Log10(sliderValue) * 20f);
-        }
     }
 }

@@ -107,18 +107,4 @@ public class PauseMenuController : MonoBehaviour
         Application.Quit();
         Debug.Log("Game Quit Requested");
     }
-
-    public void SetBGMVolume(float sliderValue)
-    {
-        if (mainMixer == null) return;
-        float volume = (sliderValue <= 0.0001f) ? -80f : Mathf.Log10(sliderValue) * 20f;
-        mainMixer.SetFloat("BGM_Volume", volume);
-    }
-
-    public void SetSFXVolume(float sliderValue)
-    {
-        if (mainMixer == null) return;
-        float volume = (sliderValue <= 0.0001f) ? -80f : Mathf.Log10(sliderValue) * 20f;
-        mainMixer.SetFloat("SFX_Volume", volume);
-    }
 }

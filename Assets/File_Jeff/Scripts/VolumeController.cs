@@ -1,31 +1,52 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class VolumeController : MonoBehaviour
 {
-    public AudioMixer mainMixer;
+    [SerializeField] private AudioMixer Mixer;
+    [SerializeField] private Slider BGM;
+    [SerializeField] private Slider SFX;
 
-    public void SetBGMVolume(float sliderValue)
+    private const float MinDb = -80f;
+    private const float MinLinear = 0.0001f;
+
+    private void Awake()
     {
-        if (sliderValue <= 0.0001f)
-        {
-            mainMixer.SetFloat("BGM_Volume", -80f);
-        }
-        else
-        {
-            mainMixer.SetFloat("BGM_Volume", Mathf.Log10(sliderValue) * 20f);
-        }
+        SyncSliderFromMixer("BGM_Volume", BGM);
+        SyncSliderFromMixer("SFX_Volume", SFX);
     }
 
-    public void SetSFXVolume(float sliderValue)
+    public void SetBGMVolume()
     {
-        if (sliderValue <= 0.0001f)
-        {
-            mainMixer.SetFloat("SFX_Volume", -80f);
-        }
+        SetMixerVolumeFromSlider("BGM_Volume", BGM);
+    }
+
+    public void SetSFXVolume()
+    {
+        SetMixerVolumeFromSlider("SFX_Volume", SFX);
+    }
+
+    private void SetMixerVolumeFromSlider(string paramName, Slider slider)
+    {
+        float linear = slider.value;
+
+        if (linear <= MinLinear)
+            Mixer.SetFloat(paramName, MinDb);
         else
-        {
-            mainMixer.SetFloat("SFX_Volume", Mathf.Log10(sliderValue) * 20f);
-        }
+            Mixer.SetFloat(paramName, Mathf.Log10(linear) * 20f);
+    }
+
+    private void SyncSliderFromMixer(string paramName, Slider slider)
+    {
+        float db;
+
+        if (!Mixer.GetFloat(paramName, out db))
+            return;
+
+        if (db <= MinDb + 0.0001f)
+            slider.value = 0f;
+        else
+            slider.value = Mathf.Pow(10f, db / 20f);
     }
 }

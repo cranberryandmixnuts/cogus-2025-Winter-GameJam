@@ -665,7 +665,6 @@ GameObject:
   m_Component:
   - component: {fileID: 384539869}
   - component: {fileID: 384539868}
-  - component: {fileID: 384539867}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -673,19 +672,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &384539867
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384539866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 618e720cd81aaa945b768fa8196f2a4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VolumeController
-  mainMixer: {fileID: 24100000, guid: 63f4fad0ac1e74d458a3f5c510c2328f, type: 2}
 --- !u!114 &384539868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -700,7 +686,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   settingsPanel: {fileID: 745986565}
   soundPanel: {fileID: 745986563}
-  mainMixer: {fileID: 0}
 --- !u!4 &384539869
 Transform:
   m_ObjectHideFlags: 0
@@ -1585,7 +1570,11 @@ PrefabInstance:
     - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 384539867}
+      objectReference: {fileID: 745986566}
+    - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetBGMVolume
+      objectReference: {fileID: 0}
     - target: {fileID: 4434220914403097547, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_fontColor.b
       value: 1
@@ -1613,7 +1602,11 @@ PrefabInstance:
     - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 384539867}
+      objectReference: {fileID: 745986566}
+    - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetSFXVolume
+      objectReference: {fileID: 0}
     - target: {fileID: 5724409748018716511, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1750,6 +1743,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4849360962663556713, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
   m_PrefabInstance: {fileID: 745986562}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &745986566 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3931448768760132034, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
+  m_PrefabInstance: {fileID: 745986562}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 745986563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618e720cd81aaa945b768fa8196f2a4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeController
 --- !u!1 &808332017
 GameObject:
   m_ObjectHideFlags: 0
