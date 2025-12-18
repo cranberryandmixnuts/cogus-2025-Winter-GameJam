@@ -13,10 +13,12 @@ public sealed class MantisEnemy : EnemyBase
         Dead
     }
 
-    private const string AnimIdle = "Idle";
-    private const string AnimWalk = "Walk";
-    private const string AnimBackWalk = "BackWalk";
-    private const string AnimAttack = "Attack";
+    private enum StunAnimPhase
+    {
+        Slip,
+        Groggy,
+        Stand
+    }
 
     [Header("Ranges")]
     [SerializeField] private Collider2D backOffRange;
@@ -33,11 +35,19 @@ public sealed class MantisEnemy : EnemyBase
     [SerializeField, Range(0f, 1f)] private float attackEndPercent = 0.9f;
 
     [Header("Attack Cooldown")]
-    [SerializeField] private Vector2 attackCooldownRange = new Vector2(1.5f, 3f);
+    [SerializeField] private Vector2 attackCooldownRange = new(1.5f, 3f);
 
-    [Header("Optional")]
+    [Header("Animation")]
     [SerializeField] private Animator Anim;
     [SerializeField] private LineRenderer swingLine;
+    [SerializeField] private GameObject stunStar;
+
+    private const string idleStateName = "monster_mantis_Idle";
+    private const string walkStateName = "monster_mantis_Walk";
+    private const string attackStateName = "monster_mantis_Attack";
+    private const string slipStateName = "monster_mantis_Slip";
+    private const string groggyStateName = "monster_mantis_Groggy";
+    private const string standStateName = "monster_mantis_Stand";
 
     private MantisState state;
 
@@ -54,9 +64,28 @@ public sealed class MantisEnemy : EnemyBase
 
     private PlayerController cachedPlayer;
 
+    private float stunEndTime;
+    private bool stunAnimActive;
+    private StunAnimPhase stunAnimPhase;
+    private float slipTimer;
+
+    private int idleHash;
+    private int walkHash;
+    private int attackHash;
+    private int slipHash;
+    private int groggyHash;
+    private int standHash;
+
+    private float slipLength;
+    private float standLength;
+
     protected override void Start()
     {
         base.Start();
+
+        if (Anim == null) Anim = GetComponent<Animator>();
+
+        CacheAnimationRefs();
 
         cachedPlayer = PlayerController.Instance;
 
@@ -69,8 +98,15 @@ public sealed class MantisEnemy : EnemyBase
 
         state = MantisState.Walk;
 
+        stunAnimActive = false;
+        stunAnimPhase = StunAnimPhase.Slip;
+        slipTimer = 0f;
+        stunEndTime = 0f;
+
         ClearSwingLine();
-        PlayAnimForState(state);
+        PlayNormalAnimForState(state);
+
+        if (stunStar != null) stunStar.SetActive(false);
     }
 
     protected override void Update()
@@ -80,6 +116,10 @@ public sealed class MantisEnemy : EnemyBase
         if (IsDead) return;
 
         if (attackCooldownTimer > 0f) attackCooldownTimer -= Time.deltaTime;
+        if (attackCooldownTimer < 0f) attackCooldownTimer = 0f;
+
+        TickStunVisual();
+        TickAnimation();
 
         if (state == MantisState.Attack)
         {
@@ -128,6 +168,166 @@ public sealed class MantisEnemy : EnemyBase
         else StopHorizontal();
     }
 
+    public override bool ApplyStun(float duration)
+    {
+        bool changed = base.ApplyStun(duration);
+        if (!changed) return false;
+
+        stunEndTime = Time.time + duration;
+
+        if (IsDead) return true;
+        if (state == MantisState.Dead) return true;
+
+        if (!stunAnimActive)
+        {
+            stunAnimActive = true;
+            stunAnimPhase = StunAnimPhase.Slip;
+            slipTimer = Mathf.Max(0.01f, slipLength);
+
+            if (Anim != null)
+            {
+                Anim.speed = 1f;
+                Anim.Play(slipHash, 0, 0f);
+            }
+
+            return true;
+        }
+
+        if (stunAnimPhase == StunAnimPhase.Stand)
+        {
+            float rem = GetStunRemaining();
+            if (rem > Mathf.Max(0.01f, standLength) + 0.05f)
+            {
+                StartGroggy();
+                stunAnimPhase = StunAnimPhase.Groggy;
+            }
+        }
+
+        return true;
+    }
+
+    private void TickAnimation()
+    {
+        if (Anim == null) return;
+        if (IsDead) return;
+        if (state == MantisState.Dead) return;
+
+        if (IsStunned())
+        {
+            TickStunAnimation();
+            return;
+        }
+
+        if (stunAnimActive)
+        {
+            stunAnimActive = false;
+            Anim.speed = 1f;
+        }
+
+        if (state != MantisState.Attack)
+            PlayNormalAnimForState(state);
+    }
+
+    private void TickStunAnimation()
+    {
+        float rem = GetStunRemaining();
+        float sLen = Mathf.Max(0.01f, standLength);
+
+        if (!stunAnimActive)
+        {
+            stunAnimActive = true;
+            stunAnimPhase = StunAnimPhase.Slip;
+            slipTimer = Mathf.Max(0.01f, slipLength);
+
+            Anim.speed = 1f;
+            Anim.Play(slipHash, 0, 0f);
+            return;
+        }
+
+        if (stunAnimPhase == StunAnimPhase.Slip)
+        {
+            slipTimer -= Time.deltaTime;
+            if (slipTimer > 0f) return;
+
+            if (rem <= sLen)
+            {
+                StartStandToEndExactlyAtStunEnd(rem);
+                stunAnimPhase = StunAnimPhase.Stand;
+                return;
+            }
+
+            StartGroggy();
+            stunAnimPhase = StunAnimPhase.Groggy;
+            return;
+        }
+
+        if (stunAnimPhase == StunAnimPhase.Groggy)
+        {
+            if (rem <= sLen)
+            {
+                StartStandToEndExactlyAtStunEnd(rem);
+                stunAnimPhase = StunAnimPhase.Stand;
+                return;
+            }
+
+            EnsurePlaying(groggyHash);
+            return;
+        }
+
+        if (stunAnimPhase == StunAnimPhase.Stand)
+        {
+            if (rem > sLen + 0.05f)
+            {
+                StartGroggy();
+                stunAnimPhase = StunAnimPhase.Groggy;
+            }
+        }
+    }
+
+    private void StartGroggy()
+    {
+        if (Anim == null) return;
+
+        Anim.speed = 1f;
+        Anim.Play(groggyHash, 0, 0f);
+    }
+
+    private void StartStandToEndExactlyAtStunEnd(float stunRemaining)
+    {
+        if (Anim == null) return;
+
+        float sLen = Mathf.Max(0.01f, standLength);
+        float rem = Mathf.Max(0.01f, stunRemaining);
+
+        float speed = sLen / rem;
+
+        Anim.speed = speed;
+        Anim.Play(standHash, 0, 0f);
+    }
+
+    private void EnsurePlaying(int stateHash)
+    {
+        AnimatorStateInfo info = Anim.GetCurrentAnimatorStateInfo(0);
+        if (info.shortNameHash == stateHash) return;
+
+        Anim.Play(stateHash, 0, 0f);
+    }
+
+    private void TickStunVisual()
+    {
+        if (stunStar == null) return;
+
+        bool active = !IsDead && state != MantisState.Dead && IsStunned();
+        if (stunStar.activeSelf != active) stunStar.SetActive(active);
+    }
+
+    private float GetStunRemaining()
+    {
+        float rem = stunEndTime - Time.time;
+        if (rem < 0f) rem = 0f;
+        return rem;
+    }
+
     private void ChooseMovementState()
     {
         if (state == MantisState.Dead) return;
@@ -165,14 +365,19 @@ public sealed class MantisEnemy : EnemyBase
         }
 
         ClearSwingLine();
-        PlayAnimForState(state);
+
+        if (!IsStunned())
+            PlayNormalAnimForState(state);
     }
 
     private void BeginAttack()
     {
-        PlayAnimForState(MantisState.Attack);
+        if (Anim == null) return;
 
-        float clipLen = GetClipLength(AnimAttack);
+        Anim.speed = 1f;
+        Anim.Play(attackHash, 0, 0f);
+
+        float clipLen = FindClipLengthByName(attackStateName);
         if (clipLen <= 0f) clipLen = 1f;
 
         if (attackPrepPercent >= attackEndPercent)
@@ -388,7 +593,7 @@ public sealed class MantisEnemy : EnemyBase
         if (p == null) return;
 
         facingDir = (p.transform.position.x - transform.position.x) >= 0f ? 1 : -1;
-        transform.rotation = Quaternion.Euler(0f, facingDir == -1 ? 180f : 0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, facingDir == 1 ? 180f : 0f, 0f);
     }
 
     private PlayerController GetPlayer()
@@ -399,7 +604,30 @@ public sealed class MantisEnemy : EnemyBase
         return cachedPlayer;
     }
 
-    private float GetClipLength(string clipName)
+    private void PlayNormalAnimForState(MantisState s)
+    {
+        if (Anim == null) return;
+        if (IsStunned()) return;
+
+        if (s == MantisState.Idle) EnsurePlaying(idleHash);
+        else if (s == MantisState.Walk) EnsurePlaying(walkHash);
+        else if (s == MantisState.BackWalk) EnsurePlaying(walkHash);
+    }
+
+    private void CacheAnimationRefs()
+    {
+        idleHash = Animator.StringToHash(idleStateName);
+        walkHash = Animator.StringToHash(walkStateName);
+        attackHash = Animator.StringToHash(attackStateName);
+        slipHash = Animator.StringToHash(slipStateName);
+        groggyHash = Animator.StringToHash(groggyStateName);
+        standHash = Animator.StringToHash(standStateName);
+
+        slipLength = FindClipLengthByName(slipStateName);
+        standLength = FindClipLengthByName(standStateName);
+    }
+
+    private float FindClipLengthByName(string clipName)
     {
         if (Anim == null) return 0f;
 
@@ -415,23 +643,10 @@ public sealed class MantisEnemy : EnemyBase
             if (c == null) continue;
             if (c.name != clipName) continue;
 
-            float spd = Anim.speed;
-            if (spd <= 0f) return Mathf.Infinity;
-
-            return c.length / spd;
+            return c.length;
         }
 
         return 0f;
-    }
-
-    private void PlayAnimForState(MantisState s)
-    {
-        if (Anim == null) return;
-
-        if (s == MantisState.Idle) Anim.Play(AnimIdle);
-        else if (s == MantisState.Walk) Anim.Play(AnimWalk);
-        else if (s == MantisState.BackWalk) Anim.Play(AnimBackWalk);
-        else if (s == MantisState.Attack) Anim.Play(AnimAttack);
     }
 
     private void UpdateSwingLine(Vector2 origin, Vector2 dir, float length)
@@ -454,5 +669,9 @@ public sealed class MantisEnemy : EnemyBase
         state = MantisState.Dead;
         ClearSwingLine();
         StopHorizontal();
+
+        if (stunStar != null) stunStar.SetActive(false);
+
+        if (Anim != null) Anim.speed = 1f;
     }
 }

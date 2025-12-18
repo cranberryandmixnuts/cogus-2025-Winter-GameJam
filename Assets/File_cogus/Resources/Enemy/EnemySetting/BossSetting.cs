@@ -1,14 +1,24 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/Boss Setting", fileName = "BossSetting")]
+[CreateAssetMenu(fileName = "BossSetting", menuName = "Scriptable Objects/BossSetting")]
 public sealed class BossSetting : ScriptableObject
 {
-    [Header("Poison")]
-    public float poisonDuration = 6f;
-    public int poisonDamagePerTick = 2;
-    public float poisonTickInterval = 1f;
-    public Color poisonTint = new(0.65f, 0.15f, 1f, 1f);
+    [Header("Hit Scan")]
+    public LayerMask playerLayer;
+
+    [Header("Bite Pattern Common")]
+    public float biteDownDuration = 0.25f;
+    public float biteHoldTime = 0.05f;
+    public float biteUpDuration = 0.25f;
+
+    [Header("Normal Bite")]
+    public int normalBiteDamage = 1;
+
+    [Header("Poison Bite")]
+    public int poisonBiteDamage = 1;
+    public float poisonDuration = 5f;
+    public int poisonDamagePerSecond = 1;
 
     [Header("Web Bind")]
-    public int webBreakPressCount = 6;
-}
+    public int webBindRequiredPressCount = 8;
+}   

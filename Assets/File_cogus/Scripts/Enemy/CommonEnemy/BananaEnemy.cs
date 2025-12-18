@@ -294,9 +294,6 @@ public sealed class BananaEnemy : EnemyBase
 
         fallLength = FindClipLengthByName(fallStateName);
         standLength = FindClipLengthByName(standStateName);
-
-        if (fallLength <= 0f) fallLength = 0.25f;
-        if (standLength <= 0f) standLength = 0.25f;
     }
 
     private float FindClipLengthByName(string clipName)
