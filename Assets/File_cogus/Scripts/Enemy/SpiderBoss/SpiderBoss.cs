@@ -10,8 +10,7 @@ public sealed class SpiderBoss : EnemyBase
     {
         Bite,
         PoisonBite,
-        WebShot,
-        RageSweep
+        WebShot
     }
 
     private const string AnimStateIdle = "monster_spider_Idle";
@@ -69,16 +68,6 @@ public sealed class SpiderBoss : EnemyBase
     [SerializeField, Range(0f, 1f)] private float webFireNormalizedTime = 0.15f;
     [SerializeField] private int webBreakPressRequired = 6;
 
-    [Header("Rage Sweep (<= 50%)")]
-    [SerializeField] private Transform rageLeftPoint;
-    [SerializeField] private Transform rageRightPoint;
-    [SerializeField] private GameObject rageWarningObject;
-    [SerializeField] private Collider2D rageHitCollider;
-    [SerializeField] private float rageTelegraphDuration = 0.8f;
-    [SerializeField] private float rageSweepDuration = 0.7f;
-    [SerializeField] private float rageBetweenSweepsDelay = 0.05f;
-    [SerializeField] private int rageSweepDamage = 14;
-
     private readonly Queue<int> fixedPatternQueue = new();
     private readonly List<NormalPatternType> normalPatternPool = new();
     private readonly Collider2D[] hitscanResults = new Collider2D[16];
@@ -98,8 +87,6 @@ public sealed class SpiderBoss : EnemyBase
     };
 
     private int nextFixedThresholdIndex;
-    private bool extraPatternUnlocked;
-    private bool extraPatternAdded;
 
     protected override void Awake()
     {
@@ -114,12 +101,6 @@ public sealed class SpiderBoss : EnemyBase
             Rigidbody.linearVelocity = Vector2.zero;
             Rigidbody.angularVelocity = 0f;
         }
-
-        if (rageWarningObject != null)
-            rageWarningObject.SetActive(false);
-
-        if (rageHitCollider != null)
-            rageHitCollider.enabled = false;
 
         normalPatternPool.Add(NormalPatternType.Bite);
         normalPatternPool.Add(NormalPatternType.PoisonBite);
@@ -152,7 +133,6 @@ public sealed class SpiderBoss : EnemyBase
         float afterPercent = after / max;
 
         QueueFixedPatternsIfCrossed(beforePercent, afterPercent);
-        UnlockExtraPatternIfNeeded(afterPercent);
 
         HPbar.fillAmount = (float)CurrentHealth / Setting.maxHealth;
     }
@@ -163,12 +143,6 @@ public sealed class SpiderBoss : EnemyBase
             StopCoroutine(patternLoop);
 
         activeMoveTween?.Kill();
-
-        if (rageWarningObject != null)
-            rageWarningObject.SetActive(false);
-
-        if (rageHitCollider != null)
-            rageHitCollider.enabled = false;
 
         base.OnDied();
     }
@@ -260,28 +234,6 @@ public sealed class SpiderBoss : EnemyBase
         }
     }
 
-    private void UnlockExtraPatternIfNeeded(float afterPercent)
-    {
-        if (extraPatternUnlocked)
-            return;
-
-        if (afterPercent <= 0.5f)
-        {
-            extraPatternUnlocked = true;
-            AddExtraPatternToPoolIfNeeded();
-        }
-    }
-
-    private void AddExtraPatternToPoolIfNeeded()
-    {
-        if (extraPatternAdded)
-            return;
-
-        normalPatternPool.Add(NormalPatternType.RageSweep);
-        extraPatternAdded = true;
-        lastNormalPatternIndex = -1;
-    }
-
     private IEnumerator RunFixedPattern()
     {
         activeMoveTween?.Kill();
@@ -335,8 +287,6 @@ public sealed class SpiderBoss : EnemyBase
             yield return RunDiveBite(poisonBiteWorldY, poisonBiteHitCollider, poisonBiteDamage, true);
         else if (pat == NormalPatternType.WebShot)
             yield return RunWebShot();
-        else if (pat == NormalPatternType.RageSweep)
-            yield return RunRageSweep();
     }
 
     private int PickNextNormalPatternIndex()
@@ -450,85 +400,6 @@ public sealed class SpiderBoss : EnemyBase
 
         transform.rotation = baseRotation;
         PlayAnim(AnimStateIdle);
-    }
-
-    private IEnumerator RunRageSweep()
-    {
-        activeMoveTween?.Kill();
-        transform.rotation = baseRotation;
-
-        if (rageLeftPoint == null || rageRightPoint == null || rageHitCollider == null)
-            yield break;
-
-        PlayAnim(AnimStateWalk);
-
-        if (rageWarningObject != null)
-            rageWarningObject.SetActive(true);
-
-        if (rageTelegraphDuration > 0f)
-            yield return new WaitForSeconds(rageTelegraphDuration);
-
-        if (rageWarningObject != null)
-            rageWarningObject.SetActive(false);
-
-        rageHitCollider.enabled = true;
-
-        Vector3 left = rageLeftPoint.position;
-        Vector3 right = rageRightPoint.position;
-
-        Vector3 pos = transform.position;
-        transform.position = new Vector3(left.x, left.y, pos.z);
-
-        yield return MoveAndDamage(right, rageSweepDuration);
-
-        if (rageBetweenSweepsDelay > 0f)
-            yield return new WaitForSeconds(rageBetweenSweepsDelay);
-
-        yield return MoveAndDamage(left, rageSweepDuration);
-
-        rageHitCollider.enabled = false;
-        PlayAnim(AnimStateIdle);
-    }
-
-    private IEnumerator MoveAndDamage(Vector3 target, float duration)
-    {
-        bool hitThisPass = false;
-
-        Vector3 start = transform.position;
-        target.z = start.z;
-
-        activeMoveTween = transform.DOMove(target, duration).SetEase(Ease.Linear);
-
-        while (activeMoveTween.IsActive() && activeMoveTween.IsPlaying())
-        {
-            if (!hitThisPass)
-                hitThisPass = TryHitscanRageSweep();
-
-            yield return null;
-        }
-
-        if (!hitThisPass)
-            TryHitscanRageSweep();
-    }
-
-    private bool TryHitscanRageSweep()
-    {
-        ContactFilter2D filter = new ContactFilter2D();
-        filter.SetLayerMask(playerHitMask);
-        filter.useTriggers = true;
-
-        int count = rageHitCollider.Overlap(filter, hitscanResults);
-        for (int i = 0; i < count; i++)
-        {
-            PlayerController player = hitscanResults[i].GetComponentInParent<PlayerController>();
-            if (player == null)
-                continue;
-
-            player.TryHit(rageSweepDamage);
-            return true;
-        }
-
-        return false;
     }
 
     private Transform PickClosestWebPoint(Vector3 playerPos)
