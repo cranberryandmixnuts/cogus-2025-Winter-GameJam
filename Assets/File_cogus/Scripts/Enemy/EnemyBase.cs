@@ -129,8 +129,6 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         if (dead) return;
         dead = true;
 
-        damageFlashTween?.Kill();
-
         GiveKillRewardOnce();
 
         StopAllMotion();

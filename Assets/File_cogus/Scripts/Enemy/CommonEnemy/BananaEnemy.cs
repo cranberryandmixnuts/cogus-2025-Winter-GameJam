@@ -69,7 +69,7 @@ public sealed class BananaEnemy : EnemyBase
         animPhase = AnimPhase.Walk;
         PlayWalk();
 
-        if (stunStar != null) stunStar.SetActive(false);
+        stunStar.SetActive(false);
     }
 
     protected override void Update()
@@ -196,17 +196,13 @@ public sealed class BananaEnemy : EnemyBase
 
         EnemyBananaPeel peel = Instantiate(prefab, pos, Quaternion.identity);
 
-        int damage = 0;
-        EnemySetting s = Setting;
-        if (s != null) damage = Mathf.Max(0, s.attackDamage);
-
-        peel.Initialize(damage);
+        peel.Initialize(Setting.attackDamage);
     }
 
     private void ApplyFacingByMoveDir()
     {
         int face = moveDir >= 0 ? 1 : -1;
-        transform.rotation = Quaternion.Euler(0f, face == -1 ? 180f : 0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, face == 1 ? 180f : 0f, 0f);
     }
 
     protected override void OnDied()
