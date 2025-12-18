@@ -59,7 +59,6 @@ public class PauseMenuController : MonoBehaviour
         }
 
         Cursor.visible = shouldPause;
-        Cursor.lockState = shouldPause ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     public void OnSettingsButtonClicked()
