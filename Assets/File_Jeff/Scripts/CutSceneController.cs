@@ -113,7 +113,6 @@ public class CutSceneController : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         yield return cs2_2_Text2.DOFade(0, 0.5f).WaitForCompletion();
 
-        // --- 종료 및 이동 ---
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Stage1Scene");
+        SceneLoader.Instance.LoadScene(SceneType.Stage1Scene);
     }
 }
