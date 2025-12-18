@@ -15,7 +15,7 @@ MonoBehaviour:
   skinStats:
   - skin: 0
     maxHealth: 50000
-    currentHealth: 70
+    currentHealth: 50000
     moveSpeed: 5
   - skin: 1
     maxHealth: 100

@@ -407,7 +407,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1315951751176696150, guid: 40e9292b61181404da8a28064a682003, type: 3}
+  m_Sprite: {fileID: 4120901811166270815, guid: 5ccc6b90d3743ac49972f468c23ddd54, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1657,6 +1657,14 @@ PrefabInstance:
     - target: {fileID: 2944533296125374050, guid: c1a021aeed147874a97a8ed36f89c62c, type: 3}
       propertyPath: m_Name
       value: PlayerWindow
+      objectReference: {fileID: 0}
+    - target: {fileID: 5255833415614553585, guid: c1a021aeed147874a97a8ed36f89c62c, type: 3}
+      propertyPath: autoReturnDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8849547674338907441, guid: c1a021aeed147874a97a8ed36f89c62c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
