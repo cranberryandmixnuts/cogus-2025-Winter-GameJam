@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: a5358fddbe259cd47a47be13d6275f1d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 123123287275310561
+    second: monster_mantis_Groggy_0
+  - first:
+      213: 7681062159290317043
+    second: monster_mantis_Groggy_1
+  - first:
+      213: 6294347519104441687
+    second: monster_mantis_Groggy_2
+  - first:
+      213: -8265238969932174432
+    second: monster_mantis_Groggy_3
+  - first:
+      213: -1321426015919643038
+    second: monster_mantis_Groggy_4
+  - first:
+      213: 8941987842028384317
+    second: monster_mantis_Groggy_5
+  - first:
+      213: 7212492172008656971
+    second: monster_mantis_Groggy_6
+  - first:
+      213: -6424753150546355557
+    second: monster_mantis_Groggy_7
+  - first:
+      213: -4114216195894624909
+    second: monster_mantis_Groggy_8
+  - first:
+      213: 9096985116737218141
+    second: monster_mantis_Groggy_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1000
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 853
+        width: 2970
+        height: 1329
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ed8f993afb65b100800000000000000
+      internalID: 123123287275310561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_1
+      rect:
+        serializedVersion: 2
+        x: 3095
+        y: 834
+        width: 2970
+        height: 1343
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f8b13e765d989a60800000000000000
+      internalID: 7681062159290317043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_2
+      rect:
+        serializedVersion: 2
+        x: 6145
+        y: 853
+        width: 3015
+        height: 1356
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75dd41148b30a5750800000000000000
+      internalID: 6294347519104441687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_3
+      rect:
+        serializedVersion: 2
+        x: 9219
+        y: 853
+        width: 3011
+        height: 1363
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ab2a7da2f8fb4d80800000000000000
+      internalID: -8265238969932174432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_4
+      rect:
+        serializedVersion: 2
+        x: 12335
+        y: 853
+        width: 2923
+        height: 1371
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 266662c2a0a59ade0800000000000000
+      internalID: -1321426015919643038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_5
+      rect:
+        serializedVersion: 2
+        x: 15376
+        y: 853
+        width: 2985
+        height: 1367
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d30b6fdc092581c70800000000000000
+      internalID: 8941987842028384317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_6
+      rect:
+        serializedVersion: 2
+        x: 18427
+        y: 853
+        width: 3027
+        height: 1363
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b409cd1ca6be71460800000000000000
+      internalID: 7212492172008656971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_7
+      rect:
+        serializedVersion: 2
+        x: 21522
+        y: 853
+        width: 2981
+        height: 1356
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9adc14ac01b6d6a0800000000000000
+      internalID: -6424753150546355557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_8
+      rect:
+        serializedVersion: 2
+        x: 24599
+        y: 853
+        width: 2970
+        height: 1351
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37dba8afa2e57e6c0800000000000000
+      internalID: -4114216195894624909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Groggy_9
+      rect:
+        serializedVersion: 2
+        x: 27671
+        y: 853
+        width: 2970
+        height: 1338
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d56232a04cbfe3e70800000000000000
+      internalID: 9096985116737218141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      monster_mantis_Groggy_0: 123123287275310561
+      monster_mantis_Groggy_1: 7681062159290317043
+      monster_mantis_Groggy_2: 6294347519104441687
+      monster_mantis_Groggy_3: -8265238969932174432
+      monster_mantis_Groggy_4: -1321426015919643038
+      monster_mantis_Groggy_5: 8941987842028384317
+      monster_mantis_Groggy_6: 7212492172008656971
+      monster_mantis_Groggy_7: -6424753150546355557
+      monster_mantis_Groggy_8: -4114216195894624909
+      monster_mantis_Groggy_9: 9096985116737218141
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -31,6 +31,7 @@ public sealed class PlayerController : MonoBehaviour
     [Header("Scene Refs")]
     [SerializeField] private PlayerVitals vitals;
     [SerializeField] private PlayerSetting setting;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
@@ -149,15 +150,26 @@ public sealed class PlayerController : MonoBehaviour
         get { return eggShootLockTimer > 0f; }
     }
 
+    public bool IsWebBound
+    {
+        get { return webBound; }
+    }
+
+    public bool IsPoisoned
+    {
+        get { return poisonRemaining > 0f; }
+    }
+
     public bool IsMovementLocked
     {
-        get { return eggShootLockTimer > 0f || movementLockTimer > 0f || IsSnailHidden; }
+        get { return webBound || eggShootLockTimer > 0f || movementLockTimer > 0f || IsSnailHidden; }
     }
 
     public bool IsSkinChangeLocked
     {
-        get { return skinChangeLockForced || skinChangeLockTimer > 0f; }
+        get { return webBound || skinChangeLockForced || skinChangeLockTimer > 0f; }
     }
+
     public bool CanThrowBananaPeel
     {
         get
@@ -182,6 +194,18 @@ public sealed class PlayerController : MonoBehaviour
     private int activeBananaPeelCount;
     private bool dead;
 
+    private Color baseSpriteColor;
+
+    private float poisonRemaining;
+    private float poisonTickTimer;
+    private int poisonDamagePerTick;
+    private static readonly Color PoisonTint = new Color(0.6f, 0.2f, 0.8f, 1f);
+
+    private bool webBound;
+    private int webBreakPressRequired;
+    private int webBreakPressCount;
+    private bool webIgnoreNextDown;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -197,6 +221,8 @@ public sealed class PlayerController : MonoBehaviour
         Instance = this;
 
         if (resetAllStatusOnAwake) setting.ResetAllStatus();
+
+        baseSpriteColor = spriteRenderer.color;
     }
 
     private void Start()
@@ -215,9 +241,17 @@ public sealed class PlayerController : MonoBehaviour
         UpdateGround();
 
         TickCooldowns();
+        TickPoison();
+        TickWebBind();
 
         if (jumpBufferTimer > 0f) jumpBufferTimer -= Time.deltaTime;
         if (coyoteTimer > 0f && !IsGround) coyoteTimer -= Time.deltaTime;
+
+        if (webBound)
+        {
+            StopAllMotion();
+            return;
+        }
 
         stateMachine.Update();
     }
@@ -229,13 +263,11 @@ public sealed class PlayerController : MonoBehaviour
         if (eggShootLockTimer > 0f) eggShootLockTimer -= dt;
         if (eggShootLockTimer < 0f) eggShootLockTimer = 0f;
 
-
         if (movementLockTimer > 0f) movementLockTimer -= dt;
         if (movementLockTimer < 0f) movementLockTimer = 0f;
 
         if (skinChangeLockTimer > 0f) skinChangeLockTimer -= dt;
         if (skinChangeLockTimer < 0f) skinChangeLockTimer = 0f;
-
 
         if (bananaPeelCooldownTimer > 0f) bananaPeelCooldownTimer -= dt;
         if (bananaPeelCooldownTimer < 0f) bananaPeelCooldownTimer = 0f;
@@ -248,12 +280,35 @@ public sealed class PlayerController : MonoBehaviour
     {
         if (dead) return;
 
+        if (webBound)
+        {
+            StopAllMotion();
+            return;
+        }
+
         stateMachine.FixedUpdate();
     }
 
     private void PollInput()
     {
         InputService input = InputService.Instance;
+
+        if (webBound)
+        {
+            MoveInput = 0f;
+
+            UpHeld = false;
+            DownHeld = false;
+
+            SpecialAbilitiesDown = input.SpecialAbilitiesDown;
+            SpecialAbilitiesUp = input.SpecialAbilitiesUp;
+            SpecialAbilitiesHeld = input.SpecialAbilitiesHeld;
+
+            HealingBananaThrowDown = false;
+
+            JumpHeld = false;
+            return;
+        }
 
         MoveInput = input.MoveAxis;
 
@@ -286,9 +341,9 @@ public sealed class PlayerController : MonoBehaviour
 
     private void UpdateGround()
     {
-        IsGround = groundCheckBox != null && groundCheckBox.IsTouchingLayers(groundLayer);
+        IsGround = groundCheckBox.IsTouchingLayers(groundLayer);
 
-        if (IsGround && setting != null)
+        if (IsGround)
             coyoteTimer = setting.coyoteTime;
     }
 
@@ -308,21 +363,11 @@ public sealed class PlayerController : MonoBehaviour
         int count = Enum.GetValues(typeof(PlayerSkin)).Length;
         int index = (int)CurrentSkin;
 
-        for (int i = 0; i < count; i++)
-        {
-            index = (index + delta) % count;
-            if (index < 0) index += count;
+        index = (index + delta) % count;
+        if (index < 0) index += count;
 
-            PlayerSkin next = (PlayerSkin)index;
-
-            if (vitals.GetHealth(next) > 0)
-            {
-                SwitchSkin(next);
-                return true;
-            }
-        }
-
-        return false;
+        SwitchSkin((PlayerSkin)index);
+        return true;
     }
 
     private void SwitchSkin(PlayerSkin next)
@@ -400,7 +445,7 @@ public sealed class PlayerController : MonoBehaviour
 
         if (Mathf.Abs(MoveInput) > 0.01f)
         {
-            float accelTime = Mathf.Max(0.0001f, Setting.bananaAccelTime);
+            float accelTime = Mathf.Max(0.0001f, setting.bananaAccelTime);
             float accelRate = maxSpeed / accelTime;
 
             vx = Mathf.MoveTowards(vx, targetVx, accelRate * dt);
@@ -408,7 +453,7 @@ public sealed class PlayerController : MonoBehaviour
         }
         else
         {
-            float decelTime = Mathf.Max(0.0001f, Setting.bananaDecelTime);
+            float decelTime = Mathf.Max(0.0001f, setting.bananaDecelTime);
             float decelRate = maxSpeed / decelTime;
 
             vx = Mathf.MoveTowards(vx, 0f, decelRate * dt);
@@ -538,19 +583,13 @@ public sealed class PlayerController : MonoBehaviour
         return true;
     }
 
-    public bool TryHit(int damage)
+    public bool TryHit(int damage, bool ignoreInvincible = false)
     {
-        if (!vitals.ApplyDamage(CurrentSkin, damage, false))
+        if (!vitals.ApplyDamage(CurrentSkin, damage, ignoreInvincible))
             return false;
 
         if (vitals.GetHealth(CurrentSkin) > 0)
             return true;
-
-        if (vitals.HasAnyAliveSkin())
-        {
-            TrySwitchSkin(1);
-            return true;
-        }
 
         Die();
         return true;
@@ -568,21 +607,13 @@ public sealed class PlayerController : MonoBehaviour
 
     public void UpdateMoveAnim(string idleStateName, string walkStateName)
     {
-        if (Anim == null) return;
-
-        float vx = rb != null ? Mathf.Abs(rb.linearVelocity.x) : 0f;
+        float vx = Mathf.Abs(rb.linearVelocity.x);
         if (vx > 0.05f) Anim.Play(walkStateName);
         else Anim.Play(idleStateName);
     }
 
     public float GetAnimLength(string stateName)
     {
-        if (Anim == null)
-        {
-            Debug.LogError("PlayerController: Animator is missing.");
-            return 0f;
-        }
-
         AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
         if (current.IsName(stateName))
         {
@@ -617,14 +648,103 @@ public sealed class PlayerController : MonoBehaviour
             return next.length / global;
         }
 
-        Debug.LogError($"PlayerController: Animator state '{stateName}' not found or not playing.");
         return 0f;
     }
+
     public void NotifyBananaPeelDestroyed()
     {
         activeBananaPeelCount--;
         if (activeBananaPeelCount < 0)
             activeBananaPeelCount = 0;
+    }
+
+    public void ApplyPoison(float duration, int damagePerSecond)
+    {
+        if (duration <= 0f) return;
+
+        bool wasPoisoned = poisonRemaining > 0f;
+
+        poisonRemaining = Mathf.Max(poisonRemaining, duration);
+        poisonDamagePerTick = Mathf.Max(0, damagePerSecond);
+
+        if (!wasPoisoned)
+            poisonTickTimer = 1f;
+
+        spriteRenderer.color = PoisonTint;
+    }
+
+    private void TickPoison()
+    {
+        if (poisonRemaining <= 0f) return;
+
+        float dt = Time.deltaTime;
+
+        poisonRemaining -= dt;
+        poisonTickTimer -= dt;
+
+        if (poisonTickTimer <= 0f)
+        {
+            poisonTickTimer += 1f;
+
+            if (poisonDamagePerTick > 0)
+                TryHit(poisonDamagePerTick, true);
+        }
+
+        if (poisonRemaining > 0f) return;
+
+        poisonRemaining = 0f;
+        poisonTickTimer = 0f;
+        poisonDamagePerTick = 0;
+        spriteRenderer.color = baseSpriteColor;
+    }
+
+    public void ApplyWebBind(int breakPressCount)
+    {
+        if (breakPressCount < 1) breakPressCount = 1;
+
+        webBound = true;
+        webBreakPressRequired = breakPressCount;
+        webBreakPressCount = 0;
+
+        webIgnoreNextDown = SpecialAbilitiesHeld;
+
+        StopAllCoroutines();
+
+        eggShootLockTimer = 0f;
+        movementLockTimer = 0f;
+        skinChangeLockTimer = 0f;
+        skinChangeLockForced = false;
+
+        SetSnailHidden(false);
+        CancelJump();
+        StopAllMotion();
+
+        stateMachine.ChangeState(CreateStateForSkin(CurrentSkin));
+    }
+
+    private void TickWebBind()
+    {
+        if (!webBound) return;
+
+        if (webIgnoreNextDown)
+        {
+            if (!SpecialAbilitiesHeld)
+                webIgnoreNextDown = false;
+
+            return;
+        }
+
+        if (SpecialAbilitiesDown)
+            webBreakPressCount++;
+
+        if (webBreakPressCount < webBreakPressRequired) return;
+
+        webBound = false;
+        webBreakPressCount = 0;
+        webBreakPressRequired = 0;
+        webIgnoreNextDown = false;
+
+        stateMachine.ChangeState(CreateStateForSkin(CurrentSkin));
     }
 
     public Rigidbody2D Rigidbody => rb;

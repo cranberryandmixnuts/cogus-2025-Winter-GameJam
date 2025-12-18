@@ -78,7 +78,7 @@ public sealed class PlayerVitals : MonoBehaviour
 
         bool changed = setting.SetCurrentHealth(skin, next);
 
-        if (changed && setting.hitInvincibleTime > 0f)
+        if (changed && setting.hitInvincibleTime > 0f && !ignoreInvincible)
             SetInvincibleTimer(setting.hitInvincibleTime);
 
         return changed;

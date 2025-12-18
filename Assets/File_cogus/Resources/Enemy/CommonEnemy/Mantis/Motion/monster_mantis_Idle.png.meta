@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: 46095c7bd7696e447b863698f71a3de4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8669607366934950751
+    second: monster_mantis_Idle_0
+  - first:
+      213: -39229113053700427
+    second: monster_mantis_Idle_1
+  - first:
+      213: 4218356133158837428
+    second: monster_mantis_Idle_2
+  - first:
+      213: -6433784912920817326
+    second: monster_mantis_Idle_3
+  - first:
+      213: -4974410767136296186
+    second: monster_mantis_Idle_4
+  - first:
+      213: 1752617401350643265
+    second: monster_mantis_Idle_5
+  - first:
+      213: 1973252408476707930
+    second: monster_mantis_Idle_6
+  - first:
+      213: -8435801666400759162
+    second: monster_mantis_Idle_7
+  - first:
+      213: 2271555934646840609
+    second: monster_mantis_Idle_8
+  - first:
+      213: 1030255173231789966
+    second: monster_mantis_Idle_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1000
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: monster_mantis_Idle_0
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 152
+        width: 2995
+        height: 2344
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ac8bb7880e5fa780800000000000000
+      internalID: -8669607366934950751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_1
+      rect:
+        serializedVersion: 2
+        x: 3111
+        y: 152
+        width: 3020
+        height: 2314
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5be949b5451a47ff0800000000000000
+      internalID: -39229113053700427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_2
+      rect:
+        serializedVersion: 2
+        x: 6181
+        y: 152
+        width: 3025
+        height: 2380
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bcd505ad8c9a8a30800000000000000
+      internalID: 4218356133158837428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 9266
+        y: 152
+        width: 3000
+        height: 2462
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 251561895ba96b6a0800000000000000
+      internalID: -6433784912920817326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_4
+      rect:
+        serializedVersion: 2
+        x: 12370
+        y: 152
+        width: 2938
+        height: 2582
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60376f943c757fab0800000000000000
+      internalID: -4974410767136296186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_5
+      rect:
+        serializedVersion: 2
+        x: 15475
+        y: 152
+        width: 2873
+        height: 2659
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14e5ca2ad3c825810800000000000000
+      internalID: 1752617401350643265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_6
+      rect:
+        serializedVersion: 2
+        x: 18552
+        y: 152
+        width: 2863
+        height: 2710
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5c207b5c96626b10800000000000000
+      internalID: 1973252408476707930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_7
+      rect:
+        serializedVersion: 2
+        x: 21637
+        y: 152
+        width: 2838
+        height: 2796
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 682d88644130eea80800000000000000
+      internalID: -8435801666400759162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_8
+      rect:
+        serializedVersion: 2
+        x: 24687
+        y: 152
+        width: 2884
+        height: 2664
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12d2e0c5610368f10800000000000000
+      internalID: 2271555934646840609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mantis_Idle_9
+      rect:
+        serializedVersion: 2
+        x: 27694
+        y: 152
+        width: 3015
+        height: 2390
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e874d7c1f933c4e00800000000000000
+      internalID: 1030255173231789966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      monster_mantis_Idle_0: -8669607366934950751
+      monster_mantis_Idle_1: -39229113053700427
+      monster_mantis_Idle_2: 4218356133158837428
+      monster_mantis_Idle_3: -6433784912920817326
+      monster_mantis_Idle_4: -4974410767136296186
+      monster_mantis_Idle_5: 1752617401350643265
+      monster_mantis_Idle_6: 1973252408476707930
+      monster_mantis_Idle_7: -8435801666400759162
+      monster_mantis_Idle_8: 2271555934646840609
+      monster_mantis_Idle_9: 1030255173231789966
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

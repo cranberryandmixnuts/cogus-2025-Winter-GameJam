@@ -858,7 +858,7 @@ MonoBehaviour:
   attackDuration: 3
   shotsPerAttack: 12
   cooldownRange: {x: 1, y: 3}
-  projectileSpawnYRange: {x: -0.35, y: 0.35}
+  projectileSpawnYRange: {x: -1, y: 1}
 --- !u!50 &804021156
 Rigidbody2D:
   serializedVersion: 5
@@ -930,7 +930,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 2, y: 3}
   m_EdgeRadius: 0
 --- !u!4 &804021159
 Transform:
@@ -1029,8 +1029,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.48113197, b: 0.48113197, a: 1}
+  m_Sprite: {fileID: -2726726113756041248, guid: 02f4f8c3319595845a7295f2952d87ac, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1050,7 +1050,7 @@ Animator:
   m_GameObject: {fileID: 819289110}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f360bb8beb29a8c47848bc16265bf823, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1644,6 +1644,7 @@ MonoBehaviour:
   resetAllStatusOnAwake: 1
   vitals: {fileID: 1280498428}
   setting: {fileID: 11400000, guid: 061cdcc728687b34289330f23681cf55, type: 2}
+  spriteRenderer: {fileID: 1280498421}
   groundLayer:
     serializedVersion: 2
     m_Bits: 512

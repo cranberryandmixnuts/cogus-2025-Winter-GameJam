@@ -28,7 +28,7 @@ public sealed class MirrorEnemy : EnemyBase
     [SerializeField] private float attackDuration = 3f;
     [SerializeField] private int shotsPerAttack = 12;
     [SerializeField] private Vector2 cooldownRange = new(1f, 3f);
-    [SerializeField] private Vector2 projectileSpawnYRange = new(-0.35f, 0.35f);
+    [SerializeField] private Vector2 projectileSpawnYRange = new(-1f, 1f);
 
     private readonly Collider2D[] detectHits = new Collider2D[8];
 
@@ -127,7 +127,7 @@ public sealed class MirrorEnemy : EnemyBase
         float ex = transform.position.x;
 
         int faceDir = (px - ex) >= 0f ? 1 : -1;
-        transform.rotation = Quaternion.Euler(0f, faceDir == -1 ? 180f : 0f, 0f);
+        transform.rotation = Quaternion.Euler(0f, faceDir == 1 ? 180f : 0f, 0f);
 
         int moveDir = tooClose ? ((ex - px) >= 0f ? 1 : -1) : ((px - ex) >= 0f ? 1 : -1);
         float speed = Mathf.Max(0f, s.moveSpeed);

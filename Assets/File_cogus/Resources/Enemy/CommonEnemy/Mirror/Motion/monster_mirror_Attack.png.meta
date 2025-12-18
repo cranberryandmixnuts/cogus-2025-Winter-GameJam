@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: 02f4f8c3319595845a7295f2952d87ac
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2726726113756041248
+    second: monster_mirror_Attack_0
+  - first:
+      213: -1177707081482893552
+    second: monster_mirror_Attack_1
+  - first:
+      213: 3826342569397705792
+    second: monster_mirror_Attack_2
+  - first:
+      213: 7041468477626359439
+    second: monster_mirror_Attack_3
+  - first:
+      213: -3154320343455770082
+    second: monster_mirror_Attack_4
+  - first:
+      213: 7654378804995785608
+    second: monster_mirror_Attack_5
+  - first:
+      213: -6393156427840843413
+    second: monster_mirror_Attack_6
+  - first:
+      213: -1361452656721446776
+    second: monster_mirror_Attack_7
+  - first:
+      213: -7250543735617622403
+    second: monster_mirror_Attack_8
+  - first:
+      213: 3249005967369970261
+    second: monster_mirror_Attack_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1300
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: monster_mirror_Attack_0
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ef2acddb09b82ad0800000000000000
+      internalID: -2726726113756041248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_1
+      rect:
+        serializedVersion: 2
+        x: 3389
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01700ce26a1f7afe0800000000000000
+      internalID: -1177707081482893552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_2
+      rect:
+        serializedVersion: 2
+        x: 6461
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04cd7e54b46e91530800000000000000
+      internalID: 3826342569397705792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_3
+      rect:
+        serializedVersion: 2
+        x: 9533
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8e970ae54258b160800000000000000
+      internalID: 7041468477626359439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_4
+      rect:
+        serializedVersion: 2
+        x: 12605
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1ad7842c5a9934d0800000000000000
+      internalID: -3154320343455770082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_5
+      rect:
+        serializedVersion: 2
+        x: 15677
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8838d00f7f0d93a60800000000000000
+      internalID: 7654378804995785608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_6
+      rect:
+        serializedVersion: 2
+        x: 18749
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b619a0de912f647a0800000000000000
+      internalID: -6393156427840843413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_7
+      rect:
+        serializedVersion: 2
+        x: 21821
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8883b91a5062b1de0800000000000000
+      internalID: -1361452656721446776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_8
+      rect:
+        serializedVersion: 2
+        x: 24893
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7ee31233e4e06b90800000000000000
+      internalID: -7250543735617622403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: monster_mirror_Attack_9
+      rect:
+        serializedVersion: 2
+        x: 27965
+        y: 44
+        width: 2436
+        height: 2991
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 552263e96b9c61d20800000000000000
+      internalID: 3249005967369970261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      monster_mirror_Attack_0: -2726726113756041248
+      monster_mirror_Attack_1: -1177707081482893552
+      monster_mirror_Attack_2: 3826342569397705792
+      monster_mirror_Attack_3: 7041468477626359439
+      monster_mirror_Attack_4: -3154320343455770082
+      monster_mirror_Attack_5: 7654378804995785608
+      monster_mirror_Attack_6: -6393156427840843413
+      monster_mirror_Attack_7: -1361452656721446776
+      monster_mirror_Attack_8: -7250543735617622403
+      monster_mirror_Attack_9: 3249005967369970261
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
