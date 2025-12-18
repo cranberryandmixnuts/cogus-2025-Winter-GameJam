@@ -8,6 +8,10 @@ public class SkinUIController : MonoBehaviour
     [Header("UI 아이콘 연결 (RectTransform)")]
     public RectTransform[] skinIcons = new RectTransform[3];
 
+    [Header("화살표 UI 연결")]
+    public RectTransform leftArrow;  // A키 화살표
+    public RectTransform rightArrow; // S키 화살표
+
     [Header("컬러 설정")]
     public Color centerColor = Color.white;
     public Color sideColor = new Color(0.6f, 0.6f, 0.6f, 1f);
@@ -20,13 +24,31 @@ public class SkinUIController : MonoBehaviour
     [Header("애니메이션 설정")]
     public float rotationDuration = 0.35f;
     public Ease rotationEase = Ease.OutBack;
+    public float arrowPunchForce = 20f;
 
     private RectTransform[] currentIconOrder;
     private Vector3[] positions;
 
-    private void OnSkinChangeLeftEvent() => RotateIcons(1);
-    private void OnSkinChangeRightEvent() => RotateIcons(-1);
+    private void OnSkinChangeLeftEvent()
+    {
+        RotateIcons(1);
+        AnimateArrow(leftArrow, -Vector3.right); // 왼쪽 화살표 흔들기
+    }
 
+    private void OnSkinChangeRightEvent()
+    {
+        RotateIcons(-1);
+        AnimateArrow(rightArrow, Vector3.right); // 오른쪽 화살표 흔들기
+    }
+
+    private void AnimateArrow(RectTransform arrow, Vector3 direction)
+    {
+        if (arrow == null) return;
+
+        arrow.DOComplete();
+        // 화살표를 해당 방향으로 펀치(흔들림) 효과
+        arrow.DOPunchAnchorPos(direction * arrowPunchForce, 0.2f, 10, 1);
+    }
 
     private void Awake()
     {
@@ -42,12 +64,9 @@ public class SkinUIController : MonoBehaviour
 
         if (currentIconOrder.Length > 0)
         {
-            Image centerImage = currentIconOrder[0].GetComponent<Image>();
-
-            centerImage.color = centerColor;
+            currentIconOrder[0].GetComponent<Image>().color = centerColor;
             currentIconOrder[1].GetComponent<Image>().color = sideColor;
             currentIconOrder[2].GetComponent<Image>().color = sideColor;
-
             currentIconOrder[0].SetAsLastSibling();
         }
     }
@@ -89,21 +108,17 @@ public class SkinUIController : MonoBehaviour
             return;
         }
 
-        RectTransform centerIcon = nextOrder[0];
-
-        centerIcon.SetAsLastSibling();
+        nextOrder[0].SetAsLastSibling();
 
         for (int i = 0; i < 3; i++)
         {
             RectTransform iconToMove = nextOrder[i];
             Vector3 targetPos = positions[i];
-
             Image iconImage = iconToMove.GetComponent<Image>();
             Color targetColor = (i == 0) ? centerColor : sideColor;
 
             iconToMove.DOComplete();
             iconToMove.DOLocalMove(targetPos, rotationDuration).SetEase(rotationEase);
-
             iconImage.DOColor(targetColor, rotationDuration);
         }
 
