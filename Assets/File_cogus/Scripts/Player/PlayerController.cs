@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -32,6 +33,13 @@ public sealed class PlayerController : MonoBehaviour
     [SerializeField] private PlayerVitals vitals;
     [SerializeField] private PlayerSetting setting;
     [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Header("Damage Flash")]
+    [SerializeField] private bool enableDamageFlash = true;
+    [SerializeField] private Color damageFlashColor = new(1f, 0.65f, 0.65f, 1f);
+    [SerializeField, Range(0f, 1f)] private float damageFlashStrength = 0.75f;
+    [SerializeField] private float damageFlashInTime = 0.05f;
+    [SerializeField] private float damageFlashOutTime = 0.12f;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
@@ -205,6 +213,9 @@ public sealed class PlayerController : MonoBehaviour
     private int webBreakPressRequired;
     private int webBreakPressCount;
     private bool webIgnoreNextDown;
+
+    private Tween damageFlashTween;
+    private bool damageFlashActive;
 
     private void Awake()
     {
@@ -588,6 +599,9 @@ public sealed class PlayerController : MonoBehaviour
         if (!vitals.ApplyDamage(CurrentSkin, damage, ignoreInvincible))
             return false;
 
+        if (!ignoreInvincible)
+            PlayDamageFlash();
+
         if (vitals.GetHealth(CurrentSkin) > 0)
             return true;
 
@@ -599,6 +613,9 @@ public sealed class PlayerController : MonoBehaviour
     {
         if (dead) return;
         dead = true;
+
+        if (damageFlashTween != null)
+            damageFlashTween.Kill();
 
         StopAllMotion();
         rb.simulated = false;
@@ -670,7 +687,7 @@ public sealed class PlayerController : MonoBehaviour
         if (!wasPoisoned)
             poisonTickTimer = 1f;
 
-        spriteRenderer.color = PoisonTint;
+        ApplySpriteColorIfNotFlashing(PoisonTint);
     }
 
     private void TickPoison()
@@ -695,7 +712,53 @@ public sealed class PlayerController : MonoBehaviour
         poisonRemaining = 0f;
         poisonTickTimer = 0f;
         poisonDamagePerTick = 0;
-        spriteRenderer.color = baseSpriteColor;
+
+        ApplySpriteColorIfNotFlashing(baseSpriteColor);
+    }
+
+    private void ApplySpriteColorIfNotFlashing(Color color)
+    {
+        if (spriteRenderer == null) return;
+        if (damageFlashActive) return;
+        spriteRenderer.color = color;
+    }
+
+    private Color GetDesiredSpriteColor()
+    {
+        if (IsPoisoned) return PoisonTint;
+        return baseSpriteColor;
+    }
+
+    private void PlayDamageFlash()
+    {
+        if (!enableDamageFlash) return;
+        if (spriteRenderer == null) return;
+
+        float strength = Mathf.Clamp01(damageFlashStrength);
+        if (strength <= 0f) return;
+
+        float inTime = Mathf.Max(0f, damageFlashInTime);
+        float outTime = Mathf.Max(0f, damageFlashOutTime);
+
+        Color desiredBase = GetDesiredSpriteColor();
+        Color targetColor = Color.Lerp(desiredBase, damageFlashColor, strength);
+
+        if (damageFlashTween != null)
+            damageFlashTween.Kill();
+
+        damageFlashActive = true;
+
+        Sequence seq = DOTween.Sequence();
+        seq.Append(spriteRenderer.DOColor(targetColor, inTime));
+        seq.Append(spriteRenderer.DOColor(desiredBase, outTime));
+        seq.OnComplete(() =>
+        {
+            damageFlashActive = false;
+            if (spriteRenderer != null)
+                spriteRenderer.color = GetDesiredSpriteColor();
+        });
+
+        damageFlashTween = seq;
     }
 
     public void ApplyWebBind(int breakPressCount)

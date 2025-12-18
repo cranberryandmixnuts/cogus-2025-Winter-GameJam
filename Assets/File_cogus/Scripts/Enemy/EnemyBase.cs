@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
@@ -10,12 +11,23 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     [SerializeField] private float deathDestroyDelay = 3f;
     [SerializeField] private float deathUpImpulse = 3f;
 
+    [Header("Damage Flash")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private bool enableDamageFlash = true;
+    [SerializeField] private Color damageFlashColor = new(1f, 0.65f, 0.65f, 1f);
+    [SerializeField, Range(0f, 1f)] private float damageFlashStrength = 0.75f;
+    [SerializeField] private float damageFlashInTime = 0.05f;
+    [SerializeField] private float damageFlashOutTime = 0.12f;
+
     private Rigidbody2D rb;
 
     public int currentHealth;
     private float stunTimer;
     private bool dead;
     private bool rewardGiven;
+
+    private Color baseSpriteColor;
+    private Tween damageFlashTween;
 
     public EnemySetting Setting => setting;
     public Rigidbody2D Rigidbody => rb;
@@ -36,6 +48,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+
+        if (spriteRenderer != null)
+            baseSpriteColor = spriteRenderer.color;
     }
 
     protected virtual void Start()
@@ -64,6 +82,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         if (currentHealth <= 0) return;
 
         currentHealth -= damage;
+
+        PlayDamageFlash();
+
         if (currentHealth > 0) return;
 
         currentHealth = 0;
@@ -108,6 +129,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         if (dead) return;
         dead = true;
 
+        damageFlashTween?.Kill();
+
         GiveKillRewardOnce();
 
         StopAllMotion();
@@ -142,6 +165,33 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         if (deathUpImpulse <= 0f) return;
 
         rb.AddForce(Vector2.up * deathUpImpulse, ForceMode2D.Impulse);
+    }
+
+    protected virtual void PlayDamageFlash()
+    {
+        if (!enableDamageFlash) return;
+        if (spriteRenderer == null) return;
+
+        float strength = Mathf.Clamp01(damageFlashStrength);
+        if (strength <= 0f) return;
+
+        float inTime = Mathf.Max(0f, damageFlashInTime);
+        float outTime = Mathf.Max(0f, damageFlashOutTime);
+
+        Color targetColor = Color.Lerp(baseSpriteColor, damageFlashColor, strength);
+
+        damageFlashTween?.Kill();
+
+        Sequence seq = DOTween.Sequence();
+        seq.Append(spriteRenderer.DOColor(targetColor, inTime));
+        seq.Append(spriteRenderer.DOColor(baseSpriteColor, outTime));
+        seq.OnComplete(() =>
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.color = baseSpriteColor;
+        });
+
+        damageFlashTween = seq;
     }
 
     private void GiveKillRewardOnce()

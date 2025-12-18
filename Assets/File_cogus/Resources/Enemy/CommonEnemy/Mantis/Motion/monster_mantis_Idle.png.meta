@@ -78,7 +78,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1000
+  spritePixelsToUnits: 300
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -143,12 +143,12 @@ TextureImporter:
       name: monster_mantis_Idle_0
       rect:
         serializedVersion: 2
-        x: 51
-        y: 152
-        width: 2995
-        height: 2344
+        x: 0
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -165,12 +165,12 @@ TextureImporter:
       name: monster_mantis_Idle_1
       rect:
         serializedVersion: 2
-        x: 3111
-        y: 152
-        width: 3020
-        height: 2314
+        x: 1600
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -187,12 +187,12 @@ TextureImporter:
       name: monster_mantis_Idle_2
       rect:
         serializedVersion: 2
-        x: 6181
-        y: 152
-        width: 3025
-        height: 2380
+        x: 3200
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -209,12 +209,12 @@ TextureImporter:
       name: monster_mantis_Idle_3
       rect:
         serializedVersion: 2
-        x: 9266
-        y: 152
-        width: 3000
-        height: 2462
+        x: 4800
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -231,12 +231,12 @@ TextureImporter:
       name: monster_mantis_Idle_4
       rect:
         serializedVersion: 2
-        x: 12370
-        y: 152
-        width: 2938
-        height: 2582
+        x: 6400
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -253,12 +253,12 @@ TextureImporter:
       name: monster_mantis_Idle_5
       rect:
         serializedVersion: 2
-        x: 15475
-        y: 152
-        width: 2873
-        height: 2659
+        x: 8000
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -275,12 +275,12 @@ TextureImporter:
       name: monster_mantis_Idle_6
       rect:
         serializedVersion: 2
-        x: 18552
-        y: 152
-        width: 2863
-        height: 2710
+        x: 9600
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -297,12 +297,12 @@ TextureImporter:
       name: monster_mantis_Idle_7
       rect:
         serializedVersion: 2
-        x: 21637
-        y: 152
-        width: 2838
-        height: 2796
+        x: 11200
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -319,12 +319,12 @@ TextureImporter:
       name: monster_mantis_Idle_8
       rect:
         serializedVersion: 2
-        x: 24687
-        y: 152
-        width: 2884
-        height: 2664
+        x: 12800
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -341,12 +341,12 @@ TextureImporter:
       name: monster_mantis_Idle_9
       rect:
         serializedVersion: 2
-        x: 27694
-        y: 152
-        width: 3015
-        height: 2390
+        x: 14400
+        y: 0
+        width: 1600
+        height: 1600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -363,7 +363,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ab73c540920ed8b4b96897bfb0520d4c
     internalID: 0
     vertices: []
     indices: 
@@ -371,7 +371,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":10.0,"y":1.0},"gridSpriteSize":{"x":1600.0,"y":1600.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       monster_mantis_Idle_0: -8669607366934950751
       monster_mantis_Idle_1: -39229113053700427
