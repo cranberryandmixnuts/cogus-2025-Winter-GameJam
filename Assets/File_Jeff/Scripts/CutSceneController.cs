@@ -35,6 +35,14 @@ public class CutSceneController : MonoBehaviour
         StartCoroutine(PlayCutSceneSequence());
     }
 
+    private void Update()
+    {
+        if (InputService.Instance.PauseDown)
+        {
+            SceneLoader.Instance.LoadScene(SceneType.TitleScene);
+        }
+    }
+
     private void SetupInitialState()
     {
         cutScene1Group.alpha = 0;
