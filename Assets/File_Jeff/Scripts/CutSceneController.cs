@@ -39,7 +39,7 @@ public class CutSceneController : MonoBehaviour
     {
         if (InputService.Instance.PauseDown)
         {
-            SceneLoader.Instance.LoadScene(SceneType.TitleScene);
+            SceneLoader.Instance.LoadScene(SceneType.Stage1Scene);
         }
     }
 
