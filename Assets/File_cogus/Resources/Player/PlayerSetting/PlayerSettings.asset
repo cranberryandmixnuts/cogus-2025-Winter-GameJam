@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettings
   skinStats:
   - skin: 0
-    maxHealth: 50000
-    currentHealth: 50000
+    maxHealth: 70
+    currentHealth: 70
     moveSpeed: 5
   - skin: 1
     maxHealth: 100
