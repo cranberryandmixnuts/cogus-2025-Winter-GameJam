@@ -447,6 +447,7 @@ GameObject:
   - component: {fileID: 581288415}
   - component: {fileID: 581288414}
   - component: {fileID: 581288413}
+  - component: {fileID: 581288418}
   m_Layer: 6
   m_Name: BananaEnemy
   m_TagString: Enemy
@@ -476,6 +477,8 @@ MonoBehaviour:
   peelPrefab: {fileID: 8894232252881350568, guid: f9f779c434c25fc49b2c2c4cec302af5, type: 3}
   peelSpawnOrigin: {fileID: 581288417}
   peelDropCooldownRange: {x: 1.2, y: 2.6}
+  animator: {fileID: 581288418}
+  stunStar: {fileID: 0}
 --- !u!50 &581288414
 Rigidbody2D:
   serializedVersion: 5
@@ -537,17 +540,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.18531549, y: 0.08553028}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3.0719998, y: 3.0719998}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.838196, y: 2.3228674}
   m_EdgeRadius: 0
 --- !u!212 &581288416
 SpriteRenderer:
@@ -596,8 +599,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.48113197, b: 0.48113197, a: 1}
+  m_Sprite: {fileID: 5027452245118840806, guid: 2a1c7c5a8ed692d40808cb1e0a2ca7be, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -623,6 +626,28 @@ Transform:
   - {fileID: 1650339239}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &581288418
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581288412}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 77e73471517f53048a52ec74994605d1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &616153240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2210,12 +2235,12 @@ GameObject:
   - component: {fileID: 1650339239}
   - component: {fileID: 1650339240}
   m_Layer: 0
-  m_Name: "\uD5E4\uB871\uD5E4\uB871\uBCC4_0"
+  m_Name: "\uD5E4\uB871\uD5E4\uB871\uBCC4"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1650339239
 Transform:
   m_ObjectHideFlags: 0

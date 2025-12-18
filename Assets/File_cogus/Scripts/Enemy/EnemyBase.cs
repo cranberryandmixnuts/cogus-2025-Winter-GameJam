@@ -23,6 +23,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     public int CurrentHealth => currentHealth;
     public bool IsDead => dead;
 
+    protected float StunRemaining
+    {
+        get { return stunTimer; }
+    }
+
     protected virtual bool IsInvincible
     {
         get { return false; }
