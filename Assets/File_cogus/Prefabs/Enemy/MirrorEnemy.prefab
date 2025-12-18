@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MirrorEnemy
   setting: {fileID: 11400000, guid: 3a603ee13c1ff1e4996aa5ae1e28a71f, type: 2}
-  deathDestroyDelay: 3
+  deathDestroyDelay: 0.9
   deathUpImpulse: 10
   enableDamageFlash: 1
   damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}

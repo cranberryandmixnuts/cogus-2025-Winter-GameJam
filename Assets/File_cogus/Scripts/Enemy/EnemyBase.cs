@@ -8,7 +8,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
     [SerializeField] private EnemySetting setting;
 
     [Header("Death")]
-    [SerializeField] private float deathDestroyDelay = 3f;
+    [SerializeField] private float deathDestroyDelay = 0.9f;
     [SerializeField] private float deathUpImpulse = 3f;
 
     [Header("Damage Flash")]

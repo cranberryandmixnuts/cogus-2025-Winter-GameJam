@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BananaEnemy
   setting: {fileID: 11400000, guid: 04b7f3ad86bf888448015e43c036cb71, type: 2}
-  deathDestroyDelay: 3
+  deathDestroyDelay: 0.9
   deathUpImpulse: 10
   enableDamageFlash: 1
   damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}

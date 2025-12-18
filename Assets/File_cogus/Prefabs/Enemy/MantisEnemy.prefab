@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MantisEnemy
   setting: {fileID: 11400000, guid: e8eee3b258e03e1468afb65e17abd7e3, type: 2}
-  deathDestroyDelay: 3
+  deathDestroyDelay: 0.9
   deathUpImpulse: 10
   enableDamageFlash: 1
   damageFlashColor: {r: 1, g: 0.34901962, b: 0.34901962, a: 1}

@@ -1919,19 +1919,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 324802950}
+      objectReference: {fileID: 1939250219}
     - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetBGMVolume
       objectReference: {fileID: 0}
     - target: {fileID: 4399451231381933488, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PauseMenuController, Assembly-CSharp
+      value: VolumeController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4849360962663556713, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_IsActive
@@ -1939,19 +1939,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 324802950}
+      objectReference: {fileID: 1939250219}
     - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetSFXVolume
       objectReference: {fileID: 0}
     - target: {fileID: 4967699640287927768, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PauseMenuController, Assembly-CSharp
+      value: VolumeController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5724409748018716511, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -2005,6 +2005,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 324802950}
   m_SourcePrefab: {fileID: 100100000, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
+--- !u!114 &1939250219 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3931448768760132034, guid: 3a139ea3463da664ba926f85c9cb0539, type: 3}
+  m_PrefabInstance: {fileID: 1939250218}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112900774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618e720cd81aaa945b768fa8196f2a4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeController
 --- !u!1 &1992224162
 GameObject:
   m_ObjectHideFlags: 0
