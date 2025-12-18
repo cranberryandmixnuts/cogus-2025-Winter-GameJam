@@ -122,16 +122,19 @@ public sealed class SnailEnemy : EnemyBase
 
         bool inRange = IsPlayerInDetectRange(out PlayerController p);
 
-        if (state == SnailState.Hide)
+        if (!IsStunned())
         {
-            if (!inRange) SetState(SnailState.Crawl, false);
-        }
-        else if (state == SnailState.Crawl)
-        {
-            if (inRange) SetState(SnailState.Hide, false);
-        }
+            if (state == SnailState.Hide)
+            {
+                if (!inRange) SetState(SnailState.Crawl, false);
+            }
+            else if (state == SnailState.Crawl)
+            {
+                if (inRange) SetState(SnailState.Hide, false);
+            }
 
-        if (p != null) cachedPlayer = p;
+            if (p != null) cachedPlayer = p;
+        }
     }
 
     private void FixedUpdate()

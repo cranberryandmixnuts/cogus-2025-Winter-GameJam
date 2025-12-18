@@ -798,7 +798,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.23, y: 0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1751242694}
   - {fileID: 1031338580}
@@ -1413,13 +1413,13 @@ MonoBehaviour:
   currentHealth: 0
   backOffRange: {fileID: 1541606545}
   attackOrigin: {fileID: 1783984258}
-  swingStartAngleDeg: 75
-  swingEndAngleDeg: -60
-  swingLength: 2.44
+  swingStartAngleDeg: 80
+  swingEndAngleDeg: -75
+  swingLength: 2
   playerHitMask:
     serializedVersion: 2
     m_Bits: 8
-  attackPrepPercent: 0.2
+  attackPrepPercent: 0.3
   attackEndPercent: 0.9
   attackCooldownRange: {x: 1.5, y: 3}
   drawSwingConeGizmo: 1
@@ -2578,7 +2578,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 616153244}
@@ -2644,7 +2644,7 @@ Transform:
   m_GameObject: {fileID: 1783984257}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.52, y: 0.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

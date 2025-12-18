@@ -29,13 +29,13 @@ public sealed class MantisEnemy : EnemyBase
 
     [Header("Attack Geometry")]
     [SerializeField] private Transform attackOrigin;
-    [SerializeField] private float swingStartAngleDeg = 75f;
-    [SerializeField] private float swingEndAngleDeg = -30f;
+    [SerializeField] private float swingStartAngleDeg = 80f;
+    [SerializeField] private float swingEndAngleDeg = -75f;
     [SerializeField] private float swingLength = 2f;
     [SerializeField] private LayerMask playerHitMask;
 
     [Header("Attack Timing (Percent)")]
-    [SerializeField, Range(0f, 1f)] private float attackPrepPercent = 0.2f;
+    [SerializeField, Range(0f, 1f)] private float attackPrepPercent = 0.3f;
     [SerializeField, Range(0f, 1f)] private float attackEndPercent = 0.9f;
 
     [Header("Attack Cooldown")]
@@ -386,16 +386,19 @@ public sealed class MantisEnemy : EnemyBase
         Anim.speed = 1f;
         Anim.Play(attackHash, 0, 0f);
 
-        float clipLen = FindClipLengthByName(attackStateName);
+        float clipLen = GetAnimLength(attackStateName);
 
-        if (attackPrepPercent >= attackEndPercent)
+        float prepPercent = attackPrepPercent;
+        float endPercent = attackEndPercent;
+
+        if (prepPercent >= endPercent)
         {
-            attackPrepPercent = 0.25f;
-            attackEndPercent = 0.75f;
+            prepPercent = 0.25f;
+            endPercent = 0.75f;
         }
 
-        attackWindupRuntime = clipLen * attackPrepPercent;
-        swingDurationRuntime = clipLen * (attackEndPercent - attackPrepPercent);
+        attackWindupRuntime = clipLen * prepPercent;
+        swingDurationRuntime = clipLen * (endPercent - prepPercent);
         attackRecoverRuntime = clipLen - (attackWindupRuntime + swingDurationRuntime);
 
         if (attackRecoverRuntime < 0.01f) attackRecoverRuntime = 0.01f;
@@ -634,6 +637,46 @@ public sealed class MantisEnemy : EnemyBase
 
         slipLength = FindClipLengthByName(slipStateName);
         standLength = FindClipLengthByName(standStateName);
+    }
+
+    public float GetAnimLength(string stateName)
+    {
+        AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        AnimatorStateInfo next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Anim.Update(0f);
+
+        current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Debug.LogError($"MantisEnemy: Animator state '{stateName}' not found or not playing.");
+        return 0f;
     }
 
     private float FindClipLengthByName(string clipName)
