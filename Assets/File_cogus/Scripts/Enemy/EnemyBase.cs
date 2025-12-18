@@ -143,9 +143,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable, IStunnable
         OnDied();
     }
 
-    protected virtual void OnDied()
-    {
-    }
+    protected virtual void OnDied() { }
 
     protected virtual void DisableAllColliders()
     {
