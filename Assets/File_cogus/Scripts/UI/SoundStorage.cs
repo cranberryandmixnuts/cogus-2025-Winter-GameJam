@@ -90,7 +90,7 @@ public class SoundStorage : MonoBehaviour
             SceneType.TitleScene => TitleBGM,
             SceneType.CutScene => CutsceneBGM,
             SceneType.Stage3Scene => BossBGM,
-            SceneType.EngingScene => EndBGM,
+            SceneType.EndingScene => EndBGM,
             SceneType.Stage1Scene or SceneType.Stage2Scene => NomalBGM,
             _ => NomalBGM,
         };

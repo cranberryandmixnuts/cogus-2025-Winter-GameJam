@@ -11,7 +11,7 @@ public enum SceneType
     Stage1Scene,
     Stage2Scene,
     Stage3Scene,
-    EngingScene
+    EndingScene
 }
 
 public class SceneLoader : MonoBehaviour

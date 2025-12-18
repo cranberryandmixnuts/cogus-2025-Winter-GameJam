@@ -163,7 +163,7 @@ public sealed class SpiderBoss : EnemyBase
         fixedHitWarningImage.gameObject.SetActive(false);
 
         base.OnDied();
-        SceneLoader.Instance.LoadScene(SceneType.EngingScene);
+        SceneLoader.Instance.LoadScene(SceneType.EndingScene);
     }
 
     private void PlayAnim(string stateName)
