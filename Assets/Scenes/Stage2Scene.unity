@@ -363,6 +363,7 @@ MonoBehaviour:
   - {fileID: 296288498}
   startDelay: 3
   clearDelay: 3
+  nextSceneName: 
 --- !u!4 &588647243
 Transform:
   m_ObjectHideFlags: 0
