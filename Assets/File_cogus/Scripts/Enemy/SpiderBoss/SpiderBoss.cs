@@ -22,16 +22,16 @@ public sealed class SpiderBoss : EnemyBase
     private const string AnimStateGrow = "monster_spider_Grow";
 
     [Header("Pattern")]
-    [SerializeField] private float initialDelay = 0.5f;
+    [SerializeField] private float initialDelay = 1f;
     [SerializeField] private float patternInterval = 1f;
     [SerializeField] private Image HPbar;
     [SerializeField] private Animator Anim;
 
     [Header("Dive Bite - Common")]
     [SerializeField] private Transform emergeYAnchor;
-    [SerializeField] private float descendDuration = 0.35f;
-    [SerializeField] private float ascendDuration = 0.3f;
-    [SerializeField, Range(0f, 1f)] private float diveHitNormalizedTime = 0.15f;
+    [SerializeField] private float descendDuration = 1f;
+    [SerializeField] private float ascendDuration = 1f;
+    [SerializeField, Range(0f, 1f)] private float diveHitNormalizedTime = 1f;
     [SerializeField] private LayerMask playerHitMask;
 
     [Header("Dive Bite - Normal")]
@@ -40,32 +40,38 @@ public sealed class SpiderBoss : EnemyBase
     [SerializeField] private int normalBiteDamage = 10;
 
     [Header("Dive Bite - Poison")]
-    [SerializeField] private float poisonBiteWorldY = 1f;
+    [SerializeField] private float poisonBiteWorldY = -2.6f;
     [SerializeField] private Collider2D poisonBiteHitCollider;
-    [SerializeField] private int poisonBiteDamage = 8;
+    [SerializeField] private int poisonBiteDamage = 1;
     [SerializeField] private float poisonDuration = 3f;
-    [SerializeField] private int poisonDamagePerSecond = 1;
+    [SerializeField] private int poisonDamagePerSecond = 5;
 
     [Header("Fixed Pattern Bite (80/60/40/20%)")]
-    [SerializeField] private float fixedDescendDeltaY = 6f;
-    [SerializeField] private float fixedDescendDuration = 0.9f;
-    [SerializeField] private float fixedAscendDuration = 0.5f;
-    [SerializeField, Range(0f, 1f)] private float fixedHitNormalizedTime = 0.15f;
-    [SerializeField] private int fixedDamage = 12;
-    [SerializeField] private float fixedPoisonDuration = 3f;
-    [SerializeField] private int fixedPoisonDamagePerSecond = 1;
+    [SerializeField] private float fixedDescendDeltaY = 10f;
+    [SerializeField] private float fixedDescendDuration = 2f;
+    [SerializeField] private float fixedAscendDuration = 1f;
+    [SerializeField, Range(0f, 1f)] private float fixedHitNormalizedTime = 0.9f;
+    [SerializeField] private int fixedDamage = 40;
+    [SerializeField] private float fixedPoisonDuration = 5f;
+    [SerializeField] private int fixedPoisonDamagePerSecond = 5;
+
+    [Header("Fixed Pattern - Hit Warning UI")]
+    [SerializeField] private Image fixedHitWarningImage;
+    [SerializeField] private float fixedHitWarningFadeInDuration = 0.08f;
+    [SerializeField] private float fixedHitWarningHoldDuration = 0.05f;
+    [SerializeField] private float fixedHitWarningFadeOutDuration = 0.18f;
 
     [Header("Web Shot - Positions")]
     [SerializeField] private Transform webTopLeftPoint;
     [SerializeField] private Transform webTopRightPoint;
-    [SerializeField] private Vector2 webLeftTeleportOffset = new(-3f, 2f);
-    [SerializeField] private Vector2 webRightTeleportOffset = new(3f, 2f);
+    [SerializeField] private Vector2 webLeftTeleportOffset = new(-2f, 2f);
+    [SerializeField] private Vector2 webRightTeleportOffset = new(2f, 2f);
     [SerializeField] private float webMoveDuration = 0.4f;
 
     [Header("Web Shot - Fire")]
     [SerializeField] private Transform webFirePoint;
     [SerializeField] private SpiderWebProjectile webProjectilePrefab;
-    [SerializeField, Range(0f, 1f)] private float webFireNormalizedTime = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float webFireNormalizedTime = 0.5f;
     [SerializeField] private int webBreakPressRequired = 6;
 
     private readonly Queue<int> fixedPatternQueue = new();
@@ -73,6 +79,9 @@ public sealed class SpiderBoss : EnemyBase
     private readonly Collider2D[] hitscanResults = new Collider2D[16];
 
     private Tween activeMoveTween;
+    private Tween fixedWarningFadeInTween;
+    private Tween fixedWarningFadeOutTween;
+
     private Coroutine patternLoop;
     private int lastNormalPatternIndex = -1;
 
@@ -105,6 +114,11 @@ public sealed class SpiderBoss : EnemyBase
         normalPatternPool.Add(NormalPatternType.Bite);
         normalPatternPool.Add(NormalPatternType.PoisonBite);
         normalPatternPool.Add(NormalPatternType.WebShot);
+
+        Color c = fixedHitWarningImage.color;
+        c.a = 0f;
+        fixedHitWarningImage.color = c;
+        fixedHitWarningImage.gameObject.SetActive(false);
     }
 
     protected override void Start()
@@ -143,6 +157,10 @@ public sealed class SpiderBoss : EnemyBase
             StopCoroutine(patternLoop);
 
         activeMoveTween?.Kill();
+
+        fixedWarningFadeInTween?.Kill();
+        fixedWarningFadeOutTween?.Kill();
+        fixedHitWarningImage.gameObject.SetActive(false);
 
         base.OnDied();
     }
@@ -234,6 +252,31 @@ public sealed class SpiderBoss : EnemyBase
         }
     }
 
+    private void PlayFixedHitWarning()
+    {
+        fixedWarningFadeInTween?.Kill();
+        fixedWarningFadeOutTween?.Kill();
+
+        fixedHitWarningImage.gameObject.SetActive(true);
+
+        Color c = fixedHitWarningImage.color;
+        c.a = 0f;
+        fixedHitWarningImage.color = c;
+
+        fixedWarningFadeInTween = fixedHitWarningImage
+            .DOFade(1f, fixedHitWarningFadeInDuration)
+            .SetEase(Ease.Linear);
+
+        fixedWarningFadeOutTween = fixedHitWarningImage
+            .DOFade(0f, fixedHitWarningFadeOutDuration)
+            .SetEase(Ease.Linear)
+            .SetDelay(fixedHitWarningFadeInDuration + fixedHitWarningHoldDuration)
+            .OnComplete(() =>
+            {
+                fixedHitWarningImage.gameObject.SetActive(false);
+            });
+    }
+
     private IEnumerator RunFixedPattern()
     {
         activeMoveTween?.Kill();
@@ -261,6 +304,8 @@ public sealed class SpiderBoss : EnemyBase
         float hitTime = growLen * fixedHitNormalizedTime;
         if (hitTime > 0f)
             yield return new WaitForSeconds(hitTime);
+
+        PlayFixedHitWarning();
 
         bool hit = player.TryHit(fixedDamage);
         if (hit)
@@ -421,15 +466,14 @@ public sealed class SpiderBoss : EnemyBase
 
     private bool TryHitscan(Collider2D hitCollider, int damage, bool applyPoison)
     {
-        ContactFilter2D filter = new ContactFilter2D();
+        ContactFilter2D filter = new();
         filter.SetLayerMask(playerHitMask);
         filter.useTriggers = true;
 
         int count = hitCollider.Overlap(filter, hitscanResults);
         for (int i = 0; i < count; i++)
         {
-            PlayerController player = hitscanResults[i].GetComponent<PlayerController>();
-            if (player == null)
+            if (!hitscanResults[i].TryGetComponent<PlayerController>(out var player))
                 continue;
 
             bool hit = player.TryHit(damage);

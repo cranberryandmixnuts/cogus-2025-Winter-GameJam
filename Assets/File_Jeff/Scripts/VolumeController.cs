@@ -39,9 +39,8 @@ public class VolumeController : MonoBehaviour
 
     private void SyncSliderFromMixer(string paramName, Slider slider)
     {
-        float db;
 
-        if (!Mixer.GetFloat(paramName, out db))
+        if (!Mixer.GetFloat(paramName, out float db))
             return;
 
         if (db <= MinDb + 0.0001f)

@@ -69,8 +69,7 @@ public class SoundStorage : MonoBehaviour
 
     private void ApplyBGMForScene(string sceneName)
     {
-        SceneType sceneType;
-        if (!System.Enum.TryParse(sceneName, out sceneType))
+        if (!System.Enum.TryParse(sceneName, out SceneType sceneType))
             sceneType = SceneType.None;
 
         if (sceneType == currentSceneType)
@@ -87,27 +86,15 @@ public class SoundStorage : MonoBehaviour
 
     private AudioSource GetBGMForScene(SceneType sceneType)
     {
-        switch (sceneType)
+        return sceneType switch
         {
-            case SceneType.TitleScene:
-                return TitleBGM;
-
-            case SceneType.CutScene:
-                return CutsceneBGM;
-
-            case SceneType.Stage3Scene:
-                return BossBGM;
-
-            case SceneType.EngingScene:
-                return EndBGM;
-
-            case SceneType.Stage1Scene:
-            case SceneType.Stage2Scene:
-                return NomalBGM;
-
-            default:
-                return NomalBGM;
-        }
+            SceneType.TitleScene => TitleBGM,
+            SceneType.CutScene => CutsceneBGM,
+            SceneType.Stage3Scene => BossBGM,
+            SceneType.EngingScene => EndBGM,
+            SceneType.Stage1Scene or SceneType.Stage2Scene => NomalBGM,
+            _ => NomalBGM,
+        };
     }
 
     private void SwitchBGM(AudioSource nextBGM)

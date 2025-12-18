@@ -14,12 +14,12 @@ public class SkinUIController : MonoBehaviour
 
     [Header("컬러 설정")]
     public Color centerColor = Color.white;
-    public Color sideColor = new Color(0.6f, 0.6f, 0.6f, 1f);
+    public Color sideColor = new(0.6f, 0.6f, 0.6f, 1f);
 
     [Header("위치 설정")]
-    public Vector3 centerPosition = new Vector3(0, 0, 0);
-    public Vector3 leftPosition = new Vector3(-150, -50, 0);
-    public Vector3 rightPosition = new Vector3(150, -50, 0);
+    public Vector3 centerPosition = new(0, 0, 0);
+    public Vector3 leftPosition = new(-150, -50, 0);
+    public Vector3 rightPosition = new(150, -50, 0);
 
     [Header("애니메이션 설정")]
     public float rotationDuration = 0.35f;
@@ -78,11 +78,6 @@ public class SkinUIController : MonoBehaviour
             PlayerController.Instance.OnSkinChangeLeft += OnSkinChangeLeftEvent;
             PlayerController.Instance.OnSkinChangeRight += OnSkinChangeRightEvent;
         }
-    }
-
-    private void Update()
-    {
-
     }
 
     public void RotateIcons(int direction)
