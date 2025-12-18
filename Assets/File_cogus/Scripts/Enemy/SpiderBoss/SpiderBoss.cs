@@ -32,7 +32,7 @@ public sealed class SpiderBoss : EnemyBase
     [SerializeField] private Transform emergeYAnchor;
     [SerializeField] private float descendDuration = 0.35f;
     [SerializeField] private float ascendDuration = 0.3f;
-    [SerializeField] private float biteDelay = 0.05f;
+    [SerializeField, Range(0f, 1f)] private float diveHitNormalizedTime = 0.15f;
     [SerializeField] private LayerMask playerHitMask;
 
     [Header("Dive Bite - Normal")]
@@ -51,7 +51,7 @@ public sealed class SpiderBoss : EnemyBase
     [SerializeField] private float fixedDescendDeltaY = 6f;
     [SerializeField] private float fixedDescendDuration = 0.9f;
     [SerializeField] private float fixedAscendDuration = 0.5f;
-    [SerializeField] private float fixedHitDelay = 0.05f;
+    [SerializeField, Range(0f, 1f)] private float fixedHitNormalizedTime = 0.15f;
     [SerializeField] private int fixedDamage = 12;
     [SerializeField] private float fixedPoisonDuration = 3f;
     [SerializeField] private int fixedPoisonDamagePerSecond = 1;
@@ -66,8 +66,7 @@ public sealed class SpiderBoss : EnemyBase
     [Header("Web Shot - Fire")]
     [SerializeField] private Transform webFirePoint;
     [SerializeField] private SpiderWebProjectile webProjectilePrefab;
-    [SerializeField] private float webFireDelay = 0.05f;
-    [SerializeField] private float webAfterFireDelay = 0.1f;
+    [SerializeField, Range(0f, 1f)] private float webFireNormalizedTime = 0.15f;
     [SerializeField] private int webBreakPressRequired = 6;
 
     [Header("Rage Sweep (<= 50%)")]
@@ -153,7 +152,7 @@ public sealed class SpiderBoss : EnemyBase
         float afterPercent = after / max;
 
         QueueFixedPatternsIfCrossed(beforePercent, afterPercent);
-        UnlockExtraPatternIfNeeded(beforePercent, afterPercent);
+        UnlockExtraPatternIfNeeded(afterPercent);
 
         HPbar.fillAmount = (float)CurrentHealth / Setting.maxHealth;
     }
@@ -178,6 +177,46 @@ public sealed class SpiderBoss : EnemyBase
     {
         Anim.Play(stateName, 0, 0f);
         Anim.Update(0f);
+    }
+
+    public float GetAnimLength(string stateName)
+    {
+        AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        AnimatorStateInfo next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Anim.Update(0f);
+
+        current = Anim.GetCurrentAnimatorStateInfo(0);
+        if (current.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return current.length / global;
+        }
+
+        next = Anim.GetNextAnimatorStateInfo(0);
+        if (next.IsName(stateName))
+        {
+            float global = Anim.speed;
+            if (global <= 0f) return Mathf.Infinity;
+            return next.length / global;
+        }
+
+        Debug.LogError($"SpiderBoss: Animator state '{stateName}' not found or not playing.");
+        return 0f;
     }
 
     private IEnumerator PatternLoop()
@@ -221,14 +260,15 @@ public sealed class SpiderBoss : EnemyBase
         }
     }
 
-    private void UnlockExtraPatternIfNeeded(float beforePercent, float afterPercent)
+    private void UnlockExtraPatternIfNeeded(float afterPercent)
     {
         if (extraPatternUnlocked)
             return;
 
-        if (beforePercent > 0.5f && afterPercent <= 0.5f)
+        if (afterPercent <= 0.5f)
         {
             extraPatternUnlocked = true;
+            Debug.Log("SpiderBoss: Extra pattern unlocked.");
             AddExtraPatternToPoolIfNeeded();
         }
     }
@@ -267,15 +307,15 @@ public sealed class SpiderBoss : EnemyBase
         PlayAnim(AnimStateGrow);
 
         float growLen = GetAnimLength(AnimStateGrow);
-
-        if (fixedHitDelay > 0f)
-            yield return new WaitForSeconds(fixedHitDelay);
+        float hitTime = growLen * fixedHitNormalizedTime;
+        if (hitTime > 0f)
+            yield return new WaitForSeconds(hitTime);
 
         bool hit = player.TryHit(fixedDamage);
         if (hit)
             player.ApplyPoison(fixedPoisonDuration, fixedPoisonDamagePerSecond);
 
-        float remain = growLen - fixedHitDelay;
+        float remain = growLen - hitTime;
         if (remain > 0f)
             yield return new WaitForSeconds(remain);
 
@@ -291,9 +331,9 @@ public sealed class SpiderBoss : EnemyBase
         NormalPatternType pat = normalPatternPool[idx];
 
         if (pat == NormalPatternType.Bite)
-            yield return RunDiveAttack(normalBiteWorldY, normalBiteHitCollider, normalBiteDamage, false, AnimStateBite);
+            yield return RunDiveBite(normalBiteWorldY, normalBiteHitCollider, normalBiteDamage, false);
         else if (pat == NormalPatternType.PoisonBite)
-            yield return RunDiveAttack(poisonBiteWorldY, poisonBiteHitCollider, poisonBiteDamage, true, AnimStatePoison);
+            yield return RunDiveBite(poisonBiteWorldY, poisonBiteHitCollider, poisonBiteDamage, true);
         else if (pat == NormalPatternType.WebShot)
             yield return RunWebShot();
         else if (pat == NormalPatternType.RageSweep)
@@ -315,7 +355,7 @@ public sealed class SpiderBoss : EnemyBase
         return idx;
     }
 
-    private IEnumerator RunDiveAttack(float biteWorldY, Collider2D hitCollider, int damage, bool applyPoison, string attackAnimStateName)
+    private IEnumerator RunDiveBite(float biteWorldY, Collider2D hitCollider, int damage, bool applyPoison)
     {
         activeMoveTween?.Kill();
         transform.rotation = baseRotation;
@@ -335,16 +375,17 @@ public sealed class SpiderBoss : EnemyBase
         activeMoveTween = transform.DOMoveY(biteWorldY, descendDuration).SetEase(Ease.Linear);
         yield return WaitUntilTweenEnds(activeMoveTween);
 
-        PlayAnim(attackAnimStateName);
+        string attackState = applyPoison ? AnimStatePoison : AnimStateBite;
+        PlayAnim(attackState);
 
-        float attackLen = GetAnimLength(attackAnimStateName);
-
-        if (biteDelay > 0f)
-            yield return new WaitForSeconds(biteDelay);
+        float attackLen = GetAnimLength(attackState);
+        float hitTime = attackLen * diveHitNormalizedTime;
+        if (hitTime > 0f)
+            yield return new WaitForSeconds(hitTime);
 
         TryHitscan(hitCollider, damage, applyPoison);
 
-        float remain = attackLen - biteDelay;
+        float remain = attackLen - hitTime;
         if (remain > 0f)
             yield return new WaitForSeconds(remain);
 
@@ -389,9 +430,9 @@ public sealed class SpiderBoss : EnemyBase
         PlayAnim(AnimStateString);
 
         float stringLen = GetAnimLength(AnimStateString);
-
-        if (webFireDelay > 0f)
-            yield return new WaitForSeconds(webFireDelay);
+        float fireTime = stringLen * webFireNormalizedTime;
+        if (fireTime > 0f)
+            yield return new WaitForSeconds(fireTime);
 
         Vector3 firePos = webFirePoint.position;
         Vector2 dir = ((Vector2)player.transform.position - (Vector2)firePos).normalized;
@@ -399,10 +440,7 @@ public sealed class SpiderBoss : EnemyBase
         SpiderWebProjectile proj = Instantiate(webProjectilePrefab, firePos, Quaternion.identity);
         proj.Initialize(dir, webBreakPressRequired);
 
-        if (webAfterFireDelay > 0f)
-            yield return new WaitForSeconds(webAfterFireDelay);
-
-        float remain = stringLen - webFireDelay - webAfterFireDelay;
+        float remain = stringLen - fireTime;
         if (remain > 0f)
             yield return new WaitForSeconds(remain);
 
@@ -450,8 +488,6 @@ public sealed class SpiderBoss : EnemyBase
         yield return MoveAndDamage(left, rageSweepDuration);
 
         rageHitCollider.enabled = false;
-
-        transform.rotation = baseRotation;
         PlayAnim(AnimStateIdle);
     }
 
@@ -522,7 +558,7 @@ public sealed class SpiderBoss : EnemyBase
         int count = hitCollider.Overlap(filter, hitscanResults);
         for (int i = 0; i < count; i++)
         {
-            PlayerController player = hitscanResults[i].GetComponentInParent<PlayerController>();
+            PlayerController player = hitscanResults[i].GetComponent<PlayerController>();
             if (player == null)
                 continue;
 
@@ -534,45 +570,5 @@ public sealed class SpiderBoss : EnemyBase
         }
 
         return false;
-    }
-
-    public float GetAnimLength(string stateName)
-    {
-        AnimatorStateInfo current = Anim.GetCurrentAnimatorStateInfo(0);
-        if (current.IsName(stateName))
-        {
-            float global = Anim.speed;
-            if (global <= 0f) return Mathf.Infinity;
-            return current.length / global;
-        }
-
-        AnimatorStateInfo next = Anim.GetNextAnimatorStateInfo(0);
-        if (next.IsName(stateName))
-        {
-            float global = Anim.speed;
-            if (global <= 0f) return Mathf.Infinity;
-            return next.length / global;
-        }
-
-        Anim.Update(0f);
-
-        current = Anim.GetCurrentAnimatorStateInfo(0);
-        if (current.IsName(stateName))
-        {
-            float global = Anim.speed;
-            if (global <= 0f) return Mathf.Infinity;
-            return current.length / global;
-        }
-
-        next = Anim.GetNextAnimatorStateInfo(0);
-        if (next.IsName(stateName))
-        {
-            float global = Anim.speed;
-            if (global <= 0f) return Mathf.Infinity;
-            return next.length / global;
-        }
-
-        Debug.LogError($"SpiderBoss: Animator state '{stateName}' not found or not playing.");
-        return 0f;
     }
 }

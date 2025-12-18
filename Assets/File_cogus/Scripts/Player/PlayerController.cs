@@ -486,6 +486,7 @@ public sealed class PlayerController : MonoBehaviour
         float force = curve * setting.maxJumpForce;
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, force);
+        SoundStorage.Instance.Jump.Play();
 
         if (jumpTimeCounter >= setting.maxJumpTime)
             IsJumping = false;
@@ -616,6 +617,7 @@ public sealed class PlayerController : MonoBehaviour
         dead = true;
 
         damageFlashTween?.Kill();
+        OnPlayerDie?.Invoke();
 
         StopAllMotion();
         rb.simulated = false;

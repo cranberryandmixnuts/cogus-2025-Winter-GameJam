@@ -98,6 +98,7 @@ public sealed class PlayerVitals : MonoBehaviour
         int next = hp + amount;
         if (next > max) next = max;
 
+        SoundStorage.Instance.HealHP.Play();
         return setting.SetCurrentHealth(skin, next);
     }
 }

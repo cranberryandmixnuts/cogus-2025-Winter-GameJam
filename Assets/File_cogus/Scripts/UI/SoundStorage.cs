@@ -13,7 +13,7 @@ public class SoundStorage : MonoBehaviour
     public AudioSource TitleBGM;
 
     [Header("SFX")]
-    public AudioSource HealHP;
+    public AudioSource HealHP; //
     public AudioSource Jump;
     public AudioSource SpiderDash;
     public AudioSource SpiderPoison;
