@@ -686,8 +686,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VolumeController
   mainMixer: {fileID: 24100000, guid: 63f4fad0ac1e74d458a3f5c510c2328f, type: 2}
-  bgmSlider: {fileID: 0}
-  sfxSlider: {fileID: 0}
 --- !u!114 &384539868
 MonoBehaviour:
   m_ObjectHideFlags: 0
