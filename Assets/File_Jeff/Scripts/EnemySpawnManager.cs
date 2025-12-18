@@ -22,9 +22,9 @@ public class EnemySpawnManager : MonoBehaviour
     [SerializeField] private float clearDelay = 3.0f;
 
     [Header("Next Stage Setting")]
-    [SerializeField] private string nextSceneName;
+    [SerializeField] private SceneType nextSceneName;
 
-    private List<GameObject> activeEnemies = new List<GameObject>();
+    private readonly List<GameObject> activeEnemies = new();
     private bool isSpawning = false;
     private bool stageCleared = false;
 
@@ -110,14 +110,6 @@ public class EnemySpawnManager : MonoBehaviour
     {
         yield return new WaitForSeconds(clearDelay);
 
-        if (!string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.LoadScene(nextSceneName);
-        }
-        else
-        {
-            int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
-            SceneManager.LoadScene(nextIndex);
-        }
+        SceneLoader.Instance.LoadScene(nextSceneName);
     }
 }
