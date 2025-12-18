@@ -7,6 +7,7 @@ public enum SceneType
 {
     None = 0,
     TitleScene,
+    CutScene,
     Stage1Scene,
     Stage2Scene,
     Stage3Scene
