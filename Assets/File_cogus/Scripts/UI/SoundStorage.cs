@@ -23,6 +23,8 @@ public class SoundStorage : MonoBehaviour
     public AudioSource SnailInOut;
     public AudioSource MantisAttack;
 
+    private AudioSource currentBGM;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -33,4 +35,34 @@ public class SoundStorage : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+    public void PlayBGM(BGMType type)
+    {
+        if (currentBGM != null)
+            currentBGM.Stop();
+
+        switch (type)
+        {
+            case BGMType.Title: currentBGM = TitleBGM; break;
+            case BGMType.Cutscene: currentBGM = CutsceneBGM; break;
+            case BGMType.Normal: currentBGM = NomalBGM; break;
+            case BGMType.Boss: currentBGM = BossBGM; break;
+            case BGMType.End: currentBGM = EndBGM; break;
+        }
+
+        if (currentBGM != null)
+        {
+            currentBGM.loop = true;
+            currentBGM.Play();
+        }
+    }
+}
+
+public enum BGMType
+{
+    Title,
+    Cutscene,
+    Normal,
+    Boss,
+    End
 }

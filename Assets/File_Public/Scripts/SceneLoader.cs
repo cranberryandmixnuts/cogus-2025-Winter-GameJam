@@ -10,7 +10,8 @@ public enum SceneType
     CutScene,
     Stage1Scene,
     Stage2Scene,
-    Stage3Scene
+    Stage3Scene,
+    EngingScene
 }
 
 public class SceneLoader : MonoBehaviour
