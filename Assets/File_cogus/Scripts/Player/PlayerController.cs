@@ -618,6 +618,7 @@ public sealed class PlayerController : MonoBehaviour
 
         damageFlashTween?.Kill();
         OnPlayerDie?.Invoke();
+        Debug.Log("[Player] Died");
 
         StopAllMotion();
         rb.simulated = false;

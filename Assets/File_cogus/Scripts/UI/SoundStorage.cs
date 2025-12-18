@@ -14,8 +14,8 @@ public class SoundStorage : MonoBehaviour
 
     [Header("SFX")]
     public AudioSource HealHP; //
-    public AudioSource Jump;
-    public AudioSource SpiderDash;
+    public AudioSource Jump; //
+    public AudioSource SpiderDash; 
     public AudioSource SpiderPoison;
     public AudioSource SpiderBite;
     public AudioSource SpidermirrorFragments;

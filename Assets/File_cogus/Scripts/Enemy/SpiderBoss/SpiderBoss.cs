@@ -268,7 +268,6 @@ public sealed class SpiderBoss : EnemyBase
         if (afterPercent <= 0.5f)
         {
             extraPatternUnlocked = true;
-            Debug.Log("SpiderBoss: Extra pattern unlocked.");
             AddExtraPatternToPoolIfNeeded();
         }
     }
