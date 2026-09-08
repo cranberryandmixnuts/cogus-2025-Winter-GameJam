@@ -12,14 +12,12 @@ public class TutorialController : MonoBehaviour
 
     void Start()
     {
-        // 1. 씬 시작 시 플레이어 오브젝트를 찾아서 비활성화 (에러 발생 차단)
         playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
             playerObj.SetActive(false);
         }
 
-        // 2. 시간 정지
         Time.timeScale = 0f;
 
         SetupInitialUI();
